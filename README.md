@@ -40,6 +40,10 @@ Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/pa
 
 ## Version History
 
+Version 1.0.0.1 - March 28, 2017
+
+Changed assembly name of Library, added ToString to Client
+
 Version 1.0.0.0 - March 28, 2017
 
 Initial version. Allows requesting all active clients and their details and the basics about the access points.
