@@ -6,7 +6,6 @@ API in C# which can be used to read data from an on premises UniFi Controller in
 
 ```C#
 // Create a new Api instance to connect with the UniFi Controller
-Console.WriteLine("Connecting to UniFi Controller");
 using (var uniFiApi = new Library.Api(new Uri("https://192.168.0.1:8443"))
 {
     // Disable SSL validation as UniFi uses a self signed certificate
