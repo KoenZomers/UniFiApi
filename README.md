@@ -8,7 +8,7 @@ It is sufficient to use an account with the "Read Only" role in UniFi.
 
 ```C#
 // Create a new Api instance to connect with the UniFi Controller
-using (var uniFiApi = new Library.Api(new Uri("https://192.168.0.1:8443")))
+using (var uniFiApi = new KoenZomers.Tools.UniFi.Api(new Uri("https://192.168.0.1:8443")))
 {
     // Disable SSL validation as UniFi uses a self signed certificate
     uniFiApi.DisableSslValidation();

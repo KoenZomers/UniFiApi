@@ -7,8 +7,8 @@
     <ProjectGuid>{AD208498-1E7E-4366-B1C4-0CE57B6D1D2D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KoenZomers.UniFi.Api.Library</RootNamespace>
-    <AssemblyName>KoenZomers.UniFi.Api.Library</AssemblyName>
+    <RootNamespace>KoenZomers.UniFi.Api</RootNamespace>
+    <AssemblyName>KoenZomers.UniFi.Api</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

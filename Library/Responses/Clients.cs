@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace KoenZomers.UniFi.Api.Library.Responses
+namespace KoenZomers.UniFi.Api.Responses
 {
     /// <summary>
     /// Client details
@@ -203,5 +203,14 @@ namespace KoenZomers.UniFi.Api.Library.Responses
 
         [JsonProperty(PropertyName = "usergroup_id")]
         public string UserGroupId { get; set; }
+
+        /// <summary>
+        /// Returns the friendly name of the client
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return FriendlyName;
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace KoenZomers.UniFi.Api.Library
+namespace KoenZomers.UniFi.Api
 {
     /// <summary>
     /// Api class to communicate with the UniFi Controller

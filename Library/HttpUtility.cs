@@ -4,7 +4,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KoenZomers.UniFi.Api.Library
+namespace KoenZomers.UniFi.Api
 {
     /// <summary>
     /// Internal utility class for Http communication with the UniFi Controller

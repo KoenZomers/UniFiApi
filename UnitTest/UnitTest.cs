@@ -7,12 +7,12 @@ namespace KoenZomers.UniFi.Api.UnitTest
     [TestClass]
     public class UnitTest
     {
-        private static Library.Api uniFiApi;
+        private static Api uniFiApi;
 
         [ClassInitialize]
         public static void ClassInit(TestContext testContext)
         {
-            uniFiApi = new Library.Api(new Uri(ConfigurationManager.AppSettings["UniFiControllerUrl"]));
+            uniFiApi = new Api(new Uri(ConfigurationManager.AppSettings["UniFiControllerUrl"]));
             uniFiApi.DisableSslValidation();
         }
 

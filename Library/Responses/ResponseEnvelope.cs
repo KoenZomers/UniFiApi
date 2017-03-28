@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace KoenZomers.UniFi.Api.Library.Responses
+namespace KoenZomers.UniFi.Api.Responses
 {
     /// <summary>
     /// Base envelope package when receiving data from the UniFi Controller

@@ -24,7 +24,7 @@ namespace KoenZomers.UniFi.Api.ConsoleApp
         { 
             // Create a new Api instance to connect with the UniFi Controller
             Console.WriteLine("Connecting to UniFi Controller");
-            using (var uniFiApi = new Library.Api(new Uri(ConfigurationManager.AppSettings["UniFiControllerUrl"])))
+            using (var uniFiApi = new Api(new Uri(ConfigurationManager.AppSettings["UniFiControllerUrl"])))
             {
                 // Disable SSL validation as UniFi uses a self signed certificate
                 Console.WriteLine("- Disabling SSL validation");

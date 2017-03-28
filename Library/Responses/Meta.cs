@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace KoenZomers.UniFi.Api.Library.Responses
+namespace KoenZomers.UniFi.Api.Responses
 {
     /// <summary>
     /// Metadata received from the UniFi Controller
