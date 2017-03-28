@@ -2,6 +2,8 @@
 
 API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp to test the API. All assemblies are signed and compiled against .NET 4.6.2.
 
+It is sufficient to use an account with the "Read Only" role in UniFi.
+
 ## Usage
 
 ```C#
