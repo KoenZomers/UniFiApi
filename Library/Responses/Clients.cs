@@ -4,7 +4,7 @@ using System;
 namespace KoenZomers.UniFi.Api.Responses
 {
     /// <summary>
-    /// Client details
+    /// Details about one client known to UniFi
     /// </summary>
     public class Clients : BaseResponse
     {
@@ -49,6 +49,9 @@ namespace KoenZomers.UniFi.Api.Responses
             set { AssociatedTimeRaw = value.HasValue ? (long?)value.Value.Ticks : null; }
         }
 
+        /// <summary>
+        /// Boolean indicating if the client is authorized on the UniFi network. Only has a meaning when the client is connected to a guest network which requires consent or login first.
+        /// </summary>
         [JsonProperty(PropertyName = "authorized")]
         public bool? IsAuthorized { get; set; }
 
@@ -61,15 +64,24 @@ namespace KoenZomers.UniFi.Api.Responses
         [JsonProperty(PropertyName = "ccq")]
         public int? Ccq { get; set; }
 
+        /// <summary>
+        /// The WiFi channel the client is connected to
+        /// </summary>
         [JsonProperty(PropertyName = "channel")]
         public int? Channel { get; set; }
 
         [JsonProperty(PropertyName = "essid")]
         public string EssId { get; set; }
 
+        /// <summary>
+        /// The raw numeric value defining when the client was first seen on the UniFi network. Use FirstSeen to get a TimeSpan version of this same value.
+        /// </summary>
         [JsonProperty(PropertyName = "first_seen")]
         public long? FirstSeenRaw { get; set; }
 
+        /// <summary>
+        /// TimeSpan indicating how long ago this client was first seen on the UniFi network
+        /// </summary>
         [JsonIgnore]
         public TimeSpan? FirstSeen
         {
@@ -77,6 +89,9 @@ namespace KoenZomers.UniFi.Api.Responses
             set { FirstSeenRaw = value.HasValue ? (long?)value.Value.Ticks : null; }
         }
 
+        /// <summary>
+        /// Hostname as provided by the device
+        /// </summary>
         [JsonProperty(PropertyName = "hostname")]
         public string Hostname { get; set; }
 
@@ -90,11 +105,23 @@ namespace KoenZomers.UniFi.Api.Responses
             set { IdleTimeRaw = value.HasValue ? (long?)value.Value.Ticks : null; }
         }
 
+        /// <summary>
+        /// IP Address of the client on the network
+        /// </summary>
         [JsonProperty(PropertyName = "ip")]
         public string IpAddress { get; set; }
 
+        /// <summary>
+        /// Boolean indicating if the client is logged in through a guest portal
+        /// </summary>
         [JsonProperty(PropertyName = "is_guest")]
         public bool? IsGuest { get; set; }
+
+        /// <summary>
+        /// Boolean indicating if the client is currently blocked from accessing the UniFi network
+        /// </summary>
+        [JsonProperty(PropertyName = "blocked")]
+        public bool? IsBlocked { get; set; }
 
         [JsonProperty(PropertyName = "is_wired")]
         public bool? IsWired { get; set; }
@@ -119,9 +146,15 @@ namespace KoenZomers.UniFi.Api.Responses
             set { LatestAssociationTimeRaw = value.HasValue ? (long?)value.Value.Ticks : null; }
         }
 
+        /// <summary>
+        /// The MAC Address of the client device
+        /// </summary>
         [JsonProperty(PropertyName = "mac")]
         public string MacAddress { get; set; }
 
+        /// <summary>
+        /// The friendly name assigned to the device through the Alias option
+        /// </summary>
         [JsonProperty(PropertyName = "name")]
         public string FriendlyName { get; set; }
 
