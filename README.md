@@ -1,6 +1,6 @@
 # UniFi API in C#
 
-API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp to test the API. All assemblies are signed and compiled against .NET 4.6.2.
+API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp to test the API. All assemblies are signed and compiled against .NET 4.6.2. This library in its current state functions mainly as a starting point / sample of how to communicate with the UniFi service. Fork it and extend it with the functionality you need. Or if you're unable to add this yourself, submit an issue on GitHub describing what you need and I'll have a look at it when I get a chance.
 
 It is sufficient to use an account with the "Read Only" role in UniFi unless you want to modify things like using BlockClient or UnblockClient.
 
@@ -45,6 +45,10 @@ using (var uniFiApi = new KoenZomers.Tools.UniFi.Api(new Uri("https://192.168.0.
 Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/packages/KoenZomers.UniFi.Api/)
 
 ## Version History
+
+Version 1.0.1.1 - September 15, 2018
+
+- Added method EnableTls11and12() to enable TLS 1.1 and 1.2 as valid protocols when your UniFi service is using an SSL certificate signed with one of these protocols. Thanks to Ashley Gregory for pointing this out!
 
 Version 1.0.1.0 - September 14, 2018
 
