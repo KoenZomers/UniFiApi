@@ -42,13 +42,13 @@ namespace KoenZomers.UniFi.Api.ConsoleApp
 
                 Console.WriteLine("- Authentication successful");
 
-                // Retrieve the access points
-                Console.WriteLine("- Getting access points");
-                var accessPoints = await uniFiApi.GetAccessPoints();
+                // Retrieve the UniFi devices
+                Console.WriteLine("- Getting devices");
+                var devices = await uniFiApi.GetDevices();
 
-                foreach (var accessPoint in accessPoints)
+                foreach (var device in devices)
                 {
-                    Console.WriteLine($"  - {accessPoint.Name} (MAC {accessPoint.MacAddress})");
+                    Console.WriteLine($"  - {device.Name} (MAC {device.MacAddress})");
                 }
 
                 // Retrieve the active clients
