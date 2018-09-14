@@ -24,6 +24,14 @@ namespace KoenZomers.UniFi.Api
         }
 
         /// <summary>
+        /// Enables connecting to a remote server hosting UniFi using a TLS 1.1 or TLS 1.2 certificate
+        /// </summary>
+        public static void EnableTls11and12()
+        {
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+        }
+
+        /// <summary>
         /// Performs a HEAD request to the provided url to have the remote webserver hand out a new sessionId
         /// </summary>
         /// <param name="url">Url to query</param>
