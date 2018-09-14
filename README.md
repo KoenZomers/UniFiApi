@@ -2,7 +2,7 @@
 
 API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp to test the API. All assemblies are signed and compiled against .NET 4.6.2.
 
-It is sufficient to use an account with the "Read Only" role in UniFi.
+It is sufficient to use an account with the "Read Only" role in UniFi unless you want to modify things like using BlockClient or UnblockClient.
 
 ## Usage
 
@@ -16,12 +16,12 @@ using (var uniFiApi = new KoenZomers.Tools.UniFi.Api(new Uri("https://192.168.0.
     // Authenticate to UniFi
     await uniFiApi.Authenticate("admin", "password");
 
-    // Retrieve the access points
-    var accessPoints = await uniFiApi.GetAccessPoints();
+    // Retrieve the UniFi devices
+    var devices = await uniFiApi.GetDevices();
 
-    foreach (var accessPoint in accessPoints)
+    foreach (var device in devices)
     {
-        Console.WriteLine($"  - {accessPoint.Name} (MAC {accessPoint.MacAddress})");
+        Console.WriteLine($"  - {device.Name} (MAC {device.MacAddress})");
     }
 
     // Retrieve the active clients
@@ -31,6 +31,12 @@ using (var uniFiApi = new KoenZomers.Tools.UniFi.Api(new Uri("https://192.168.0.
     {
         Console.WriteLine($"  - {activeClient.FriendlyName} (MAC {activeClient.MacAddress}, Channel {activeClient.Channel})");
     }
+
+	// Block a certain client from accessing the UniFi network
+	await uniFiApi.BlockClient("a0:23:f3:14:c2:fa");
+	
+	// Unblock a certain client from accessing the UniFi network
+	await uniFiApi.UnblockClient("a0:23:f3:14:c2:fa");
 }
 ```
 
@@ -40,17 +46,29 @@ Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/pa
 
 ## Version History
 
+Version 1.0.1.0 - September 14, 2018
+
+- Added some inline code comments to the Clients model. Still needs more work to get all properties provided with comments.
+- Added PostRequest to the HttpUtility which can be used to request a change to UniFi
+- Added GetAllCookies to the HttpUtility which allows extracting the cookies from the cookie container. This is required as UniFi demands the cross site request forgery token stored in the cookie to be passed through the custom X-Csrf-Token header on every HTTP Post.
+- Added the XML documentation to the NuGet package so you will see the inline code comments in your own project as well
+- Added method GetDevices which returns all UniFi devices
+- Marked GetAccessPoints as obsolete as it didn't only retrieve the UniFi access points, but all UniFi devices so the naming was confusing
+- Added method BlockClient which allows blocking a client from getting access to the UniFi network and UnblockClient to unblock a client. This sample can nicely be used as a sample of how to modify properties in UniFi.
+- Added inline code comments to the Unit Tests to explain what each of them is testing for
+- Added GetAllClients method which returns all clients known to UniFi, regardless if they're currently connected
+
 Version 1.0.0.1 - March 28, 2017
 
-Changed assembly name of Library, added ToString to Client
+- Changed assembly name of Library, added ToString to Client
 
 Version 1.0.0.0 - March 28, 2017
 
-Initial version. Allows requesting all active clients and their details and the basics about the access points.
+- Initial version. Allows requesting all active clients and their details and the basics about the access points.
 
 ## Feedback
 
 Comments\suggestions\bug reports are welcome!
 
 Koen Zomers
-mail@koenzomers.nl
+koen@zomers.eu

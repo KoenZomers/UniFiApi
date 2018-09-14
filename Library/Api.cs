@@ -103,10 +103,34 @@ namespace KoenZomers.UniFi.Api
         }
 
         /// <summary>
-        /// Gets the access points
+        /// Gets all clients known to UniFi. This contains both clients currently connected as well as clients that were connected in the past.
         /// </summary>
-        /// <returns>List with access points</returns>
+        /// <returns>List with all known clients</returns>
+        public async Task<List<Responses.Clients>> GetAllClients()
+        {
+            // Request all connected clients
+            var clientsUri = new Uri(BaseUri, "/api/s/default/stat/alluser");
+            var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
+
+            return resultJson.data;
+        }
+
+        /// <summary>
+        /// Gets a list with all UniFi devices
+        /// </summary>
+        /// <returns>List with all UniFi devices</returns>
+        [Obsolete("In contratry what this method names leads to believe, this not only retrieves the UniFi Access Points but all UniFi devices. Therefore a new method GetDevices has been introduced which properly describes its function. Please change your code to use the GetDevices method instead.")]
         public async Task<List<Responses.AccessPoint>> GetAccessPoints()
+        {
+            return await GetDevices();
+        }
+
+        /// <summary>
+        /// Gets a list with all UniFi devices
+        /// </summary>
+        /// <returns>List with all UniFi devices</returns>
+        public async Task<List<Responses.AccessPoint>> GetDevices()
         {
             // Request all connected clients
             var clientsUri = new Uri(BaseUri, "/api/s/default/stat/device");
@@ -114,6 +138,56 @@ namespace KoenZomers.UniFi.Api
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.AccessPoint>>(resultString);
 
             return resultJson.data;
+        }
+
+        /// <summary>
+        /// Blocks a client from accessing the network
+        /// </summary>
+        /// <param name="client">Client to block from getting access to the network</param>
+        public async Task<Responses.ResponseEnvelope<Responses.Clients>> BlockClient(Responses.Clients client)
+        {
+            return await BlockClient(client.MacAddress);
+        }
+
+        /// <summary>
+        /// Blocks a client from accessing the network
+        /// </summary>
+        /// <param name="macAddress">The MAC address of the client to block from getting access to the network</param>
+        public async Task<Responses.ResponseEnvelope<Responses.Clients>> BlockClient(string macAddress)
+        {
+            // Make the POST request towards the UniFi API to request blocking the client with the provided MAC address
+            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, "/api/s/default/cmd/stamgr"),
+                                                             "{\"mac\":\"" + macAddress + "\",\"cmd\":\"block-sta\"}",
+                                                             _cookieContainer,
+                                                             ConnectionTimeout);
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
+
+            return resultJson;
+        }
+
+        /// <summary>
+        /// Unblocks a client from accessing the network
+        /// </summary>
+        /// <param name="client">Client to unblock from getting access to the network</param>
+        public async Task<Responses.ResponseEnvelope<Responses.Clients>> UnblockClient(Responses.Clients client)
+        {
+            return await UnblockClient(client.MacAddress);
+        }
+
+        /// <summary>
+        /// Unblocks a client from accessing the network
+        /// </summary>
+        /// <param name="macAddress">The MAC address of the client to unblock from getting access to the network</param>
+        public async Task<Responses.ResponseEnvelope<Responses.Clients>> UnblockClient(string macAddress)
+        {
+            // Make the POST request towards the UniFi API to request unblocking the client with the provided MAC address
+            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, "/api/s/default/cmd/stamgr"),
+                                                             "{\"mac\":\"" + macAddress + "\",\"cmd\":\"unblock-sta\"}",
+                                                             _cookieContainer,
+                                                             ConnectionTimeout);
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
+
+            return resultJson;
         }
 
         /// <summary>
