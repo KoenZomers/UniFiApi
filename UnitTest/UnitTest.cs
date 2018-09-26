@@ -13,7 +13,10 @@ namespace KoenZomers.UniFi.Api.UnitTest
         [ClassInitialize]
         public static void ClassInit(TestContext testContext)
         {
-            uniFiApi = new Api(new Uri(ConfigurationManager.AppSettings["UniFiControllerUrl"]));
+            var siteId = ConfigurationManager.AppSettings["UniFiControllerSiteId"];
+            var controllerUri = new Uri(ConfigurationManager.AppSettings["UniFiControllerUrl"]);
+
+            uniFiApi = string.IsNullOrWhiteSpace(siteId) ? new Api(controllerUri) : new Api(controllerUri, siteId);
             uniFiApi.DisableSslValidation();
         }
 

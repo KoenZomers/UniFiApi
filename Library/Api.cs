@@ -28,6 +28,11 @@ namespace KoenZomers.UniFi.Api
         public Uri BaseUri { get; private set; }
 
         /// <summary>
+        /// Gets the site identifier of the UniFi Controller. Needs to be set through the constructor.
+        /// </summary>
+        public string SiteId { get; private set; } = "default";
+
+        /// <summary>
         /// Timeout in milliseconds to apply to wait at maximum for the UniFi Controller to respond to a request
         /// </summary>
         public int ConnectionTimeout { get; set; } = 60000;
@@ -42,12 +47,23 @@ namespace KoenZomers.UniFi.Api
         #region Constructors
 
         /// <summary>
-        /// Instantiates a new instance of the UniFi API Controller class
+        /// Instantiates a new instance of the UniFi API Controller class against the default UniFi site
         /// </summary>
         /// <param name="baseUri">BaseUri of the UniFi Controller, i.e. https://192.168.0.1:8443</param>
         public Api(Uri baseUri)
         {            
             BaseUri = baseUri;
+        }
+
+        /// <summary>
+        /// Instantiates a new instance of the UniFi API Controller class
+        /// </summary>
+        /// <param name="baseUri">BaseUri of the UniFi Controller, i.e. https://192.168.0.1:8443</param>
+        /// <param name="siteId">Identifier of the site in UniFi</param>
+        public Api(Uri baseUri, string siteId)
+        {
+            BaseUri = baseUri;
+            SiteId = siteId;
         }
 
         #endregion
@@ -103,7 +119,7 @@ namespace KoenZomers.UniFi.Api
         public async Task<List<Responses.Clients>> GetActiveClients()
         {
             // Request all connected clients
-            var clientsUri = new Uri(BaseUri, "/api/s/default/stat/sta");
+            var clientsUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/sta");
             var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
@@ -117,7 +133,7 @@ namespace KoenZomers.UniFi.Api
         public async Task<List<Responses.Clients>> GetAllClients()
         {
             // Request all connected clients
-            var clientsUri = new Uri(BaseUri, "/api/s/default/stat/alluser");
+            var clientsUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/alluser");
             var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
@@ -141,7 +157,7 @@ namespace KoenZomers.UniFi.Api
         public async Task<List<Responses.AccessPoint>> GetDevices()
         {
             // Request all connected clients
-            var clientsUri = new Uri(BaseUri, "/api/s/default/stat/device");
+            var clientsUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/device");
             var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.AccessPoint>>(resultString);
 
@@ -164,7 +180,7 @@ namespace KoenZomers.UniFi.Api
         public async Task<Responses.ResponseEnvelope<Responses.Clients>> BlockClient(string macAddress)
         {
             // Make the POST request towards the UniFi API to request blocking the client with the provided MAC address
-            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, "/api/s/default/cmd/stamgr"),
+            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"),
                                                              "{\"mac\":\"" + macAddress + "\",\"cmd\":\"block-sta\"}",
                                                              _cookieContainer,
                                                              ConnectionTimeout);
@@ -189,7 +205,7 @@ namespace KoenZomers.UniFi.Api
         public async Task<Responses.ResponseEnvelope<Responses.Clients>> UnblockClient(string macAddress)
         {
             // Make the POST request towards the UniFi API to request unblocking the client with the provided MAC address
-            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, "/api/s/default/cmd/stamgr"),
+            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"),
                                                              "{\"mac\":\"" + macAddress + "\",\"cmd\":\"unblock-sta\"}",
                                                              _cookieContainer,
                                                              ConnectionTimeout);
