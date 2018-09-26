@@ -48,7 +48,7 @@ Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/pa
 
 Version 1.0.2.0 - September 26, 2018
 
-- Added ability to provide a site ID to communicate with. This only applies if you have more than one site in UniFi. In this case use the new constructor ```C# public Api(Uri baseUri, string siteId)``` to provide the site identifier. Based on request from (https://github.com/KoenZomers/UniFiApi/issues/4).
+- Added ability to provide a site ID to communicate with. This only applies if you have more than one site in UniFi. In this case use the new constructor ```public Api(Uri baseUri, string siteId)``` to provide the site identifier. Based on request from [issue 4](https://github.com/KoenZomers/UniFiApi/issues/4).
 
 Version 1.0.1.1 - September 15, 2018
 
