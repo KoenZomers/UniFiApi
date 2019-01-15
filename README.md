@@ -1,6 +1,6 @@
-# UniFi API in C#
+# UniFi API in .NET Standard \ C#
 
-API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp to test the API. All assemblies are signed and compiled against .NET 4.6.2. This library in its current state functions mainly as a starting point / sample of how to communicate with the UniFi service. Fork it and extend it with the functionality you need. Or if you're unable to add this yourself, submit an issue on GitHub describing what you need and I'll have a look at it when I get a chance.
+API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp to test the API. All assemblies are signed and compiled against .NET Standard 2.0. This library in its current state functions mainly as a starting point / sample of how to communicate with the UniFi service. Fork it and extend it with the functionality you need. Or if you're unable to add this yourself, submit an issue on GitHub describing what you need and I'll have a look at it when I get a chance.
 
 It is sufficient to use an account with the "Read Only" role in UniFi unless you want to modify things like using BlockClient or UnblockClient.
 
@@ -45,6 +45,14 @@ using (var uniFiApi = new KoenZomers.Tools.UniFi.Api(new Uri("https://192.168.0.
 Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/packages/KoenZomers.UniFi.Api/)
 
 ## Version History
+
+Version 1.1.0.0 - January 15, 2019
+
+- Renamed Library to Api and based it on .NET Standard instead of the .NET Framework so you can use it cross platform now
+- Small bugfix in the ConsoleApp only working with the default UniFi site
+- Updated .gitignore to exclude any App.config file in the solution. Copy over the App.sample.config to App.config yourself and fill it with the proper settings.
+- Included documentation XML file so the inline code comments will be visible in your own project referencing this assembly
+- Added AuthorizeGuest and UnauthorizeGuest guest methods to allow for someone connecting to a guest network to become authorized to access the network or revoke its access. The Unit Test AuthorizeUnAuthorizeGuestTestMethod shows how it can be used.
 
 Version 1.0.2.0 - September 26, 2018
 

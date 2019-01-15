@@ -115,13 +115,13 @@ namespace KoenZomers.UniFi.Api.UnitTest
 
             // Filter to the same client as we switched the blocked state of
             var clientAgain = task2.Result.FirstOrDefault(c => c.MacAddress == client.MacAddress);
-            if(clientAgain == null)
+            if (clientAgain == null)
             {
                 Assert.Inconclusive($"Unable to retrieve client {client.FriendlyName} again to validate switched blocked state");
             }
 
             // Validate that the current blocked state is no longer the same as it initially was, this it changed
-            if(clientAgain.IsBlocked != !isInitiallyBlocked)
+            if (clientAgain.IsBlocked != !isInitiallyBlocked)
             {
                 Assert.Fail($"Switching blocked state of client {client.FriendlyName} has not lead to it actually switching its state");
             }
@@ -129,6 +129,64 @@ namespace KoenZomers.UniFi.Api.UnitTest
             // Switch the blocked state of the client back to what it was
             var blockTask2 = isInitiallyBlocked ? uniFiApi.BlockClient(client) : uniFiApi.UnblockClient(client);
             blockTask2.Wait();
+
+            // If the execution gets here it means the block switching was successful
+        }
+
+        /// <summary>
+        /// Tests if authorizing and unauthorizing of a guest on the UniFi network works
+        /// </summary>
+        [TestMethod]
+        public void AuthorizeUnAuthorizeGuestTestMethod()
+        {
+            if (!uniFiApi.IsAuthenticated) AuthenticateTestMethod();
+
+            // First retrieve all active clients
+            var task1 = uniFiApi.GetActiveClients();
+            task1.Wait();
+
+            // Ensure we have at least one client on the UniFi network which we can temporarily block to test the functionality
+            if (task1.Result.Count == 0)
+            {
+                Assert.Inconclusive("No clients currently on the UniFi network to use for testing to block");
+            }
+
+            // Get the first guest client on the UniFi network so we can change its authorized state
+            var client = task1.Result.FirstOrDefault(c => c.IsGuest.GetValueOrDefault(false));
+
+            // Ensure that we have a guest client
+            if (client == null)
+            {
+                Assert.Inconclusive($"Unable to find a guest on your network which is required for this test to work");
+            }
+
+            // Get the current authorized state of the guest
+            bool guestInitiallyAuthorized = client.IsAuthorized.GetValueOrDefault(false);
+
+            // Switch the authorized state of the guest
+            var task2 = guestInitiallyAuthorized ? uniFiApi.UnauthorizeGuest(client.MacAddress) : uniFiApi.AuthorizeGuest(client.MacAddress);
+            task2.Wait();
+
+            // Retrieve the active clients again
+            var task3 = uniFiApi.GetActiveClients();
+            task3.Wait();
+
+            // Filter to the same client as we switched the authorization state of
+            var clientAgain = task3.Result.FirstOrDefault(c => c.MacAddress == client.MacAddress);
+            if (clientAgain == null)
+            {
+                Assert.Inconclusive($"Unable to retrieve client {client.FriendlyName} again to validate switched authorization state");
+            }
+
+            // Validate that the current authorized state is no longer the same as it initially was, this it changed
+            if (clientAgain.IsAuthorized != !guestInitiallyAuthorized)
+            {
+                Assert.Fail($"Switching authorization state of client {client.FriendlyName} has not lead to it actually switching its state");
+            }
+
+            // Switch the blocked state of the client back to what it was
+            var task4 = guestInitiallyAuthorized ? uniFiApi.AuthorizeGuest(client.MacAddress) : uniFiApi.UnauthorizeGuest(client.MacAddress);
+            task4.Wait();
 
             // If the execution gets here it means the block switching was successful
         }
