@@ -56,7 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.sample.config" />
-    <None Include="App.config" />
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
