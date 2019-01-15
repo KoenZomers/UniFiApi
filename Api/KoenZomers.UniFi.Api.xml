@@ -1,0 +1,351 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>KoenZomers.UniFi.Api</name>
+    </assembly>
+    <members>
+        <member name="T:KoenZomers.UniFi.Api.Api">
+            <summary>
+            Api class to communicate with the UniFi Controller
+            </summary>
+        </member>
+        <member name="F:KoenZomers.UniFi.Api.Api._cookieContainer">
+            <summary>
+            Cookie container which holds all cookies for sessions towards the UniFi Controller
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Api.BaseUri">
+            <summary>
+            Gets the BaseUri of the UniFi Controller. Needs to be set through the constructor.
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Api.SiteId">
+            <summary>
+            Gets the site identifier of the UniFi Controller. Needs to be set through the constructor.
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Api.ConnectionTimeout">
+            <summary>
+            Timeout in milliseconds to apply to wait at maximum for the UniFi Controller to respond to a request
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Api.IsAuthenticated">
+            <summary>
+            Boolean indicating whether this Api session is authenticated
+            </summary>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.#ctor(System.Uri)">
+            <summary>
+            Instantiates a new instance of the UniFi API Controller class against the default UniFi site
+            </summary>
+            <param name="baseUri">BaseUri of the UniFi Controller, i.e. https://192.168.0.1:8443</param>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.#ctor(System.Uri,System.String)">
+            <summary>
+            Instantiates a new instance of the UniFi API Controller class
+            </summary>
+            <param name="baseUri">BaseUri of the UniFi Controller, i.e. https://192.168.0.1:8443</param>
+            <param name="siteId">Identifier of the site in UniFi. Set to NULL if you want to use the default site.</param>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.DisableSslValidation">
+            <summary>
+            Disables SSL certificate validation in case of using a self signed SSL certificate
+            </summary>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.EnableTls11and12">
+            <summary>
+            Enables connecting to a remote server hosting UniFi using a TLS 1.1 or TLS 1.2 certificate
+            </summary>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.Authenticate(System.String,System.String)">
+            <summary>
+            Authenticate against the UniFi Controller with the provided credentials
+            </summary>
+            <param name="username">Username to authenticate with</param>
+            <param name="password">Password to authenticate with</param>
+            <returns>Boolean indicating whether the authentication was successful (True) or failed (False)</returns>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.GetActiveClients">
+            <summary>
+            Gets the currently connected clients
+            </summary>
+            <returns>List with connected clients</returns>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.GetAllClients">
+            <summary>
+            Gets all clients known to UniFi. This contains both clients currently connected as well as clients that were connected in the past.
+            </summary>
+            <returns>List with all known clients</returns>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.GetAccessPoints">
+            <summary>
+            Gets a list with all UniFi devices
+            </summary>
+            <returns>List with all UniFi devices</returns>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.GetDevices">
+            <summary>
+            Gets a list with all UniFi devices
+            </summary>
+            <returns>List with all UniFi devices</returns>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.BlockClient(KoenZomers.UniFi.Api.Responses.Clients)">
+            <summary>
+            Blocks a client from accessing the network
+            </summary>
+            <param name="client">Client to block from getting access to the network</param>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.BlockClient(System.String)">
+            <summary>
+            Blocks a client from accessing the network
+            </summary>
+            <param name="macAddress">The MAC address of the client to block from getting access to the network</param>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.AuthorizeGuest(System.String)">
+            <summary>
+            Authorizes a guest to access the network
+            </summary>
+            <param name="macAddress">The MAC address of the client to provide access to the network</param>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.UnauthorizeGuest(System.String)">
+            <summary>
+            Unauthorizes a guest to access the network
+            </summary>
+            <param name="macAddress">The MAC address of the client to revoke its access from the network</param>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.UnblockClient(KoenZomers.UniFi.Api.Responses.Clients)">
+            <summary>
+            Unblocks a client from accessing the network
+            </summary>
+            <param name="client">Client to unblock from getting access to the network</param>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.UnblockClient(System.String)">
+            <summary>
+            Unblocks a client from accessing the network
+            </summary>
+            <param name="macAddress">The MAC address of the client to unblock from getting access to the network</param>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.Logout">
+            <summary>
+            Logs out from the UniFi Controller
+            </summary>
+            <returns>True if logout was successful or False if it failed</returns>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.Dispose">
+            <summary>
+            Closes this session
+            </summary>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.HttpUtility">
+            <summary>
+            Internal utility class for Http communication with the UniFi Controller
+            </summary>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.HttpUtility.DisableSslValidation">
+            <summary>
+            Disables SSL Validation in case of self signed SSL certificates being used
+            </summary>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.HttpUtility.EnableTls11and12">
+            <summary>
+            Enables connecting to a remote server hosting UniFi using a TLS 1.1 or TLS 1.2 certificate
+            </summary>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.HttpUtility.HttpCreateSession(System.Uri,System.Net.CookieContainer,System.Int32)">
+            <summary>
+            Performs a HEAD request to the provided url to have the remote webserver hand out a new sessionId
+            </summary>
+            <param name="url">Url to query</param>
+            <param name="cookieContainer">Cookies which have been recorded for this session</param>
+            <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.HttpUtility.GetRequestResult(System.Uri,System.Net.CookieContainer,System.Int32)">
+            <summary>
+            Performs a GET request to the provided url to download the page contents
+            </summary>
+            <param name="url">Url of the page to retrieve</param>
+            <param name="cookieContainer">Cookies which have been recorded for this session</param>
+            <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
+            <returns>Contents of the page</returns>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.HttpUtility.PostRequest(System.Uri,System.String,System.Net.CookieContainer,System.Int32)">
+            <summary>
+            Sends a POST request towards UniFi
+            </summary>
+            <param name="url">Url to POST the postData to</param>
+            <param name="postData">Data to send to the UniFi service, typically a JSON payload</param>
+            <param name="cookieContainer">Cookies which have been recorded for this session</param>
+            <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
+            <returns>The website contents returned by the webserver after posting the data</returns>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.HttpUtility.GetAllCookies(System.Net.CookieContainer)">
+            <summary>
+            Extracts all the cookies from a cookie container so the contents can be read and used
+            </summary>
+            <remarks>Code sample retrieved from https://stackoverflow.com/a/31900670/1271303 </remarks>
+            <returns>IEnumerable containing all cookies available in the CookieContainer</returns>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.HttpUtility.AuthenticateViaJsonPostMethod(System.Uri,System.String,System.String,System.Net.CookieContainer,System.Int32)">
+            <summary>
+            Sends a POST request with JSON variables to authenticate against UniFi
+            </summary>
+            <param name="url">Url to POST the login information to</param>
+            <param name="username">Username to authenticate with</param>
+            <param name="password">Password to authenticate with</param>
+            <param name="cookieContainer">Cookies which have been recorded for this session</param>
+            <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
+            <returns>The website contents returned by the webserver after posting the data</returns>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.HttpUtility.LogoutViaJsonPostMethod(System.Uri,System.Net.CookieContainer,System.Int32)">
+            <summary>
+            Sends a POST request to log out from the UniFi Controller
+            </summary>
+            <param name="url">Url to POST the logout request to</param>
+            <param name="cookieContainer">Cookies which have been recorded for this session</param>
+            <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
+            <returns>The website contents returned by the webserver after posting the data</returns>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.AccessPoint">
+            <summary>
+            Access point details
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.AccessPoint.Name">
+            <summary>
+            Name of the access point
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.AccessPoint.MacAddress">
+            <summary>
+            MAC address of the access point
+            </summary>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.BaseResponse">
+            <summary>
+            Base class to allow grouping all classes that represent UniFi Controller response messages
+            </summary>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.Clients">
+            <summary>
+            Details about one client known to UniFi
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.AccessPointMacAddress">
+            <summary>
+            Mac address of the access point to which the client is connected
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.IsAuthorized">
+            <summary>
+            Boolean indicating if the client is authorized on the UniFi network. Only has a meaning when the client is connected to a guest network which requires consent or login first.
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.AuthorizedBy">
+            <summary>
+            String providing information on what authorized this client
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.Channel">
+            <summary>
+            The WiFi channel the client is connected to
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.FirstSeenRaw">
+            <summary>
+            The raw numeric value defining when the client was first seen on the UniFi network. Use FirstSeen to get a TimeSpan version of this same value.
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.FirstSeen">
+            <summary>
+            TimeSpan indicating how long ago this client was first seen on the UniFi network
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.Hostname">
+            <summary>
+            Hostname as provided by the device
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.IpAddress">
+            <summary>
+            IP Address of the client on the network
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.IsGuest">
+            <summary>
+            Boolean indicating if the client is logged in through a guest portal
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.IsBlocked">
+            <summary>
+            Boolean indicating if the client is currently blocked from accessing the UniFi network
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.MacAddress">
+            <summary>
+            The MAC Address of the client device
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.FriendlyName">
+            <summary>
+            The friendly name assigned to the device through the Alias option
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.Start">
+            <summary>
+            Seconds since January 1, 1970 when this authorized client becomes valid. Use StartDate for a DateTime representing this value.
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.StartDate">
+            <summary>
+            Date and time at which this client will become authorized
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.End">
+            <summary>
+            Seconds since January 1, 1970 when this authorized client will no longer be valid. Use EndDate for a DateTime representing this value.
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.EndDate">
+            <summary>
+            Date and time at which this client will no longer be authorized
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.SiteId">
+            <summary>
+            Identifier of the site in UniFi to which this client is connected
+            </summary>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Responses.Clients.ToString">
+            <summary>
+            Returns the friendly name of the client
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.Meta">
+            <summary>
+            Metadata received from the UniFi Controller
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Meta.ResultCode">
+            <summary>
+            The result code indicating the successfulness of the request
+            </summary>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.ResponseEnvelope`1">
+            <summary>
+            Base envelope package when receiving data from the UniFi Controller
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ResponseEnvelope`1.data">
+            <summary>
+            List of type T with the data resulting from a request towards the UniFi Controller
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ResponseEnvelope`1.meta">
+            <summary>
+            Metadata regarding the request towards the UniFi Controller
+            </summary>
+        </member>
+    </members>
+</doc>

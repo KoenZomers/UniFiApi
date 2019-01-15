@@ -261,4 +261,4 @@ __pycache__/
 *.pyc
 
 # Application configuration files, use App.Sample.Config to create your own version
-App.config
+**/App.config
