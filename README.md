@@ -2,7 +2,7 @@
 
 API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp to test the API. All assemblies are signed and compiled against .NET Standard 2.0. This library in its current state functions mainly as a starting point / sample of how to communicate with the UniFi service. Fork it and extend it with the functionality you need. Or if you're unable to add this yourself, submit an issue on GitHub describing what you need and I'll have a look at it when I get a chance.
 
-It is sufficient to use an account with the "Read Only" role in UniFi unless you want to modify things like using BlockClient or UnblockClient.
+It is sufficient to use an account with the "Read Only" role in UniFi unless you want to modify things like using BlockClient, UnblockClient, AuthorizeGuest or UnauthorizeGuest.
 
 ## Usage
 
@@ -37,6 +37,12 @@ using (var uniFiApi = new KoenZomers.Tools.UniFi.Api(new Uri("https://192.168.0.
 	
 	// Unblock a certain client from accessing the UniFi network
 	await uniFiApi.UnblockClient("a0:23:f3:14:c2:fa");
+
+	// Authorize a certain guest client to access the UniFi network
+	await uniFiApi.AuthorizeGuest("a0:23:f3:14:c2:fa");
+	
+	// Revoke the authorization for a certain guest client to access the UniFi network
+	await uniFiApi.UnauthorizeGuest("a0:23:f3:14:c2:fa");
 }
 ```
 
