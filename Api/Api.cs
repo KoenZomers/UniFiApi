@@ -168,6 +168,19 @@ namespace KoenZomers.UniFi.Api
         }
 
         /// <summary>
+        /// Gets all sites registered with UniFi
+        /// </summary>
+        /// <returns>List with all sites</returns>
+        public async Task<List<Responses.Site>> GetSites()
+        {
+            var clientsUri = new Uri(BaseUri, $"/api/self/sites");
+            var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Site>>(resultString);
+
+            return resultJson.data;
+        }
+
+        /// <summary>
         /// Blocks a client from accessing the network
         /// </summary>
         /// <param name="client">Client to block from getting access to the network</param>

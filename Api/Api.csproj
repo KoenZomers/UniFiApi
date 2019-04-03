@@ -19,6 +19,8 @@
 - Included documentation XML file so the inline code comments will be visible in your own project referencing this assembly
 - Added AuthorizeGuest and UnauthorizeGuest guest methods to allow for someone connecting to a guest network to become authorized to access the network or revoke its access</PackageReleaseNotes>
     <PackageLicenseUrl>https://github.com/KoenZomers/UniFiApi/blob/master/LICENSE</PackageLicenseUrl>
+    <AssemblyVersion>1.1.1.0</AssemblyVersion>
+    <FileVersion>1.1.1.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

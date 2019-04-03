@@ -52,6 +52,10 @@ Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/pa
 
 ## Version History
 
+Version 1.1.1.0 - April 3, 2019
+
+- Added option to retrieve the sites registered with UniFi
+
 Version 1.1.0.0 - January 15, 2019
 
 - Renamed Library to Api and based it on .NET Standard instead of the .NET Framework so you can use it cross platform now

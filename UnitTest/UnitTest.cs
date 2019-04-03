@@ -77,6 +77,19 @@ namespace KoenZomers.UniFi.Api.UnitTest
         }
 
         /// <summary>
+        /// Tests retrieving all sites registered in UniFi
+        /// </summary>
+        [TestMethod]
+        public void GetAllSitesTestMethod()
+        {
+            if (!uniFiApi.IsAuthenticated) AuthenticateTestMethod();
+
+            var task = uniFiApi.GetSites();
+            task.Wait();
+            Assert.IsTrue(task.Result.Count > 0, "No sites found");
+        }
+
+        /// <summary>
         /// Tests if blocking and unblocking of a client on the UniFi network works
         /// </summary>
         [TestMethod]

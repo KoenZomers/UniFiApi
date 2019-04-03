@@ -89,6 +89,12 @@
             </summary>
             <returns>List with all UniFi devices</returns>
         </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.GetSites">
+            <summary>
+            Gets all sites registered with UniFi
+            </summary>
+            <returns>List with all sites</returns>
+        </member>
         <member name="M:KoenZomers.UniFi.Api.Api.BlockClient(KoenZomers.UniFi.Api.Responses.Clients)">
             <summary>
             Blocks a client from accessing the network
@@ -345,6 +351,41 @@
         <member name="P:KoenZomers.UniFi.Api.Responses.ResponseEnvelope`1.meta">
             <summary>
             Metadata regarding the request towards the UniFi Controller
+            </summary>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.Site">
+            <summary>
+            Details about one site registered in UniFi
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Site.Identifier">
+            <summary>
+            Unique identifier of the site
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Site.Name">
+            <summary>
+            Name of the site
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Site.Description">
+            <summary>
+            Description of the site
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Site.HiddenId">
+            <summary>
+            Internal identifier of the site
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Site.DontAllowDeletion">
+            <summary>
+            Boolean indicating if deletion of this site is being disallowed
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Site.Role">
+            <summary>
+            Role of the site? Seems to be admin in my testable scenarios.
             </summary>
         </member>
     </members>
