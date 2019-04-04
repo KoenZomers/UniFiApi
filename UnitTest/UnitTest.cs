@@ -90,6 +90,32 @@ namespace KoenZomers.UniFi.Api.UnitTest
         }
 
         /// <summary>
+        /// Tests retrieving the last 2 connections from a client in UniFi
+        /// </summary>
+        [TestMethod]
+        public void GetClientHistoryTestMethod()
+        {
+            if (!uniFiApi.IsAuthenticated) AuthenticateTestMethod();
+
+            // First retrieve all clients
+            var task1 = uniFiApi.GetAllClients();
+            task1.Wait();
+
+            // Ensure we have at least one client on the UniFi network which we can retrieve the history of to test the functionality
+            if (task1.Result.Count == 0)
+            {
+                Assert.Inconclusive("No clients currently on the UniFi network to use for testing to retrieve the connection history");
+            }
+
+            // Get the first client on the UniFi network so we can retrieve the connection history
+            var client = task1.Result[0];
+
+            var task = uniFiApi.GetClientHistory(client.MacAddress, 2);
+            task.Wait();
+            Assert.IsTrue(task.Result.Count == 2, "Not the expected amount of historical items found");
+        }
+
+        /// <summary>
         /// Tests if blocking and unblocking of a client on the UniFi network works
         /// </summary>
         [TestMethod]

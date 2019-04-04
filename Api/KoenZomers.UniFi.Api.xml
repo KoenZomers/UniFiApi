@@ -95,6 +95,14 @@
             </summary>
             <returns>List with all sites</returns>
         </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.GetClientHistory(System.String,System.Int32)">
+            <summary>
+            Gets the connection history of the client with the provided MAC Address
+            </summary>
+            <param name="limit">Amount of historic items to retrieve. Most recent connection will be first. Default is last 5 connections to be returned.</param>
+            <param name="macAddress">MAC Address of the client to retrieve the history for</param>
+            <returns>List with all connection history for the client</returns>
+        </member>
         <member name="M:KoenZomers.UniFi.Api.Api.BlockClient(KoenZomers.UniFi.Api.Responses.Clients)">
             <summary>
             Blocks a client from accessing the network
@@ -326,6 +334,91 @@
             Returns the friendly name of the client
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.ClientSession">
+            <summary>
+            Defines one client session having been connected to the UniFi network
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.Id">
+            <summary>
+            Unique identifier of the session
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.TotalConnectedTime">
+            <summary>
+            Total time in seconds the client has been connected to the network thus far
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.TotalConnectedTimeSpan">
+            <summary>
+            Total time in a TimeSpan the client has been connected to the network thus far
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.SessionDuration">
+            <summary>
+            Duration of the current session of the client in seconds
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.SessionDurationTimeSpan">
+            <summary>
+            Duration of the current session of the client as a TimeSpan
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.TransmittedBytes">
+            <summary>
+            Amount of bytes received by the client through the UniFi network
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.ReceivedBytes">
+            <summary>
+            Amount of bytes uploaded by the client through the UniFi network
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.ClientMacAddress">
+            <summary>
+            MAC Address of the client that was connected
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.Name">
+            <summary>
+            Name of the client as registered in UniFi
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.Hostname">
+            <summary>
+            Name of the device as broadcasted by the device itself
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.IsGuest">
+            <summary>
+            Was this client logged on through a guest network
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.IpAddress">
+            <summary>
+            IP Address assigned to the client
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.IsWired">
+            <summary>
+            Was this client wired to the UniFi network (true) or wirelessly connected (false)
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.AccessPointMacAddress">
+            <summary>
+            MAC Address of the Access Point the client was connected to
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.O">
+            <summary>
+            Meaning unknown
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.Oid">
+            <summary>
+            Meaning unknown
+            </summary>
         </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.Meta">
             <summary>

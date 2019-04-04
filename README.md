@@ -8,7 +8,7 @@ It is sufficient to use an account with the "Read Only" role in UniFi unless you
 
 ```C#
 // Create a new Api instance to connect with the UniFi Controller
-using (var uniFiApi = new KoenZomers.Tools.UniFi.Api(new Uri("https://192.168.0.1:8443")))
+using (var uniFiApi = new KoenZomers.Tools.UniFi.Api.Api(new Uri("https://192.168.0.1:8443")))
 {
     // Disable SSL validation as UniFi uses a self signed certificate
     uniFiApi.DisableSslValidation();
@@ -52,9 +52,13 @@ Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/pa
 
 ## Version History
 
+Version 1.1.2.0 - April 4, 2019
+
+- Added option to retrieve the historical connection information of a specific client via GetClientHistory(clientMacAddress)
+
 Version 1.1.1.0 - April 3, 2019
 
-- Added option to retrieve the sites registered with UniFi
+- Added option to retrieve the sites registered with UniFi via GetSites()
 
 Version 1.1.0.0 - January 15, 2019
 

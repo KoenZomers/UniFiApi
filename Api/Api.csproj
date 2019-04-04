@@ -6,7 +6,7 @@
     <RootNamespace>KoenZomers.UniFi.Api</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
-    <Version>1.1.1.0</Version>
+    <Version>1.1.2.0</Version>
     <Authors>Koen Zomers</Authors>
     <Company>Koen Zomers</Company>
     <Description>API in .NET Standard to fetch data from an on premises Ubiquiti UniFi Controller</Description>
@@ -15,8 +15,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>- Added option to retrieve the sites</PackageReleaseNotes>
     <PackageLicenseUrl>https://github.com/KoenZomers/UniFiApi/blob/master/LICENSE</PackageLicenseUrl>
-    <AssemblyVersion>1.1.1.0</AssemblyVersion>
-    <FileVersion>1.1.1.0</FileVersion>
+    <AssemblyVersion>1.1.2.0</AssemblyVersion>
+    <FileVersion>1.1.2.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

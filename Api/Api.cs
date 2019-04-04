@@ -181,6 +181,24 @@ namespace KoenZomers.UniFi.Api
         }
 
         /// <summary>
+        /// Gets the connection history of the client with the provided MAC Address
+        /// </summary>
+        /// <param name="limit">Amount of historic items to retrieve. Most recent connection will be first. Default is last 5 connections to be returned.</param>
+        /// <param name="macAddress">MAC Address of the client to retrieve the history for</param>
+        /// <returns>List with all connection history for the client</returns>
+        public async Task<List<Responses.ClientSession>> GetClientHistory(string macAddress, int limit = 5)
+        {
+            // Make the POST request towards the UniFi API to request blocking the client with the provided MAC address
+            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/stat/session"),
+                                                             "{\"mac\":\"" + macAddress + "\",\"_limit\":" + limit + ",\"_sort\":\"-assoc_time\"}",
+                                                             _cookieContainer,
+                                                             ConnectionTimeout);
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.ClientSession>>(resultString);
+
+            return resultJson.data;
+        }
+
+        /// <summary>
         /// Blocks a client from accessing the network
         /// </summary>
         /// <param name="client">Client to block from getting access to the network</param>
