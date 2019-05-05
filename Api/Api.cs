@@ -306,7 +306,7 @@ namespace KoenZomers.UniFi.Api
             if (!IsAuthenticated) return;
 
             // Log out from the session to free up server resources
-            Logout().Wait();
+            Logout();
 
             _cookieContainer = null;
         }

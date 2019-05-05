@@ -1,4 +1,4 @@
-# UniFi API in .NET Standard \ C#
+# UniFi API in .NET Standard 2.0, .NET Framework 4.5.2, .NET Framework 4.7.2 and .NET Core 2.0 \ C#
 
 API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp to test the API. All assemblies are signed and compiled against .NET Standard 2.0. This library in its current state functions mainly as a starting point / sample of how to communicate with the UniFi service. Fork it and extend it with the functionality you need. Or if you're unable to add this yourself, submit an issue on GitHub describing what you need and I'll have a look at it when I get a chance.
 
@@ -51,6 +51,13 @@ using (var uniFiApi = new KoenZomers.Tools.UniFi.Api.Api(new Uri("https://192.16
 Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/packages/KoenZomers.UniFi.Api/)
 
 ## Version History
+
+Version 1.1.3.0 - May 6, 2019
+
+- Fix in the dispose of the API to avoid it getting stuck on disposal of the API instance
+- Added Windows Forms sample application to the solution which utilizes the UniFi API and allows for blocking and unblocking of a client and authorizing and revoking authorization of a guest
+- Added support for multi targeting frameworks which supports .NET Standard 2.0, .NET Framework 4.5.2, .NET Framework 4.7.2 and .NET Core 2.0
+- Downgraded Newtonsoft JSON version requirement to be 11.0.1 and higher for .NET Core and .NET Standard and 8.0.1 for .NET Framework to allow for a bit greater compatibility
 
 Version 1.1.2.0 - April 4, 2019
 
