@@ -9,7 +9,7 @@ namespace KoenZomers.UniFi.Api
     /// <summary>
     /// Api class to communicate with the UniFi Controller
     /// </summary>
-    public class Api : IDisposable
+    public class Api
     {
         #region Fields
 
@@ -50,9 +50,8 @@ namespace KoenZomers.UniFi.Api
         /// Instantiates a new instance of the UniFi API Controller class against the default UniFi site
         /// </summary>
         /// <param name="baseUri">BaseUri of the UniFi Controller, i.e. https://192.168.0.1:8443</param>
-        public Api(Uri baseUri)
+        public Api(Uri baseUri) : this(baseUri, null)
         {            
-            BaseUri = baseUri;
         }
 
         /// <summary>
@@ -99,10 +98,6 @@ namespace KoenZomers.UniFi.Api
         {
             // Create a new cookie container to contain the authentication cookie
             _cookieContainer = new CookieContainer();
-
-            // Create a session towards the UniFi Controller
-            var loginUri = new Uri(BaseUri, "/manage/account/login");
-            await HttpUtility.HttpCreateSession(loginUri, _cookieContainer, ConnectionTimeout);
 
             // Send an authentication request
             var authUri = new Uri(BaseUri, "/api/login");
@@ -295,20 +290,6 @@ namespace KoenZomers.UniFi.Api
             var resultOk = resultJson.meta.ResultCode.Equals("ok", StringComparison.InvariantCultureIgnoreCase);
             IsAuthenticated = !resultOk;
             return resultOk;
-        }
-
-        /// <summary>
-        /// Closes this session
-        /// </summary>
-        public void Dispose()
-        {
-            // Check if the session is authenticated
-            if (!IsAuthenticated) return;
-
-            // Log out from the session to free up server resources
-            Logout();
-
-            _cookieContainer = null;
         }
 
         #endregion

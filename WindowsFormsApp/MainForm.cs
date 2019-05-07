@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using KoenZomers.UniFi.Api;
 
@@ -50,10 +43,12 @@ namespace WindowsFormsApp
             UniFiServerConnectButton.Enabled = !connectionResult;
         }
 
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-        {            
-            // Clean up resources used by the UniFi API
-            _uniFiApi?.Dispose();
+        private async void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {        
+            if(_uniFiApi != null && _uniFiApi.IsAuthenticated)
+            {
+                await _uniFiApi.Logout();
+            }
         }
 
         private async void BlockMacAddressButton_Click(object sender, EventArgs e)
@@ -85,8 +80,6 @@ namespace WindowsFormsApp
         private async void UniFiServerDisconnectButton_Click(object sender, EventArgs e)
         {
             var disconnectResult = await _uniFiApi.Logout();
-            _uniFiApi?.Dispose();
-            _uniFiApi = null;
 
             if (disconnectResult)
             {
@@ -126,6 +119,18 @@ namespace WindowsFormsApp
             var result = await _uniFiApi.UnauthorizeGuest(AuthorizeGuestMacAddressTextBox.Text);
 
             MessageBox.Show(this, $"Client unauthorize: {result.meta.ResultCode}", "Unauthorize mac address", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private async void GetClientsButton_Click(object sender, EventArgs e)
+        {
+            ClientsListBox.Items.Clear();
+
+            var clients = await _uniFiApi.GetAllClients();
+
+            foreach(var client in clients)
+            {
+                ClientsListBox.Items.Add($"{(!string.IsNullOrWhiteSpace(client.FriendlyName) ? client.FriendlyName : client.Hostname)} ({client.MacAddress})");
+            }
         }
     }
 }

@@ -145,10 +145,12 @@
             </summary>
             <returns>True if logout was successful or False if it failed</returns>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.Api.Dispose">
+        <member name="M:KoenZomers.UniFi.Api.CookieUtility.GetAllCookies(System.Net.CookieContainer)">
             <summary>
-            Closes this session
+            Extracts all the cookies from a cookie container so the contents can be read and used
             </summary>
+            <remarks>Code sample retrieved from https://stackoverflow.com/a/31900670/1271303 </remarks>
+            <returns>IEnumerable containing all cookies available in the CookieContainer</returns>
         </member>
         <member name="T:KoenZomers.UniFi.Api.HttpUtility">
             <summary>
@@ -164,14 +166,6 @@
             <summary>
             Enables connecting to a remote server hosting UniFi using a TLS 1.1 or TLS 1.2 certificate
             </summary>
-        </member>
-        <member name="M:KoenZomers.UniFi.Api.HttpUtility.HttpCreateSession(System.Uri,System.Net.CookieContainer,System.Int32)">
-            <summary>
-            Performs a HEAD request to the provided url to have the remote webserver hand out a new sessionId
-            </summary>
-            <param name="url">Url to query</param>
-            <param name="cookieContainer">Cookies which have been recorded for this session</param>
-            <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
         </member>
         <member name="M:KoenZomers.UniFi.Api.HttpUtility.GetRequestResult(System.Uri,System.Net.CookieContainer,System.Int32)">
             <summary>
@@ -191,13 +185,6 @@
             <param name="cookieContainer">Cookies which have been recorded for this session</param>
             <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
             <returns>The website contents returned by the webserver after posting the data</returns>
-        </member>
-        <member name="M:KoenZomers.UniFi.Api.HttpUtility.GetAllCookies(System.Net.CookieContainer)">
-            <summary>
-            Extracts all the cookies from a cookie container so the contents can be read and used
-            </summary>
-            <remarks>Code sample retrieved from https://stackoverflow.com/a/31900670/1271303 </remarks>
-            <returns>IEnumerable containing all cookies available in the CookieContainer</returns>
         </member>
         <member name="M:KoenZomers.UniFi.Api.HttpUtility.AuthenticateViaJsonPostMethod(System.Uri,System.String,System.String,System.Net.CookieContainer,System.Int32)">
             <summary>

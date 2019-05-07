@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
@@ -32,36 +29,19 @@ namespace KoenZomers.UniFi.Api
         }
 
         /// <summary>
-        /// Performs a HEAD request to the provided url to have the remote webserver hand out a new sessionId
-        /// </summary>
-        /// <param name="url">Url to query</param>
-        /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
-        /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
-        public static async Task HttpCreateSession(Uri url, CookieContainer cookieContainer, int timeout = 60000)
-        {
-            // Construct the request
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "HEAD";
-            request.CookieContainer = cookieContainer;
-            request.Timeout = timeout;
-
-            // Send the request to the webserver
-            await request.GetResponseAsync();
-        }
-
-        /// <summary>
         /// Performs a GET request to the provided url to download the page contents
         /// </summary>
         /// <param name="url">Url of the page to retrieve</param>
         /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
         /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
         /// <returns>Contents of the page</returns>
-        public static async Task<string> GetRequestResult(Uri url, CookieContainer cookieContainer, int timeout = 60000)
+        public async static Task<string> GetRequestResult(Uri url, CookieContainer cookieContainer, int timeout = 60000)
         {
             // Construct the request
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.CookieContainer = cookieContainer;
             request.Timeout = timeout;
+            request.KeepAlive = false;
 
             // Send the request to the webserver
             using (var response = await request.GetResponseAsync())
@@ -90,7 +70,7 @@ namespace KoenZomers.UniFi.Api
         /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
         /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
         /// <returns>The website contents returned by the webserver after posting the data</returns>
-        public static async Task<string> PostRequest(Uri url, string postData, CookieContainer cookieContainer, int timeout = 60000)
+        public async static Task<string> PostRequest(Uri url, string postData, CookieContainer cookieContainer, int timeout = 60000)
         {
             // Construct the POST request
             var request = (HttpWebRequest)WebRequest.Create(url);
@@ -99,6 +79,7 @@ namespace KoenZomers.UniFi.Api
             request.ContentType = "application/json;charset=UTF-8";
             request.CookieContainer = cookieContainer;
             request.Timeout = timeout;
+            request.KeepAlive = false;
 
             // Check if the have a Cross Site Request Forgery cookie and if so, add it as the X-Csrf-Token header which is required by UniFi when making a POST
             var csrfCookie = cookieContainer.GetAllCookies().FirstOrDefault(c => c.Name == "csrf_token");
@@ -108,7 +89,7 @@ namespace KoenZomers.UniFi.Api
             }
 
             // Convert the POST data to a byte array
-            var postDataByteArray = Encoding.UTF8.GetBytes(postData.ToString());
+            var postDataByteArray = Encoding.UTF8.GetBytes(postData);
 
             // Set the ContentLength property of the WebRequest.
             request.ContentLength = postDataByteArray.Length;
@@ -143,28 +124,6 @@ namespace KoenZomers.UniFi.Api
         }
 
         /// <summary>
-        /// Extracts all the cookies from a cookie container so the contents can be read and used
-        /// </summary>
-        /// <remarks>Code sample retrieved from https://stackoverflow.com/a/31900670/1271303 </remarks>
-        /// <returns>IEnumerable containing all cookies available in the CookieContainer</returns>
-        private static IEnumerable<Cookie> GetAllCookies(this CookieContainer c)
-        {
-            Hashtable k = (Hashtable)c.GetType().GetField("m_domainTable", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(c);
-            foreach (DictionaryEntry element in k)
-            {
-                SortedList l = (SortedList)element.Value.GetType().GetField("m_list", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(element.Value);
-                foreach (var e in l)
-                {
-                    var cl = (CookieCollection)((DictionaryEntry)e).Value;
-                    foreach (Cookie fc in cl)
-                    {
-                        yield return fc;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Sends a POST request with JSON variables to authenticate against UniFi
         /// </summary>
         /// <param name="url">Url to POST the login information to</param>
@@ -173,24 +132,23 @@ namespace KoenZomers.UniFi.Api
         /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
         /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
         /// <returns>The website contents returned by the webserver after posting the data</returns>
-        public static async Task<string> AuthenticateViaJsonPostMethod(Uri url, string username, string password, CookieContainer cookieContainer, int timeout = 60000)
+        public async static Task<string> AuthenticateViaJsonPostMethod(Uri url, string username, string password, CookieContainer cookieContainer, int timeout = 60000)
         {
             // Construct the POST request which performs the login
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "POST";
             request.Accept = "application/json, text/plain, */*";
+            request.ContentType = "application/json;charset=UTF-8";
             request.ServicePoint.Expect100Continue = false;
             request.CookieContainer = cookieContainer;
             request.Timeout = timeout;
+            request.KeepAlive = false;
 
             // Construct POST data
             var postData = string.Concat(@"{""username"":""", username, @""",""password"":""", password, @""",""remember"":false,""strict"":true}");
 
             // Convert the POST data to a byte array
-            var postDataByteArray = Encoding.UTF8.GetBytes(postData.ToString());
-
-            // Set the ContentType property of the WebRequest
-            request.ContentType = "application/json;charset=UTF-8";
+            var postDataByteArray = Encoding.UTF8.GetBytes(postData);
 
             // Set the ContentLength property of the WebRequest.
             request.ContentLength = postDataByteArray.Length;
@@ -231,7 +189,7 @@ namespace KoenZomers.UniFi.Api
         /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
         /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
         /// <returns>The website contents returned by the webserver after posting the data</returns>
-        public static async Task<string> LogoutViaJsonPostMethod(Uri url, CookieContainer cookieContainer, int timeout = 60000)
+        public async static Task<string> LogoutViaJsonPostMethod(Uri url, CookieContainer cookieContainer, int timeout = 60000)
         {
             // Construct the POST request which performs the login
             var request = (HttpWebRequest)WebRequest.Create(url);
@@ -240,12 +198,13 @@ namespace KoenZomers.UniFi.Api
             request.ServicePoint.Expect100Continue = false;
             request.CookieContainer = cookieContainer;
             request.Timeout = timeout;
+            request.KeepAlive = false;
 
             // Construct POST data
             var postData = "{}";
 
             // Convert the POST data to a byte array
-            var postDataByteArray = Encoding.UTF8.GetBytes(postData.ToString());
+            var postDataByteArray = Encoding.UTF8.GetBytes(postData);
 
             // Set the ContentType property of the WebRequest
             request.ContentType = "application/json;charset=UTF-8";

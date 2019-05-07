@@ -52,6 +52,12 @@ Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/pa
 
 ## Version History
 
+Version 1.1.4.0 - May 8, 2019
+
+- Various performance and memory optimizations
+- Fixed issue where reconnecting wouldn't work or closing the application would cause a blocking thread [issue 10](https://github.com/KoenZomers/UniFiApi/issues/10)
+- Added option to sample Windows Application to request all clients known to UniFi
+
 Version 1.1.3.0 - May 6, 2019
 
 - Fix in the dispose of the API to avoid it getting stuck on disposal of the API instance
