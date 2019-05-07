@@ -64,18 +64,22 @@ namespace KoenZomers.UniFi.Api
             request.Timeout = timeout;
 
             // Send the request to the webserver
-            var response = await request.GetResponseAsync();
+            using (var response = await request.GetResponseAsync())
+            {
+                // Get the stream containing content returned by the server.
+                using (var dataStream = response.GetResponseStream())
+                {
+                    if (dataStream == null) return null;
 
-            // Get the stream containing content returned by the server.
-            var dataStream = response.GetResponseStream();
-            if (dataStream == null) return null;
-            
-            // Open the stream using a StreamReader for easy access.
-            var reader = new StreamReader(dataStream);
-            
-            // Read the content returned
-            var responseFromServer = await reader.ReadToEndAsync();
-            return responseFromServer;
+                    // Open the stream using a StreamReader for easy access.
+                    using (var reader = new StreamReader(dataStream))
+                    {
+                        // Read the content returned
+                        var responseFromServer = await reader.ReadToEndAsync();
+                        return responseFromServer;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -110,27 +114,32 @@ namespace KoenZomers.UniFi.Api
             request.ContentLength = postDataByteArray.Length;
 
             // Get the request stream
-            var dataStream = await request.GetRequestStreamAsync();
+            using (var postDataStream = await request.GetRequestStreamAsync())
+            {
+                // Write the POST data to the request stream
+                await postDataStream.WriteAsync(postDataByteArray, 0, postDataByteArray.Length);
 
-            // Write the POST data to the request stream
-            await dataStream.WriteAsync(postDataByteArray, 0, postDataByteArray.Length);
-
-            // Close the Stream object
-            dataStream.Close();
+                // Close the Stream object
+                postDataStream.Close();
+            }
 
             // Receive the response from the webserver
-            var response = await request.GetResponseAsync() as HttpWebResponse;
+            using (var response = await request.GetResponseAsync() as HttpWebResponse)
+            {
+                // Make sure the webserver has sent a response
+                if (response == null) return null;
 
-            // Make sure the webserver has sent a response
-            if (response == null) return null;
+                using (var requestDataStream = response.GetResponseStream())
+                {
+                    // Make sure the datastream with the response is available
+                    if (requestDataStream == null) return null;
 
-            dataStream = response.GetResponseStream();
-
-            // Make sure the datastream with the response is available
-            if (dataStream == null) return null;
-
-            var reader = new StreamReader(dataStream);
-            return await reader.ReadToEndAsync();
+                    using (var reader = new StreamReader(requestDataStream))
+                    {
+                        return await reader.ReadToEndAsync();
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -187,27 +196,32 @@ namespace KoenZomers.UniFi.Api
             request.ContentLength = postDataByteArray.Length;
 
             // Get the request stream
-            var dataStream = await request.GetRequestStreamAsync();
+            using (var postDataStream = await request.GetRequestStreamAsync())
+            {
+                // Write the POST data to the request stream
+                await postDataStream.WriteAsync(postDataByteArray, 0, postDataByteArray.Length);
 
-            // Write the POST data to the request stream
-            await dataStream.WriteAsync(postDataByteArray, 0, postDataByteArray.Length);
-
-            // Close the Stream object
-            dataStream.Close();
+                // Close the Stream object
+                postDataStream.Close();
+            }
 
             // Receive the response from the webserver
-            var response = await request.GetResponseAsync() as HttpWebResponse;
+            using (var response = await request.GetResponseAsync() as HttpWebResponse)
+            {
+                // Make sure the webserver has sent a response
+                if (response == null) return null;
 
-            // Make sure the webserver has sent a response
-            if (response == null) return null;
+                using (var requestDataStream = response.GetResponseStream())
+                {
+                    // Make sure the datastream with the response is available
+                    if (requestDataStream == null) return null;
 
-            dataStream = response.GetResponseStream();
-
-            // Make sure the datastream with the response is available
-            if (dataStream == null) return null;
-
-            var reader = new StreamReader(dataStream);
-            return await reader.ReadToEndAsync();
+                    using (var reader = new StreamReader(requestDataStream))
+                    {
+                        return await reader.ReadToEndAsync();
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -240,27 +254,32 @@ namespace KoenZomers.UniFi.Api
             request.ContentLength = postDataByteArray.Length;
 
             // Get the request stream
-            var dataStream = await request.GetRequestStreamAsync();
+            using (var postDataStream = await request.GetRequestStreamAsync())
+            {
+                // Write the POST data to the request stream
+                await postDataStream.WriteAsync(postDataByteArray, 0, postDataByteArray.Length);
 
-            // Write the POST data to the request stream
-            await dataStream.WriteAsync(postDataByteArray, 0, postDataByteArray.Length);
-
-            // Close the Stream object
-            dataStream.Close();
+                // Close the Stream object
+                postDataStream.Close();
+            }
 
             // Receive the response from the webserver
-            var response = await request.GetResponseAsync() as HttpWebResponse;
+            using (var response = await request.GetResponseAsync() as HttpWebResponse)
+            {
+                // Make sure the webserver has sent a response
+                if (response == null) return null;
 
-            // Make sure the webserver has sent a response
-            if (response == null) return null;
+                using (var requestDataStream = response.GetResponseStream())
+                {
+                    // Make sure the datastream with the response is available
+                    if (requestDataStream == null) return null;
 
-            dataStream = response.GetResponseStream();
-
-            // Make sure the datastream with the response is available
-            if (dataStream == null) return null;
-
-            var reader = new StreamReader(dataStream);
-            return await reader.ReadToEndAsync();
+                    using (var reader = new StreamReader(requestDataStream))
+                    {
+                        return await reader.ReadToEndAsync();
+                    }
+                }
+            }
         }
     }
 }

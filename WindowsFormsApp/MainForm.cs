@@ -85,6 +85,8 @@ namespace WindowsFormsApp
         private async void UniFiServerDisconnectButton_Click(object sender, EventArgs e)
         {
             var disconnectResult = await _uniFiApi.Logout();
+            _uniFiApi?.Dispose();
+            _uniFiApi = null;
 
             if (disconnectResult)
             {
