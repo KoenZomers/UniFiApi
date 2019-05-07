@@ -13,10 +13,9 @@
     <Copyright>Koen Zomers</Copyright>
     <PackageProjectUrl>https://github.com/KoenZomers/UniFiApi</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>- Fix in the dispose of the API to avoid it getting stuck on disposal of the API instance
-- Added Windows Forms sample application to the solution which utilizes the UniFi API and allows for blocking and unblocking of a client and authorizing and revoking authorization of a guest
-- Added support for multi targeting frameworks which supports .NET Standard 2.0, .NET Framework 4.5.2, .NET Framework 4.7.2 and .NET Core 2.0
-- Downgraded Newtonsoft JSON version requirement to be 11.0.1 and higher for .NET Core and .NET Standard and 8.0.1 for .NET Framework to allow for a bit greater compatibility</PackageReleaseNotes>
+    <PackageReleaseNotes>- Various performance and memory optimizations
+- Fixed issue where reconnecting wouldn't work or closing the application would cause a blocking thread (issue 10)
+- Added option to sample Windows Application to request all clients known to UniFi</PackageReleaseNotes>
     <PackageLicenseUrl>https://github.com/KoenZomers/UniFiApi/blob/master/LICENSE</PackageLicenseUrl>
     <AssemblyVersion>1.1.4.0</AssemblyVersion>
     <FileVersion>1.1.4.0</FileVersion>
