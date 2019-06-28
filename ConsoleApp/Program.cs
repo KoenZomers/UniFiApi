@@ -21,44 +21,43 @@ namespace KoenZomers.UniFi.Api.ConsoleApp
         /// Asynchronous application Main
         /// </summary>
         static async Task MainAsync(string[] args)
-        { 
+        {
             // Create a new Api instance to connect with the UniFi Controller
             Console.WriteLine("Connecting to UniFi Controller");
-            using (var uniFiApi = new Api(new Uri(ConfigurationManager.AppSettings["UniFiControllerUrl"]), ConfigurationManager.AppSettings["UniFiControllerSiteId"]))
+            var uniFiApi = new Api(new Uri(ConfigurationManager.AppSettings["UniFiControllerUrl"]), ConfigurationManager.AppSettings["UniFiControllerSiteId"]);
+
+            // Disable SSL validation as UniFi uses a self signed certificate
+            Console.WriteLine("- Disabling SSL validation");
+            uniFiApi.DisableSslValidation();
+
+            // Authenticate to UniFi
+            Console.WriteLine("- Authenticating");
+            var authenticationSuccessful = await uniFiApi.Authenticate(ConfigurationManager.AppSettings["UniFiControllerUsername"], ConfigurationManager.AppSettings["UniFiControllerPassword"]);
+
+            if (!authenticationSuccessful)
             {
-                // Disable SSL validation as UniFi uses a self signed certificate
-                Console.WriteLine("- Disabling SSL validation");
-                uniFiApi.DisableSslValidation();
+                Console.WriteLine("- Authentication failed");
+                return;
+            }
 
-                // Authenticate to UniFi
-                Console.WriteLine("- Authenticating");
-                var authenticationSuccessful = await uniFiApi.Authenticate(ConfigurationManager.AppSettings["UniFiControllerUsername"], ConfigurationManager.AppSettings["UniFiControllerPassword"]);
+            Console.WriteLine("- Authentication successful");
 
-                if (!authenticationSuccessful)
-                {
-                    Console.WriteLine("- Authentication failed");
-                    return;
-                }
+            // Retrieve the UniFi devices
+            Console.WriteLine("- Getting devices");
+            var devices = await uniFiApi.GetDevices();
 
-                Console.WriteLine("- Authentication successful");
+            foreach (var device in devices)
+            {
+                Console.WriteLine($"  - {device.Name} (MAC {device.MacAddress})");
+            }
 
-                // Retrieve the UniFi devices
-                Console.WriteLine("- Getting devices");
-                var devices = await uniFiApi.GetDevices();
+            // Retrieve the active clients
+            Console.WriteLine("- Getting active clients");
+            var activeClients = await uniFiApi.GetActiveClients();
 
-                foreach (var device in devices)
-                {
-                    Console.WriteLine($"  - {device.Name} (MAC {device.MacAddress})");
-                }
-
-                // Retrieve the active clients
-                Console.WriteLine("- Getting active clients");
-                var activeClients = await uniFiApi.GetActiveClients();
-
-                foreach (var activeClient in activeClients)
-                {
-                    Console.WriteLine($"  - {activeClient.FriendlyName} (MAC {activeClient.MacAddress}, Channel {activeClient.Channel})");
-                }
+            foreach (var activeClient in activeClients)
+            {
+                Console.WriteLine($"  - {activeClient.FriendlyName} (MAC {activeClient.MacAddress}, Channel {activeClient.Channel})");
             }
         }
     }
