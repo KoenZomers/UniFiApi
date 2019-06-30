@@ -23,7 +23,7 @@ namespace KoenZomers.UniFi.Api.UnitTest
         [ClassCleanup]
         public static void ClassCleanup()
         {
-            uniFiApi.Dispose();
+            
         }
 
         /// <summary>

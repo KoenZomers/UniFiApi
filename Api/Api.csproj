@@ -6,19 +6,17 @@
     <RootNamespace>KoenZomers.UniFi.Api</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
-    <Version>1.1.4.0</Version>
+    <Version>1.1.5.0</Version>
     <Authors>Koen Zomers</Authors>
     <Company>Koen Zomers</Company>
     <Description>API in .NET Standard to fetch data from an on premises Ubiquiti UniFi Controller</Description>
     <Copyright>Koen Zomers</Copyright>
     <PackageProjectUrl>https://github.com/KoenZomers/UniFiApi</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>- Various performance and memory optimizations
-- Fixed issue where reconnecting wouldn't work or closing the application would cause a blocking thread (issue 10)
-- Added option to sample Windows Application to request all clients known to UniFi</PackageReleaseNotes>
+    <PackageReleaseNotes>- If credentials are wrong, it will nicely handle it now by returning a false instead of throwing a WebException</PackageReleaseNotes>
     <PackageLicenseUrl>https://github.com/KoenZomers/UniFiApi/blob/master/LICENSE</PackageLicenseUrl>
-    <AssemblyVersion>1.1.4.0</AssemblyVersion>
-    <FileVersion>1.1.4.0</FileVersion>
+    <AssemblyVersion>1.1.5.0</AssemblyVersion>
+    <FileVersion>1.1.5.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

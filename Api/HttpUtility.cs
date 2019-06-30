@@ -163,20 +163,46 @@ namespace KoenZomers.UniFi.Api
                 postDataStream.Close();
             }
 
-            // Receive the response from the webserver
-            using (var response = await request.GetResponseAsync() as HttpWebResponse)
+            try
             {
-                // Make sure the webserver has sent a response
-                if (response == null) return null;
+                // Request must be kept alive because in case of an error (i.e. wrong credentials) the response otherwise can't be read anymore
+                request.KeepAlive = true;
 
-                using (var requestDataStream = response.GetResponseStream())
+                // Receive the response from the webserver
+                using (var response = await request.GetResponseAsync() as HttpWebResponse)
                 {
-                    // Make sure the datastream with the response is available
-                    if (requestDataStream == null) return null;
+                    // Make sure the webserver has sent a response
+                    if (response == null) return null;
 
-                    using (var reader = new StreamReader(requestDataStream))
+                    using (var requestDataStream = response.GetResponseStream())
                     {
-                        return await reader.ReadToEndAsync();
+                        // Make sure the datastream with the response is available
+                        if (requestDataStream == null) return null;
+
+                        using (var reader = new StreamReader(requestDataStream))
+                        {
+                            return await reader.ReadToEndAsync();
+                        }
+                    }
+                }
+            }
+            catch (WebException e)
+            {
+                // A protocolerror typically indicates that the credentials were wrong so we can handle that. Other types could be anything so we rethrow it to the caller to deal with.
+                if (e.Status != WebExceptionStatus.ProtocolError)
+                {
+                    throw;
+                }
+
+                // Parse the response from the server
+                using (var response = (HttpWebResponse)e.Response)
+                {
+                    using (var stream = response.GetResponseStream())
+                    {
+                        using (var reader = new StreamReader(stream, Encoding.GetEncoding("utf-8")))
+                        {
+                            return reader.ReadToEnd();
+                        }
                     }
                 }
             }
