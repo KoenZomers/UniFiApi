@@ -38,6 +38,17 @@ namespace KoenZomers.UniFi.Api.UnitTest
         }
 
         /// <summary>
+        /// Tests if the authentication fails with the expected outcome if we provide incorrect credentials towards UniFi
+        /// </summary>
+        [TestMethod]
+        public void AuthenticateFailsTestMethod()
+        {
+            var task = uniFiApi.Authenticate("doesnotexist", "doesnotexist");
+            task.Wait();
+            Assert.IsFalse(task.Result, "Authentication succeeded while it should have failed");
+        }
+
+        /// <summary>
         /// Tests retrieving all UniFi devices
         /// </summary>
         [TestMethod]
