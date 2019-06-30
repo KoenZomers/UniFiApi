@@ -52,6 +52,10 @@ Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/pa
 
 ## Version History
 
+Version 1.1.5.0 - June 30, 2019
+
+- If credentials are wrong, it will nicely handle it now by returning a false instead of throwing a WebException
+
 Version 1.1.4.0 - May 8, 2019
 
 - Various performance and memory optimizations
