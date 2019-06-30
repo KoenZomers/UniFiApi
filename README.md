@@ -8,42 +8,41 @@ It is sufficient to use an account with the "Read Only" role in UniFi unless you
 
 ```C#
 // Create a new Api instance to connect with the UniFi Controller
-using (var uniFiApi = new KoenZomers.Tools.UniFi.Api.Api(new Uri("https://192.168.0.1:8443")))
+var uniFiApi = new KoenZomers.Tools.UniFi.Api.Api(new Uri("https://192.168.0.1:8443"));
+
+// Disable SSL validation as UniFi uses a self signed certificate by default
+uniFiApi.DisableSslValidation();
+
+// Authenticate to UniFi
+await uniFiApi.Authenticate("admin", "password");
+
+// Retrieve the UniFi devices
+var devices = await uniFiApi.GetDevices();
+
+foreach (var device in devices)
 {
-    // Disable SSL validation as UniFi uses a self signed certificate
-    uniFiApi.DisableSslValidation();
-
-    // Authenticate to UniFi
-    await uniFiApi.Authenticate("admin", "password");
-
-    // Retrieve the UniFi devices
-    var devices = await uniFiApi.GetDevices();
-
-    foreach (var device in devices)
-    {
-        Console.WriteLine($"  - {device.Name} (MAC {device.MacAddress})");
-    }
-
-    // Retrieve the active clients
-    var activeClients = await uniFiApi.GetActiveClients();
-
-    foreach (var activeClient in activeClients)
-    {
-        Console.WriteLine($"  - {activeClient.FriendlyName} (MAC {activeClient.MacAddress}, Channel {activeClient.Channel})");
-    }
-
-	// Block a certain client from accessing the UniFi network
-	await uniFiApi.BlockClient("a0:23:f3:14:c2:fa");
-	
-	// Unblock a certain client from accessing the UniFi network
-	await uniFiApi.UnblockClient("a0:23:f3:14:c2:fa");
-
-	// Authorize a certain guest client to access the UniFi network
-	await uniFiApi.AuthorizeGuest("a0:23:f3:14:c2:fa");
-	
-	// Revoke the authorization for a certain guest client to access the UniFi network
-	await uniFiApi.UnauthorizeGuest("a0:23:f3:14:c2:fa");
+	Console.WriteLine($"  - {device.Name} (MAC {device.MacAddress})");
 }
+
+// Retrieve the active clients
+var activeClients = await uniFiApi.GetActiveClients();
+
+foreach (var activeClient in activeClients)
+{
+	Console.WriteLine($"  - {activeClient.FriendlyName} (MAC {activeClient.MacAddress}, Channel {activeClient.Channel})");
+}
+
+// Block a certain client from accessing the UniFi network
+await uniFiApi.BlockClient("a0:23:f3:14:c2:fa");
+
+// Unblock a certain client from accessing the UniFi network
+await uniFiApi.UnblockClient("a0:23:f3:14:c2:fa");
+
+// Authorize a certain guest client to access the UniFi network
+await uniFiApi.AuthorizeGuest("a0:23:f3:14:c2:fa");
+
+// Revoke the authorization for a certain guest client to access the UniFi network
+await uniFiApi.UnauthorizeGuest("a0:23:f3:14:c2:fa");
 ```
 
 ## NuGet
