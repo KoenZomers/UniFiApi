@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>D:\Code\GitHub\UniFiApi\Api\KoenZomers.UniFi.Api.xml</DocumentationFile>
+    <DocumentationFile>KoenZomers.UniFi.Api.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
