@@ -15,15 +15,26 @@ namespace KoenZomers.UniFi.Api.Responses
         public string Id { get; set; }
 
         /// <summary>
-        /// Total time in seconds the client has been connected to the network thus far
+        /// Seconds since January 1, 1970 when the client started this session. Use SessionStartedAt for a DateTime representing this value.
         /// </summary>
         [JsonProperty(PropertyName = "assoc_time")]
-        public long? TotalConnectedTime { get; set; }
+        public long? SessionStartedAtRaw { get; set; }
 
         /// <summary>
-        /// Total time in a TimeSpan the client has been connected to the network thus far
+        /// DateTime when the client started this session
         /// </summary>
-        public TimeSpan? TotalConnectedTimeSpan { get { return TotalConnectedTime.HasValue ? (TimeSpan?) TimeSpan.FromSeconds(TotalConnectedTime.Value) : null; } }
+        [JsonIgnore]
+        public DateTime? SessionStartedAt
+        {
+            get { return SessionStartedAtRaw.HasValue ? (DateTime?)new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(SessionStartedAtRaw.Value).ToLocalTime() : null; }
+            set { SessionStartedAtRaw = value.HasValue ? (long?)Math.Floor((value.Value.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds) : null; }
+        }
+
+        /// <summary>
+        /// DateTime when the client ended this session. If this DateTime is close to the current date and time, it means that the session is still active.
+        /// </summary>
+        [JsonIgnore]
+        public DateTime? SessionEndedAt => SessionStartedAt.HasValue && SessionDuration.HasValue ? (DateTime?) SessionStartedAt.Value.AddSeconds(SessionDuration.Value) : null;
 
         /// <summary>
         /// Duration of the current session of the client in seconds

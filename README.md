@@ -51,6 +51,30 @@ Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/pa
 
 ## Version History
 
+Version 1.1.6.0 - July 21, 2019
+
+- Added some more property documentation to Client
+- Fixed the following properties in a Client to represent correct values and switched them from using a TimeSpan to a DateTime:
+  - LatestAssociationTime
+  - LatestAssociationTimeRaw
+  - FirstSeen
+  - FirstSeenRaw
+  - LastSeen
+  - LastSeenRaw
+  - LastSeenByUap
+  - LastSeenByUapRaw
+  - UptimeByUap
+  - UptimeByUapRaw
+  - AssociatedTime
+  - AssociatedTimeRaw
+  - IdleTime
+  - IdleTimeRaw
+  - Uptime
+  - UptimeRaw
+- Getting ToString on a Client instance will now not only return just the FriendlyName but if no Friendly Name has been set, it will return the hostname
+- The property TotalConnectedTime in ClientSession has been renamed to SessionStartedAtRaw as it didn't actually indicate the total connected time but the amount of seconds since January 1, 1970 when the client started the session. Added a property SessionStartedAt to get the DateTime version of it.
+- Added property SessionEndedAt to ClientSession which calculates the SessionStart + SessionDuration. UniFi does not provide information on if a session is still active, so if the outcome of SessionEndedAt is close to the current date and time, you can consider the session to still be active.
+
 Version 1.1.5.0 - June 30, 2019
 
 - If credentials are wrong, it will nicely handle it now by returning a false instead of throwing a WebException
