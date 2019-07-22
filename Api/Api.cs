@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -116,7 +117,6 @@ namespace KoenZomers.UniFi.Api
         /// <returns>List with connected clients</returns>
         public async Task<List<Responses.Clients>> GetActiveClients()
         {
-            // Request all connected clients
             var clientsUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/sta");
             var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
@@ -130,7 +130,6 @@ namespace KoenZomers.UniFi.Api
         /// <returns>List with all known clients</returns>
         public async Task<List<Responses.Clients>> GetAllClients()
         {
-            // Request all connected clients
             var clientsUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/alluser");
             var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
@@ -142,22 +141,11 @@ namespace KoenZomers.UniFi.Api
         /// Gets a list with all UniFi devices
         /// </summary>
         /// <returns>List with all UniFi devices</returns>
-        [Obsolete("In contratry what this method names leads to believe, this not only retrieves the UniFi Access Points but all UniFi devices. Therefore a new method GetDevices has been introduced which properly describes its function. Please change your code to use the GetDevices method instead.")]
-        public async Task<List<Responses.AccessPoint>> GetAccessPoints()
+        public async Task<List<Responses.Device>> GetDevices()
         {
-            return await GetDevices();
-        }
-
-        /// <summary>
-        /// Gets a list with all UniFi devices
-        /// </summary>
-        /// <returns>List with all UniFi devices</returns>
-        public async Task<List<Responses.AccessPoint>> GetDevices()
-        {
-            // Request all connected clients
             var clientsUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/device");
             var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
-            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.AccessPoint>>(resultString);
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Device>>(resultString);
 
             return resultJson.data;
         }

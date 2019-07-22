@@ -51,6 +51,12 @@ Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/pa
 
 ## Version History
 
+Version 1.1.7.0 - July 23, 2019
+
+- Removed method GetAccessPoints which was deprecated. Use GetDevices instead.
+- Marked AccessPoint class as obsolete. Use Device class instead as any UniFi device could be returned so it suits the purpose better.
+- Added a few more properties to the Device.cs class. There's still a ton more properties being returned by UniFi devices. Feel free to fork/add/PR them.
+
 Version 1.1.6.0 - July 21, 2019
 
 - Added some more property documentation to Client

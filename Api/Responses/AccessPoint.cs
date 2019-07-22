@@ -1,24 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using System;
 
 namespace KoenZomers.UniFi.Api.Responses
 {
     /// <summary>
-    /// Access point details
+    /// Details of a UniFi Access Point
     /// </summary>
-    public class AccessPoint : BaseResponse
+    [Obsolete("Use the class Device instead as it could represent any type of Unifi device. This class will be removed in a future version.")]
+    public class AccessPoint : Device
     {
-        /// <summary>
-        /// Name of the access point
-        /// </summary>
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
 
-        /// <summary>
-        /// MAC address of the access point
-        /// </summary>
-        [JsonProperty(PropertyName = "mac")]
-        public string MacAddress { get; set; }
-
-        // TODO: Loads of more information returned by the UniFi Controller, need to add them to this class still
     }
 }

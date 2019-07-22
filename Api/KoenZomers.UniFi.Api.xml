@@ -77,12 +77,6 @@
             </summary>
             <returns>List with all known clients</returns>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.Api.GetAccessPoints">
-            <summary>
-            Gets a list with all UniFi devices
-            </summary>
-            <returns>List with all UniFi devices</returns>
-        </member>
         <member name="M:KoenZomers.UniFi.Api.Api.GetDevices">
             <summary>
             Gets a list with all UniFi devices
@@ -213,17 +207,7 @@
         </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.AccessPoint">
             <summary>
-            Access point details
-            </summary>
-        </member>
-        <member name="P:KoenZomers.UniFi.Api.Responses.AccessPoint.Name">
-            <summary>
-            Name of the access point
-            </summary>
-        </member>
-        <member name="P:KoenZomers.UniFi.Api.Responses.AccessPoint.MacAddress">
-            <summary>
-            MAC address of the access point
+            Details of a UniFi Access Point
             </summary>
         </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.BaseResponse">
@@ -472,6 +456,71 @@
             Meaning unknown
             </summary>
         </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.Device">
+            <summary>
+            Details of a UniFi device such as an access point or switch
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Name">
+            <summary>
+            Name of the device
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.MacAddress">
+            <summary>
+            MAC address of the device
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Adpoted">
+            <summary>
+            Boolean indicating if the device has been adopted by UniFi
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.SerialNumber">
+            <summary>
+            Serial Number of the device
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Uptime">
+            <summary>
+            Device uptime in seconds
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.UptimeTimeSpan">
+            <summary>
+            Device uptime as a TimeSpan
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.StartedAt">
+            <summary>
+            Date and time at which the device started
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Model">
+            <summary>
+            Device model
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Hostname">
+            <summary>
+            Device hostname
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Type">
+            <summary>
+            Device Type
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.AdoptIP">
+            <summary>
+            Device Adopt IP
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Id">
+            <summary>
+            Unique device ID
+            </summary>
+        </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.Meta">
             <summary>
             Metadata received from the UniFi Controller
@@ -496,6 +545,11 @@
         <member name="P:KoenZomers.UniFi.Api.Responses.ResponseEnvelope`1.meta">
             <summary>
             Metadata regarding the request towards the UniFi Controller
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ResponseEnvelope`1.OriginalJson">
+            <summary>
+            The original JSON string
             </summary>
         </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.Site">

@@ -6,37 +6,19 @@
     <RootNamespace>KoenZomers.UniFi.Api</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
-    <Version>1.1.6.0</Version>
+    <Version>1.1.7.0</Version>
     <Authors>Koen Zomers</Authors>
     <Company>Koen Zomers</Company>
     <Description>API in .NET Standard to fetch data from an on premises Ubiquiti UniFi Controller</Description>
     <Copyright>Koen Zomers</Copyright>
     <PackageProjectUrl>https://github.com/KoenZomers/UniFiApi</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>- Added some more property documentation to Client
-- Fixed the following properties in a Client to represent correct values and switched them from using a TimeSpan to a DateTime:
-  - LatestAssociationTime
-  - LatestAssociationTimeRaw
-  - FirstSeen
-  - FirstSeenRaw
-  - LastSeen
-  - LastSeenRaw
-  - LastSeenByUap
-  - LastSeenByUapRaw
-  - UptimeByUap
-  - UptimeByUapRaw
-  - AssociatedTime
-  - AssociatedTimeRaw
-  - IdleTime
-  - IdleTimeRaw
-  - Uptime
-  - UptimeRaw
-- Getting ToString on a Client instance will now not only return just the FriendlyName but if no Friendly Name has been set, it will return the hostname
-- The property TotalConnectedTime in ClientSession has been renamed to SessionStartedAtRaw as it didn't actually indicate the total connected time but the amount of seconds since January 1, 1970 when the client started the session. Added a property SessionStartedAt to get the DateTime version of it.
-- Added property SessionEndedAt to ClientSession which calculates the SessionStart + SessionDuration. UniFi does not provide information on if a session is still active, so if the outcome of SessionEndedAt is close to the current date and time, you can consider the session to still be active.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Removed method GetAccessPoints which was deprecated. Use GetDevices instead.
+- Marked AccessPoint class as obsolete. Use Device class instead as any UniFi device could be returned so it suits the purpose better.
+- Added a few more properties to the Device.cs class. There's still a ton more properties being returned by UniFi devices. Feel free to fork/add/PR them.</PackageReleaseNotes>
     <PackageLicenseUrl>https://github.com/KoenZomers/UniFiApi/blob/master/LICENSE</PackageLicenseUrl>
-    <AssemblyVersion>1.1.6.0</AssemblyVersion>
-    <FileVersion>1.1.6.0</FileVersion>
+    <AssemblyVersion>1.1.7.0</AssemblyVersion>
+    <FileVersion>1.1.7.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
