@@ -17,10 +17,5 @@ namespace KoenZomers.UniFi.Api.Responses
         /// Metadata regarding the request towards the UniFi Controller
         /// </summary>
         public Meta meta { get; set; }
-
-        /// <summary>
-        /// The original JSON string
-        /// </summary>
-        public string OriginalJson { get; set; }
     }
 }
