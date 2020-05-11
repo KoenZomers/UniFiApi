@@ -1,5 +1,17 @@
 # UniFi API in C#
 
+[![licence badge]][licence]
+[![issues badge]][issues]
+[![prwelcome badge]][prwelcome]
+
+[licence badge]:https://img.shields.io/badge/license-Apache2-blue.svg
+[issues badge]:https://img.shields.io/github/issues/koenzomers/UniFiApi.svg
+[prwelcome badge]:https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+
+[licence]:https://github.com/koenzomers/UniFiApi/blob/master/LICENSE.md
+[issues]:https://github.com/koenzomers/UniFiApi/issues
+[prwelcome]:http://makeapullrequest.com
+
 API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp and Windows Forms application to test the API. All assemblies are signed and compiled against .NET Standard 2.0, .NET Framework 4.5.2, .NET Framework 4.7.2 and .NET Core 2.0. This library in its current state functions mainly as a starting point / sample of how to communicate with the UniFi service. Fork it and extend it with the functionality you need. Or if you're unable to add this yourself, submit an issue on GitHub describing what you need and I'll have a look at it when I get a chance.
 
 It is sufficient to use an account with the "Read Only" role in UniFi unless you want to modify things like using BlockClient, UnblockClient, AuthorizeGuest or UnauthorizeGuest.
