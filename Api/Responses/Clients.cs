@@ -20,20 +20,26 @@ namespace KoenZomers.UniFi.Api.Responses
         public long? LastSeenByUapRaw { get; set; }
 
         [JsonIgnore]
-        public TimeSpan? LastSeenByUap
+        public DateTime? LastSeenByUap
         {
-            get { return LastSeenByUapRaw.HasValue ? (TimeSpan?) TimeSpan.FromTicks(LastSeenByUapRaw.Value) : null; }
-            set { LastSeenByUapRaw = value.HasValue ? (long?) value.Value.Ticks : null;  }
+            get { return LastSeenByUapRaw.HasValue ? (DateTime?)new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(LastSeenByUapRaw.Value).ToLocalTime() : null; }
+            set { LastSeenByUapRaw = value.HasValue ? (long?)Math.Floor((value.Value.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds) : null; }
         }
 
+        /// <summary>
+        /// Seconds the client already has been connected in its current session
+        /// </summary>
         [JsonProperty(PropertyName = "_uptime_by_uap")]
         public long? UptimeByUapRaw { get; set; }
 
+        /// <summary>
+        /// TimeSpan returning how long the client has already been connected in its current session
+        /// </summary>
         [JsonIgnore]
         public TimeSpan? UptimeByUap
         {
-            get { return UptimeByUapRaw.HasValue ? (TimeSpan?)TimeSpan.FromTicks(UptimeByUapRaw.Value) : null; }
-            set { UptimeByUapRaw = value.HasValue ? (long?)value.Value.Ticks : null; }
+            get { return UptimeByUapRaw.HasValue ? (TimeSpan?)TimeSpan.FromSeconds(UptimeByUapRaw.Value) : null; }
+            set { UptimeByUapRaw = value.HasValue ? (long?)value.Value.TotalSeconds : null; }
         }
 
         /// <summary>
@@ -46,10 +52,10 @@ namespace KoenZomers.UniFi.Api.Responses
         public long? AssociatedTimeRaw { get; set; }
 
         [JsonIgnore]
-        public TimeSpan? AssociatedTime
+        public DateTime? AssociatedTime
         {
-            get { return AssociatedTimeRaw.HasValue ? (TimeSpan?)TimeSpan.FromTicks(AssociatedTimeRaw.Value) : null; }
-            set { AssociatedTimeRaw = value.HasValue ? (long?)value.Value.Ticks : null; }
+            get { return AssociatedTimeRaw.HasValue ? (DateTime?)new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(AssociatedTimeRaw.Value).ToLocalTime() : null; }
+            set { AssociatedTimeRaw = value.HasValue ? (long?)Math.Floor((value.Value.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds) : null; }
         }
 
         /// <summary>
@@ -83,19 +89,19 @@ namespace KoenZomers.UniFi.Api.Responses
         public string EssId { get; set; }
 
         /// <summary>
-        /// The raw numeric value defining when the client was first seen on the UniFi network. Use FirstSeen to get a TimeSpan version of this same value.
+        /// The raw numeric value in Unix epoch time defining when the client was first seen on the UniFi network. Use FirstSeen to get a DateTime of this same value.
         /// </summary>
         [JsonProperty(PropertyName = "first_seen")]
         public long? FirstSeenRaw { get; set; }
 
         /// <summary>
-        /// TimeSpan indicating how long ago this client was first seen on the UniFi network
+        /// Date/time indicating when this client was first seen on the UniFi network
         /// </summary>
         [JsonIgnore]
-        public TimeSpan? FirstSeen
+        public DateTime? FirstSeen
         {
-            get { return FirstSeenRaw.HasValue ? (TimeSpan?)TimeSpan.FromTicks(FirstSeenRaw.Value) : null; }
-            set { FirstSeenRaw = value.HasValue ? (long?)value.Value.Ticks : null; }
+            get { return FirstSeenRaw.HasValue ? (DateTime?)new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(FirstSeenRaw.Value).ToLocalTime() : null; }
+            set { FirstSeenRaw = value.HasValue ? (long?)Math.Floor((value.Value.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds) : null; }
         }
 
         /// <summary>
@@ -104,14 +110,20 @@ namespace KoenZomers.UniFi.Api.Responses
         [JsonProperty(PropertyName = "hostname")]
         public string Hostname { get; set; }
 
+        /// <summary>
+        /// Seconds the device has been idle without sending data through UniFi
+        /// </summary>
         [JsonProperty(PropertyName = "idletime")]
         public long? IdleTimeRaw { get; set; }
 
+        /// <summary>
+        /// TimeSpan representing the time the device has been idle without sending data through UniFi
+        /// </summary>
         [JsonIgnore]
         public TimeSpan? IdleTime
         {
-            get { return IdleTimeRaw.HasValue ? (TimeSpan?)TimeSpan.FromTicks(IdleTimeRaw.Value) : null; }
-            set { IdleTimeRaw = value.HasValue ? (long?)value.Value.Ticks : null; }
+            get { return IdleTimeRaw.HasValue ? (TimeSpan?)TimeSpan.FromSeconds(IdleTimeRaw.Value) : null; }
+            set { IdleTimeRaw = value.HasValue ? (long?)value.Value.TotalSeconds : null; }
         }
 
         /// <summary>
@@ -132,27 +144,42 @@ namespace KoenZomers.UniFi.Api.Responses
         [JsonProperty(PropertyName = "blocked")]
         public bool? IsBlocked { get; set; }
 
+        /// <summary>
+        /// Boolean indicating if this is a wired client (true) or a client connected through WiFi (false)
+        /// </summary>
         [JsonProperty(PropertyName = "is_wired")]
         public bool? IsWired { get; set; }
 
+        /// <summary>
+        /// Seconds since January 1, 1970 when this client last communicated with a UniFi device. Use LastSeen for a DateTime representing this value.
+        /// </summary>
         [JsonProperty(PropertyName = "last_seen")]
         public long? LastSeenRaw { get; set; }
 
+        /// <summary>
+        /// DateTime when this client last communicated with a UniFi device
+        /// </summary>
         [JsonIgnore]
-        public TimeSpan? LastSeen
+        public DateTime? LastSeen
         {
-            get { return LastSeenRaw.HasValue ? (TimeSpan?)TimeSpan.FromTicks(LastSeenRaw.Value) : null; }
-            set { LastSeenRaw = value.HasValue ? (long?)value.Value.Ticks : null; }
+            get { return LastSeenRaw.HasValue ? (DateTime?)new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(LastSeenRaw.Value).ToLocalTime() : null; }
+            set { LastSeenRaw = value.HasValue ? (long?)Math.Floor((value.Value.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds) : null; }
         }
 
+        /// <summary>
+        /// Seconds since January 1, 1970 when this client last initiated a connection to a UniFi device. Use LatestAssociationTime for a DateTime representing this value.
+        /// </summary>
         [JsonProperty(PropertyName = "latest_assoc_time")]
         public long? LatestAssociationTimeRaw { get; set; }
 
+        /// <summary>
+        /// DateTime when this client last initiated a connection to a UniFi device
+        /// </summary>
         [JsonIgnore]
-        public TimeSpan? LatestAssociationTime
+        public DateTime? LatestAssociationTime
         {
-            get { return LatestAssociationTimeRaw.HasValue ? (TimeSpan?)TimeSpan.FromTicks(LatestAssociationTimeRaw.Value) : null; }
-            set { LatestAssociationTimeRaw = value.HasValue ? (long?)value.Value.Ticks : null; }
+            get { return LatestAssociationTimeRaw.HasValue ? (DateTime?)new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(LatestAssociationTimeRaw.Value).ToLocalTime() : null; }
+            set { LatestAssociationTimeRaw = value.HasValue ? (long?)Math.Floor((value.Value.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds) : null; }
         }
 
         /// <summary>
@@ -249,14 +276,20 @@ namespace KoenZomers.UniFi.Api.Responses
         [JsonProperty(PropertyName = "tx_rate")]
         public long? TransmittedRate { get; set; }
 
+        /// <summary>
+        /// Total seconds the client has been connected in its current session
+        /// </summary>
         [JsonProperty(PropertyName = "uptime")]
         public long? UptimeRaw { get; set; }
 
+        /// <summary>
+        /// TimeSpan representing the time the client has been connected in its current session
+        /// </summary>
         [JsonIgnore]
         public TimeSpan? Uptime
         {
-            get { return UptimeRaw.HasValue ? (TimeSpan?)TimeSpan.FromTicks(UptimeRaw.Value) : null; }
-            set { UptimeRaw = value.HasValue ? (long?)value.Value.Ticks : null; }
+            get { return UptimeRaw.HasValue ? (TimeSpan?)TimeSpan.FromSeconds(UptimeRaw.Value) : null; }
+            set { UptimeRaw = value.HasValue ? (long?)value.Value.TotalSeconds : null; }
         }
 
         [JsonProperty(PropertyName = "user_id")]
@@ -277,7 +310,7 @@ namespace KoenZomers.UniFi.Api.Responses
         /// <returns></returns>
         public override string ToString()
         {
-            return FriendlyName;
+            return FriendlyName ?? Hostname;
         }
     }
 }

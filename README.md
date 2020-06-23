@@ -1,5 +1,17 @@
 # UniFi API in C#
 
+[![licence badge]][licence]
+[![issues badge]][issues]
+[![prwelcome badge]][prwelcome]
+
+[licence badge]:https://img.shields.io/badge/license-Apache2-blue.svg
+[issues badge]:https://img.shields.io/github/issues/koenzomers/UniFiApi.svg
+[prwelcome badge]:https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+
+[licence]:https://github.com/koenzomers/UniFiApi/blob/master/LICENSE.md
+[issues]:https://github.com/koenzomers/UniFiApi/issues
+[prwelcome]:http://makeapullrequest.com
+
 API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp and Windows Forms application to test the API. All assemblies are signed and compiled against .NET Standard 2.0, .NET Framework 4.5.2, .NET Framework 4.7.2 and .NET Core 2.0. This library in its current state functions mainly as a starting point / sample of how to communicate with the UniFi service. Fork it and extend it with the functionality you need. Or if you're unable to add this yourself, submit an issue on GitHub describing what you need and I'll have a look at it when I get a chance.
 
 It is sufficient to use an account with the "Read Only" role in UniFi unless you want to modify things like using BlockClient, UnblockClient, AuthorizeGuest or UnauthorizeGuest.
@@ -8,42 +20,41 @@ It is sufficient to use an account with the "Read Only" role in UniFi unless you
 
 ```C#
 // Create a new Api instance to connect with the UniFi Controller
-using (var uniFiApi = new KoenZomers.Tools.UniFi.Api.Api(new Uri("https://192.168.0.1:8443")))
+var uniFiApi = new KoenZomers.Tools.UniFi.Api.Api(new Uri("https://192.168.0.1:8443"));
+
+// Disable SSL validation as UniFi uses a self signed certificate by default
+uniFiApi.DisableSslValidation();
+
+// Authenticate to UniFi
+await uniFiApi.Authenticate("admin", "password");
+
+// Retrieve the UniFi devices
+var devices = await uniFiApi.GetDevices();
+
+foreach (var device in devices)
 {
-    // Disable SSL validation as UniFi uses a self signed certificate
-    uniFiApi.DisableSslValidation();
-
-    // Authenticate to UniFi
-    await uniFiApi.Authenticate("admin", "password");
-
-    // Retrieve the UniFi devices
-    var devices = await uniFiApi.GetDevices();
-
-    foreach (var device in devices)
-    {
-        Console.WriteLine($"  - {device.Name} (MAC {device.MacAddress})");
-    }
-
-    // Retrieve the active clients
-    var activeClients = await uniFiApi.GetActiveClients();
-
-    foreach (var activeClient in activeClients)
-    {
-        Console.WriteLine($"  - {activeClient.FriendlyName} (MAC {activeClient.MacAddress}, Channel {activeClient.Channel})");
-    }
-
-	// Block a certain client from accessing the UniFi network
-	await uniFiApi.BlockClient("a0:23:f3:14:c2:fa");
-	
-	// Unblock a certain client from accessing the UniFi network
-	await uniFiApi.UnblockClient("a0:23:f3:14:c2:fa");
-
-	// Authorize a certain guest client to access the UniFi network
-	await uniFiApi.AuthorizeGuest("a0:23:f3:14:c2:fa");
-	
-	// Revoke the authorization for a certain guest client to access the UniFi network
-	await uniFiApi.UnauthorizeGuest("a0:23:f3:14:c2:fa");
+	Console.WriteLine($"  - {device.Name} (MAC {device.MacAddress})");
 }
+
+// Retrieve the active clients
+var activeClients = await uniFiApi.GetActiveClients();
+
+foreach (var activeClient in activeClients)
+{
+	Console.WriteLine($"  - {activeClient.FriendlyName} (MAC {activeClient.MacAddress}, Channel {activeClient.Channel})");
+}
+
+// Block a certain client from accessing the UniFi network
+await uniFiApi.BlockClient("a0:23:f3:14:c2:fa");
+
+// Unblock a certain client from accessing the UniFi network
+await uniFiApi.UnblockClient("a0:23:f3:14:c2:fa");
+
+// Authorize a certain guest client to access the UniFi network
+await uniFiApi.AuthorizeGuest("a0:23:f3:14:c2:fa");
+
+// Revoke the authorization for a certain guest client to access the UniFi network
+await uniFiApi.UnauthorizeGuest("a0:23:f3:14:c2:fa");
 ```
 
 ## NuGet
@@ -51,6 +62,36 @@ using (var uniFiApi = new KoenZomers.Tools.UniFi.Api.Api(new Uri("https://192.16
 Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/packages/KoenZomers.UniFi.Api/)
 
 ## Version History
+
+Version 1.1.7.0 - July 23, 2019
+
+- Removed method GetAccessPoints which was deprecated. Use GetDevices instead.
+- Marked AccessPoint class as obsolete. Use Device class instead as any UniFi device could be returned so it suits the purpose better.
+- Added a few more properties to the Device.cs class. There's still a ton more properties being returned by UniFi devices. Feel free to fork/add/PR them.
+
+Version 1.1.6.0 - July 21, 2019
+
+- Added some more property documentation to Client
+- Fixed the following properties in a Client to represent correct values and switched them from using a TimeSpan to a DateTime:
+  - LatestAssociationTime
+  - LatestAssociationTimeRaw
+  - FirstSeen
+  - FirstSeenRaw
+  - LastSeen
+  - LastSeenRaw
+  - LastSeenByUap
+  - LastSeenByUapRaw
+  - UptimeByUap
+  - UptimeByUapRaw
+  - AssociatedTime
+  - AssociatedTimeRaw
+  - IdleTime
+  - IdleTimeRaw
+  - Uptime
+  - UptimeRaw
+- Getting ToString on a Client instance will now not only return just the FriendlyName but if no Friendly Name has been set, it will return the hostname
+- The property TotalConnectedTime in ClientSession has been renamed to SessionStartedAtRaw as it didn't actually indicate the total connected time but the amount of seconds since January 1, 1970 when the client started the session. Added a property SessionStartedAt to get the DateTime version of it.
+- Added property SessionEndedAt to ClientSession which calculates the SessionStart + SessionDuration. UniFi does not provide information on if a session is still active, so if the outcome of SessionEndedAt is close to the current date and time, you can consider the session to still be active.
 
 Version 1.1.5.0 - June 30, 2019
 

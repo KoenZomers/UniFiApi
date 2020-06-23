@@ -77,12 +77,6 @@
             </summary>
             <returns>List with all known clients</returns>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.Api.GetAccessPoints">
-            <summary>
-            Gets a list with all UniFi devices
-            </summary>
-            <returns>List with all UniFi devices</returns>
-        </member>
         <member name="M:KoenZomers.UniFi.Api.Api.GetDevices">
             <summary>
             Gets a list with all UniFi devices
@@ -213,17 +207,7 @@
         </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.AccessPoint">
             <summary>
-            Access point details
-            </summary>
-        </member>
-        <member name="P:KoenZomers.UniFi.Api.Responses.AccessPoint.Name">
-            <summary>
-            Name of the access point
-            </summary>
-        </member>
-        <member name="P:KoenZomers.UniFi.Api.Responses.AccessPoint.MacAddress">
-            <summary>
-            MAC address of the access point
+            Details of a UniFi Access Point
             </summary>
         </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.BaseResponse">
@@ -234,6 +218,16 @@
         <member name="T:KoenZomers.UniFi.Api.Responses.Clients">
             <summary>
             Details about one client known to UniFi
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.UptimeByUapRaw">
+            <summary>
+            Seconds the client already has been connected in its current session
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.UptimeByUap">
+            <summary>
+            TimeSpan returning how long the client has already been connected in its current session
             </summary>
         </member>
         <member name="P:KoenZomers.UniFi.Api.Responses.Clients.AccessPointMacAddress">
@@ -258,17 +252,27 @@
         </member>
         <member name="P:KoenZomers.UniFi.Api.Responses.Clients.FirstSeenRaw">
             <summary>
-            The raw numeric value defining when the client was first seen on the UniFi network. Use FirstSeen to get a TimeSpan version of this same value.
+            The raw numeric value in Unix epoch time defining when the client was first seen on the UniFi network. Use FirstSeen to get a DateTime of this same value.
             </summary>
         </member>
         <member name="P:KoenZomers.UniFi.Api.Responses.Clients.FirstSeen">
             <summary>
-            TimeSpan indicating how long ago this client was first seen on the UniFi network
+            Date/time indicating when this client was first seen on the UniFi network
             </summary>
         </member>
         <member name="P:KoenZomers.UniFi.Api.Responses.Clients.Hostname">
             <summary>
             Hostname as provided by the device
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.IdleTimeRaw">
+            <summary>
+            Seconds the device has been idle without sending data through UniFi
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.IdleTime">
+            <summary>
+            TimeSpan representing the time the device has been idle without sending data through UniFi
             </summary>
         </member>
         <member name="P:KoenZomers.UniFi.Api.Responses.Clients.IpAddress">
@@ -284,6 +288,31 @@
         <member name="P:KoenZomers.UniFi.Api.Responses.Clients.IsBlocked">
             <summary>
             Boolean indicating if the client is currently blocked from accessing the UniFi network
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.IsWired">
+            <summary>
+            Boolean indicating if this is a wired client (true) or a client connected through WiFi (false)
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.LastSeenRaw">
+            <summary>
+            Seconds since January 1, 1970 when this client last communicated with a UniFi device. Use LastSeen for a DateTime representing this value.
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.LastSeen">
+            <summary>
+            DateTime when this client last communicated with a UniFi device
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.LatestAssociationTimeRaw">
+            <summary>
+            Seconds since January 1, 1970 when this client last initiated a connection to a UniFi device. Use LatestAssociationTime for a DateTime representing this value.
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.LatestAssociationTime">
+            <summary>
+            DateTime when this client last initiated a connection to a UniFi device
             </summary>
         </member>
         <member name="P:KoenZomers.UniFi.Api.Responses.Clients.MacAddress">
@@ -321,6 +350,16 @@
             Identifier of the site in UniFi to which this client is connected
             </summary>
         </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.UptimeRaw">
+            <summary>
+            Total seconds the client has been connected in its current session
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Clients.Uptime">
+            <summary>
+            TimeSpan representing the time the client has been connected in its current session
+            </summary>
+        </member>
         <member name="M:KoenZomers.UniFi.Api.Responses.Clients.ToString">
             <summary>
             Returns the friendly name of the client
@@ -337,14 +376,19 @@
             Unique identifier of the session
             </summary>
         </member>
-        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.TotalConnectedTime">
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.SessionStartedAtRaw">
             <summary>
-            Total time in seconds the client has been connected to the network thus far
+            Seconds since January 1, 1970 when the client started this session. Use SessionStartedAt for a DateTime representing this value.
             </summary>
         </member>
-        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.TotalConnectedTimeSpan">
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.SessionStartedAt">
             <summary>
-            Total time in a TimeSpan the client has been connected to the network thus far
+            DateTime when the client started this session
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.SessionEndedAt">
+            <summary>
+            DateTime when the client ended this session. If this DateTime is close to the current date and time, it means that the session is still active.
             </summary>
         </member>
         <member name="P:KoenZomers.UniFi.Api.Responses.ClientSession.SessionDuration">
@@ -412,6 +456,71 @@
             Meaning unknown
             </summary>
         </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.Device">
+            <summary>
+            Details of a UniFi device such as an access point or switch
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Name">
+            <summary>
+            Name of the device
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.MacAddress">
+            <summary>
+            MAC address of the device
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Adpoted">
+            <summary>
+            Boolean indicating if the device has been adopted by UniFi
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.SerialNumber">
+            <summary>
+            Serial Number of the device
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Uptime">
+            <summary>
+            Device uptime in seconds
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.UptimeTimeSpan">
+            <summary>
+            Device uptime as a TimeSpan
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.StartedAt">
+            <summary>
+            Date and time at which the device started
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Model">
+            <summary>
+            Device model
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Hostname">
+            <summary>
+            Device hostname
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Type">
+            <summary>
+            Device Type
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.AdoptIP">
+            <summary>
+            Device Adopt IP
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Id">
+            <summary>
+            Unique device ID
+            </summary>
+        </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.Meta">
             <summary>
             Metadata received from the UniFi Controller
@@ -436,6 +545,11 @@
         <member name="P:KoenZomers.UniFi.Api.Responses.ResponseEnvelope`1.meta">
             <summary>
             Metadata regarding the request towards the UniFi Controller
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.ResponseEnvelope`1.OriginalJson">
+            <summary>
+            The original JSON string
             </summary>
         </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.Site">
