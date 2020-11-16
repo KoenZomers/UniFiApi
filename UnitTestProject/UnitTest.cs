@@ -184,6 +184,59 @@ namespace KoenZomers.UniFi.Api.UnitTest
         }
 
         /// <summary>
+        /// Tests if renaming of a client on the UniFi network works
+        /// </summary>
+        [TestMethod]
+        public void RenameClientTestMethod()
+        {
+            if (!uniFiApi.IsAuthenticated) AuthenticateTestMethod();
+
+            // First retrieve all clients
+            var task1 = uniFiApi.GetAllClients();
+            task1.Wait();
+
+            // Ensure we have at least one client on the UniFi network which we can temporarily rename to test the functionality
+            if (task1.Result.Count == 0)
+            {
+                Assert.Inconclusive("No clients currently on the UniFi network to use for testing to rename");
+            }
+
+            // Get the first client on the UniFi network so we can change its name
+            var client = task1.Result[0];
+
+            // Ensure that we know the client its current name
+            var currentName = client.FriendlyName;
+            var temporaryName = string.Concat(currentName, " - Rename Test");
+
+            // Rename the client
+            var renameTask1 = uniFiApi.RenameClient(client, temporaryName);
+            renameTask1.Wait();
+
+            // Retrieve the current state of all clients again
+            var task2 = uniFiApi.GetAllClients();
+            task2.Wait();
+
+            // Filter to the same client as we renamed
+            var clientAgain = task2.Result.FirstOrDefault(c => c.MacAddress == client.MacAddress);
+            if (clientAgain == null)
+            {
+                Assert.Inconclusive($"Unable to retrieve client {client.FriendlyName} again to validate new name");
+            }
+
+            // Validate that the current name is the updated name
+            if (clientAgain.FriendlyName != temporaryName)
+            {
+                Assert.Fail($"Renaming client did not succeed. Name before: {currentName}. Name after: {clientAgain.FriendlyName}. Expected name: {temporaryName}.");
+            }
+
+            // Rename the client back to its original name
+            var renameTask2 = uniFiApi.RenameClient(client, currentName);
+            renameTask2.Wait();
+
+            // If the execution gets here it means the rename was successful
+        }
+
+        /// <summary>
         /// Tests if authorizing and unauthorizing of a guest on the UniFi network works
         /// </summary>
         [TestMethod]

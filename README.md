@@ -63,6 +63,10 @@ Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/pa
 
 ## Version History
 
+Version 1.1.8.0 - November 16, 2020
+
+- Added `RenameClient` option to change the friendly name of a client as proposed through [issue 16](https://github.com/KoenZomers/UniFiApi/issues/16)
+
 Version 1.1.7.0 - July 23, 2019
 
 - Removed method GetAccessPoints which was deprecated. Use GetDevices instead.

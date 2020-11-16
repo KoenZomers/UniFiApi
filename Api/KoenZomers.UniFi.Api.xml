@@ -133,6 +133,20 @@
             </summary>
             <param name="macAddress">The MAC address of the client to unblock from getting access to the network</param>
         </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.RenameClient(KoenZomers.UniFi.Api.Responses.Clients,System.String)">
+            <summary>
+            Rename Client
+            </summary>
+            <param name="client">Client to rename</param>
+            <param name="name">New name</param>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.RenameClient(System.String,System.String)">
+            <summary>
+            Rename Client
+            </summary>
+            <param name="userId">Client's User Id for client to be renamed</param>
+            <param name="name">New name</param>
+        </member>
         <member name="M:KoenZomers.UniFi.Api.Api.Logout">
             <summary>
             Logs out from the UniFi Controller
@@ -545,11 +559,6 @@
         <member name="P:KoenZomers.UniFi.Api.Responses.ResponseEnvelope`1.meta">
             <summary>
             Metadata regarding the request towards the UniFi Controller
-            </summary>
-        </member>
-        <member name="P:KoenZomers.UniFi.Api.Responses.ResponseEnvelope`1.OriginalJson">
-            <summary>
-            The original JSON string
             </summary>
         </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.Site">

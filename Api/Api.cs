@@ -264,6 +264,33 @@ namespace KoenZomers.UniFi.Api
         }
 
         /// <summary>
+        /// Rename Client
+        /// </summary>
+        /// <param name="client">Client to rename</param>
+        /// <param name="name">New name</param>
+        public async Task<Responses.ResponseEnvelope<Responses.Clients>> RenameClient(Responses.Clients client, string name)
+        {
+            return await RenameClient(client.Id, name);
+        }
+
+        /// <summary>
+        /// Rename Client
+        /// </summary>
+        /// <param name="userId">Client's User Id for client to be renamed</param>
+        /// <param name="name">New name</param>
+        public async Task<Responses.ResponseEnvelope<Responses.Clients>> RenameClient(string userId, string name)
+        {
+            // Make the POST request towards the UniFi API to rename a client
+            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/upd/user/{userId}"),
+                                                             JsonConvert.SerializeObject(new { name }),
+                                                             _cookieContainer,
+                                                             ConnectionTimeout);
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
+
+            return resultJson;
+        }
+
+        /// <summary>
         /// Logs out from the UniFi Controller
         /// </summary>
         /// <returns>True if logout was successful or False if it failed</returns>
