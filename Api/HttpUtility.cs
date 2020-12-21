@@ -10,12 +10,12 @@ namespace KoenZomers.UniFi.Api
     /// <summary>
     /// Internal utility class for Http communication with the UniFi Controller
     /// </summary>
-    internal static class HttpUtility
+    public class HttpUtility : IHttpUtility
     {
         /// <summary>
         /// Disables SSL Validation in case of self signed SSL certificates being used
         /// </summary>
-        public static void DisableSslValidation()
+        public void DisableSslValidation()
         {
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
         }
@@ -23,7 +23,7 @@ namespace KoenZomers.UniFi.Api
         /// <summary>
         /// Enables connecting to a remote server hosting UniFi using a TLS 1.1 or TLS 1.2 certificate
         /// </summary>
-        public static void EnableTls11and12()
+        public void EnableTls11and12()
         {
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
         }
@@ -35,7 +35,7 @@ namespace KoenZomers.UniFi.Api
         /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
         /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
         /// <returns>Contents of the page</returns>
-        public async static Task<string> GetRequestResult(Uri url, CookieContainer cookieContainer, int timeout = 60000)
+        public async Task<string> GetRequestResult(Uri url, CookieContainer cookieContainer, int timeout = 60000)
         {
             // Construct the request
             var request = (HttpWebRequest)WebRequest.Create(url);
@@ -70,7 +70,7 @@ namespace KoenZomers.UniFi.Api
         /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
         /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
         /// <returns>The website contents returned by the webserver after posting the data</returns>
-        public async static Task<string> PostRequest(Uri url, string postData, CookieContainer cookieContainer, int timeout = 60000)
+        public async Task<string> PostRequest(Uri url, string postData, CookieContainer cookieContainer, int timeout = 60000)
         {
             // Construct the POST request
             var request = (HttpWebRequest)WebRequest.Create(url);
@@ -83,7 +83,7 @@ namespace KoenZomers.UniFi.Api
 
             // Check if the have a Cross Site Request Forgery cookie and if so, add it as the X-Csrf-Token header which is required by UniFi when making a POST
             var csrfCookie = cookieContainer.GetAllCookies().FirstOrDefault(c => c.Name == "csrf_token");
-            if(csrfCookie != null)
+            if (csrfCookie != null)
             {
                 request.Headers.Add("X-Csrf-Token", csrfCookie.Value);
             }
@@ -132,7 +132,7 @@ namespace KoenZomers.UniFi.Api
         /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
         /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
         /// <returns>The website contents returned by the webserver after posting the data</returns>
-        public async static Task<string> AuthenticateViaJsonPostMethod(Uri url, string username, string password, CookieContainer cookieContainer, int timeout = 60000)
+        public async Task<string> AuthenticateViaJsonPostMethod(Uri url, string username, string password, CookieContainer cookieContainer, int timeout = 60000)
         {
             // Construct the POST request which performs the login
             var request = (HttpWebRequest)WebRequest.Create(url);
@@ -215,7 +215,7 @@ namespace KoenZomers.UniFi.Api
         /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
         /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
         /// <returns>The website contents returned by the webserver after posting the data</returns>
-        public async static Task<string> LogoutViaJsonPostMethod(Uri url, CookieContainer cookieContainer, int timeout = 60000)
+        public async Task<string> LogoutViaJsonPostMethod(Uri url, CookieContainer cookieContainer, int timeout = 60000)
         {
             // Construct the POST request which performs the login
             var request = (HttpWebRequest)WebRequest.Create(url);

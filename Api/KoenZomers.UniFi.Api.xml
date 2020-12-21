@@ -40,7 +40,7 @@
             </summary>
             <param name="baseUri">BaseUri of the UniFi Controller, i.e. https://192.168.0.1:8443</param>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.Api.#ctor(System.Uri,System.String)">
+        <member name="M:KoenZomers.UniFi.Api.Api.#ctor(System.Uri,System.String,KoenZomers.UniFi.Api.IHttpUtility)">
             <summary>
             Instantiates a new instance of the UniFi API Controller class
             </summary>
@@ -65,7 +65,7 @@
             <param name="password">Password to authenticate with</param>
             <returns>Boolean indicating whether the authentication was successful (True) or failed (False)</returns>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.Api.GetActiveClients">
+        <member name="M:KoenZomers.UniFi.Api.Api.GetActiveClients(System.String)">
             <summary>
             Gets the currently connected clients
             </summary>
