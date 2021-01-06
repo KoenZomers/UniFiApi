@@ -153,6 +153,12 @@
             </summary>
             <returns>True if logout was successful or False if it failed</returns>
         </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.GetNetworks">
+            <summary>
+            Gets the currently defined networks
+            </summary>
+            <returns>List with defined networks</returns>
+        </member>
         <member name="T:KoenZomers.UniFi.Api.CookieUtility">
             <summary>
             Internal utility class for working with cookies
@@ -543,6 +549,86 @@
         <member name="P:KoenZomers.UniFi.Api.Responses.Meta.ResultCode">
             <summary>
             The result code indicating the successfulness of the request
+            </summary>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.Network">
+            <summary>
+            Details of a UniFi network definition
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.Id">
+            <summary>
+            Unique network ID
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.Name">
+            <summary>
+            Name of the network
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.SiteId">
+            <summary>
+            Identifier of the site in UniFi to which this client is connected
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.IsVLANEnabled">
+            <summary>
+            Is VLAN enabled?
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.VLAN">
+            <summary>
+            If VLAN is enabled, VLAN number
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.Purpose">
+            <summary>
+            Purpose of this network (corporate, guest, vlan only, etc.)
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.IpSubnet">
+            <summary>
+            IP-Subnet (CIDR)
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.DomainName">
+            <summary>
+            Domain Name of this Network
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.IsNAT">
+            <summary>
+            Is NAT enabled?
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.IsDHCPEnabled">
+            <summary>
+            Is DHCP enabled?
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.DHCPStart">
+            <summary>
+            DHCP Start IP Address
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.DHCPStop">
+            <summary>
+            DHCP End IP Address
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.NetworkGroup">
+            <summary>
+            Network Group
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.HiddenId">
+            <summary>
+            Internal identifier of the site
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Network.DontAllowDeletion">
+            <summary>
+            Boolean indicating if deletion of this site is being disallowed
             </summary>
         </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.ResponseEnvelope`1">

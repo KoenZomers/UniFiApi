@@ -307,6 +307,30 @@ namespace KoenZomers.UniFi.Api
             return resultOk;
         }
 
+        /// <summary>
+        /// Gets the currently defined networks
+        /// </summary>
+        /// <returns>List with defined networks</returns>
+        public async Task<List<Responses.Network>> GetNetworks() {
+            var clientsUri = new Uri(BaseUri, $"/api/s/{SiteId}/rest/networkconf");
+            var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Network>>(resultString);
+
+            return resultJson.data;
+        }
+
+        /// <summary>
+        /// Gets the currently defined wireless networks
+        /// </summary>
+        /// <returns>List with defined wireless networks</returns>
+        public async Task<List<Responses.WirelessNetwork>> GetWirelessNetworks() {
+            var clientsUri = new Uri(BaseUri, $"/api/s/{SiteId}/rest/wlanconf");
+            var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.WirelessNetwork>>(resultString);
+
+            return resultJson.data;
+        }
+
         #endregion
     }
 }
