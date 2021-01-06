@@ -16,6 +16,13 @@ API in C# which can be used to read data from an on premises UniFi Controller in
 
 It is sufficient to use an account with the "Read Only" role in UniFi unless you want to modify things like using BlockClient, UnblockClient, AuthorizeGuest or UnauthorizeGuest.
 
+## Addons in this Fork
+
+Version 1.1.8.0 - January 6, 2021
+
+- Added ability to get a list of wireless networks 
+- Added ability to get a list of configured networks 
+
 ## Usage
 
 ```C#
