@@ -16,13 +16,6 @@ API in C# which can be used to read data from an on premises UniFi Controller in
 
 It is sufficient to use an account with the "Read Only" role in UniFi unless you want to modify things like using BlockClient, UnblockClient, AuthorizeGuest or UnauthorizeGuest.
 
-## Addons in this Fork
-
-Version 1.1.8.0 - January 6, 2021
-
-- Added ability to get a list of wireless networks 
-- Added ability to get a list of configured networks 
-
 ## Usage
 
 ```C#
@@ -69,6 +62,12 @@ await uniFiApi.UnauthorizeGuest("a0:23:f3:14:c2:fa");
 Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/packages/KoenZomers.UniFi.Api/)
 
 ## Version History
+
+Version 1.1.9.0 - February 1, 2021
+
+- Added ability to get a list of wireless networks [PR 18](https://github.com/KoenZomers/UniFiApi/pull/18)
+- Added ability to get a list of configured networks [PR 18](https://github.com/KoenZomers/UniFiApi/pull/18)
+- Added a validation if the session has been authenticated before and now receives a HTTP 401 Unauthorized response, that it will try to reauthenticate to deal wEnsureAuthenticatedPostRequestEnsureAuthenticatedPostRequestth the cookie token expired scenario
 
 Version 1.1.8.0 - November 16, 2020
 

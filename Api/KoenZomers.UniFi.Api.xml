@@ -14,6 +14,16 @@
             Cookie container which holds all cookies for sessions towards the UniFi Controller
             </summary>
         </member>
+        <member name="F:KoenZomers.UniFi.Api.Api._username">
+            <summary>
+            Username to use to authenticate
+            </summary>
+        </member>
+        <member name="F:KoenZomers.UniFi.Api.Api._password">
+            <summary>
+            Password to use to authenticate
+            </summary>
+        </member>
         <member name="P:KoenZomers.UniFi.Api.Api.BaseUri">
             <summary>
             Gets the BaseUri of the UniFi Controller. Needs to be set through the constructor.
@@ -57,6 +67,12 @@
             Enables connecting to a remote server hosting UniFi using a TLS 1.1 or TLS 1.2 certificate
             </summary>
         </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.Reauthenticate">
+            <summary>
+            Reauthenticate against the UniFi Controller with the credentials kept from the initial Authenticate call. Do not use this before Authenticate has been called on this instance.
+            </summary>
+            <returns>Boolean indicating whether the authentication was successful (True) or failed (False)</returns>
+        </member>
         <member name="M:KoenZomers.UniFi.Api.Api.Authenticate(System.String,System.String)">
             <summary>
             Authenticate against the UniFi Controller with the provided credentials
@@ -64,6 +80,21 @@
             <param name="username">Username to authenticate with</param>
             <param name="password">Password to authenticate with</param>
             <returns>Boolean indicating whether the authentication was successful (True) or failed (False)</returns>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.EnsureAuthenticatedGetRequest(System.Uri)">
+            <summary>
+            Makes a GET request towards the UniFi Controller while trying to ensure the session is authenticated
+            </summary>
+            <param name="uri">Full URL to the UniFi controller to use to retrieve information</param>
+            <returns>String containing the result from the UniFi service</returns>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.EnsureAuthenticatedPostRequest(System.Uri,System.String)">
+            <summary>
+            Makes a POST request towards the UniFi Controller while trying to ensure the session is authenticated
+            </summary>
+            <param name="uri">Full URL to the UniFi controller to POST data to</param>
+            <param name="postData">The HTTP POST message body contents</param>
+            <returns>String containing the result from the UniFi service</returns>
         </member>
         <member name="M:KoenZomers.UniFi.Api.Api.GetActiveClients">
             <summary>
@@ -158,6 +189,12 @@
             Gets the currently defined networks
             </summary>
             <returns>List with defined networks</returns>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.GetWirelessNetworks">
+            <summary>
+            Gets the currently defined wireless networks
+            </summary>
+            <returns>List with defined wireless networks</returns>
         </member>
         <member name="T:KoenZomers.UniFi.Api.CookieUtility">
             <summary>
@@ -680,6 +717,81 @@
         <member name="P:KoenZomers.UniFi.Api.Responses.Site.Role">
             <summary>
             Role of the site? Seems to be admin in my testable scenarios.
+            </summary>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.WirelessNetwork">
+            <summary>
+            Details of a UniFi wireless network definition
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.Id">
+            <summary>
+            Unique network ID
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.Name">
+            <summary>
+            Name of the network
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.IsEnabled">
+            <summary>
+            Is this network enabled?
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.Security">
+            <summary>
+            Security level (Open, WEP, WPA, etc.)
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.WPAMode">
+            <summary>
+            In case of WPA, which mode (WPA2, Enterprise, etc.)
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.WPAEncryption">
+            <summary>
+            In case of WPA, which encryption method (CCMP, etc.)
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.UserGroupId">
+            <summary>
+            Id of the User Group
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.IsMACFilterEnabled">
+            <summary>
+            Is a MAC-Filter enabled?
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.MACFilterPolicy">
+            <summary>
+            Default MAC-Filter policy
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.IsVLANEnabled">
+            <summary>
+            Is VLAN enabled?
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.VLAN">
+            <summary>
+            If VLAN is enabled, VLAN number
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.IsSSIDHidden">
+            <summary>
+            Is this SSID hidden?
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.WLANGroupId">
+            <summary>
+            Id of the WLAN Group
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.WirelessNetwork.RadiusProfileId">
+            <summary>
+            Id of the RADIUS Profile
             </summary>
         </member>
     </members>

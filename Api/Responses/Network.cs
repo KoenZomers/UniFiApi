@@ -7,7 +7,6 @@ namespace KoenZomers.UniFi.Api.Responses
     /// </summary>
     public class Network : BaseResponse
     {
-        
         /// <summary>
         /// Unique network ID
         /// </summary>
@@ -97,6 +96,5 @@ namespace KoenZomers.UniFi.Api.Responses
         /// </summary>
         [JsonProperty(PropertyName = "attr_no_delete")]
         public bool? DontAllowDeletion { get; set; }
-
     }
 }

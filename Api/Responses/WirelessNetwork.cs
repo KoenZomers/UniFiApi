@@ -7,7 +7,6 @@ namespace KoenZomers.UniFi.Api.Responses
     /// </summary>
     public class WirelessNetwork : BaseResponse
     {
-
         /// <summary>
         /// Unique network ID
         /// </summary>
@@ -91,6 +90,5 @@ namespace KoenZomers.UniFi.Api.Responses
         /// </summary>
         [JsonProperty(PropertyName = "radiusprofile_id")]
         public string RadiusProfileId { get; set; }
-
     }
 }

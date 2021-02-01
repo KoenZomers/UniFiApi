@@ -62,7 +62,6 @@ namespace KoenZomers.UniFi.Api.ConsoleApp
 
             // Logout
             await uniFiApi.Logout();
-            
         }
     }
 }
