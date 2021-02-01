@@ -44,7 +44,7 @@ namespace KoenZomers.UniFi.Api
             request.KeepAlive = false;
 
             // Send the request to the webserver
-            using (var response = await request.GetResponseAsync())
+            using (var response = await request.GetResponseAsync())            
             {
                 // Get the stream containing content returned by the server.
                 using (var dataStream = response.GetResponseStream())

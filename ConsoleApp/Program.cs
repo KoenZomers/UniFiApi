@@ -59,6 +59,9 @@ namespace KoenZomers.UniFi.Api.ConsoleApp
             {
                 Console.WriteLine($"  - {activeClient.FriendlyName} (MAC {activeClient.MacAddress}, Channel {activeClient.Channel})");
             }
+
+            // Logout
+            await uniFiApi.Logout();
         }
     }
 }

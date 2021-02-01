@@ -63,6 +63,12 @@ Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/pa
 
 ## Version History
 
+Version 1.1.9.0 - February 1, 2021
+
+- Added ability to get a list of wireless networks [PR 18](https://github.com/KoenZomers/UniFiApi/pull/18)
+- Added ability to get a list of configured networks [PR 18](https://github.com/KoenZomers/UniFiApi/pull/18)
+- Added a validation if the session has been authenticated before and now receives a HTTP 401 Unauthorized response, that it will try to reauthenticate to deal wEnsureAuthenticatedPostRequestEnsureAuthenticatedPostRequestth the cookie token expired scenario
+
 Version 1.1.8.0 - November 16, 2020
 
 - Added `RenameClient` option to change the friendly name of a client as proposed through [issue 16](https://github.com/KoenZomers/UniFiApi/issues/16)

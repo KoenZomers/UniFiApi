@@ -293,5 +293,31 @@ namespace KoenZomers.UniFi.Api.UnitTest
 
             // If the execution gets here it means the block switching was successful
         }
+
+        /// <summary>
+        /// Tests retrieving all networks registered in UniFi
+        /// </summary>
+        [TestMethod]
+        public void GetNetworksTestMethod()
+        {
+            if (!uniFiApi.IsAuthenticated) AuthenticateTestMethod();
+
+            var task = uniFiApi.GetNetworks();
+            task.Wait();
+            Assert.IsTrue(task.Result.Count > 0, "No networks found");
+        }
+
+        /// <summary>
+        /// Tests retrieving all wireless networks registered in UniFi
+        /// </summary>
+        [TestMethod]
+        public void GetWirelessNetworksTestMethod()
+        {
+            if (!uniFiApi.IsAuthenticated) AuthenticateTestMethod();
+
+            var task = uniFiApi.GetWirelessNetworks();
+            task.Wait();
+            Assert.IsTrue(task.Result.Count > 0, "No wireless networks found");
+        }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Security;
 using System.Threading.Tasks;
 
 namespace KoenZomers.UniFi.Api
@@ -18,6 +18,16 @@ namespace KoenZomers.UniFi.Api
         /// Cookie container which holds all cookies for sessions towards the UniFi Controller
         /// </summary>
         private CookieContainer _cookieContainer;
+
+        /// <summary>
+        /// Username to use to authenticate
+        /// </summary>
+        private string _username;
+
+        /// <summary>
+        /// Password to use to authenticate
+        /// </summary>
+        private string _password;
 
         #endregion
 
@@ -90,6 +100,20 @@ namespace KoenZomers.UniFi.Api
         }
 
         /// <summary>
+        /// Reauthenticate against the UniFi Controller with the credentials kept from the initial Authenticate call. Do not use this before Authenticate has been called on this instance.
+        /// </summary>
+        /// <returns>Boolean indicating whether the authentication was successful (True) or failed (False)</returns>
+        public async Task<bool> Reauthenticate()
+        {
+            if(string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_password))
+            {
+                throw new InvalidOperationException("No cached credentials yet. Call Authenticate first.");
+            }
+
+            return await Authenticate(_username, _password);
+        }
+
+        /// <summary>
         /// Authenticate against the UniFi Controller with the provided credentials
         /// </summary>
         /// <param name="username">Username to authenticate with</param>
@@ -97,6 +121,9 @@ namespace KoenZomers.UniFi.Api
         /// <returns>Boolean indicating whether the authentication was successful (True) or failed (False)</returns>
         public async Task<bool> Authenticate(string username, string password)
         {
+            _username = username;
+            _password = password;
+
             // Create a new cookie container to contain the authentication cookie
             _cookieContainer = new CookieContainer();
 
@@ -112,13 +139,112 @@ namespace KoenZomers.UniFi.Api
         }
 
         /// <summary>
+        /// Makes a GET request towards the UniFi Controller while trying to ensure the session is authenticated
+        /// </summary>
+        /// <param name="uri">Full URL to the UniFi controller to use to retrieve information</param>
+        /// <returns>String containing the result from the UniFi service</returns>
+        public async Task<string> EnsureAuthenticatedGetRequest(Uri uri)
+        {
+            // Ensure this session is authenticated
+            if (!IsAuthenticated)
+            {
+                // Ensure we're having cached credentials we can use to try to authenticate
+                if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_password))
+                {
+                    throw new InvalidOperationException("No active connection yet and unable to reauthenticate due to missing credentials. Call Authenticate first.");
+                }
+
+                // Try to reauthenticate using cached credentials
+                if(!await Reauthenticate())
+                {
+                    throw new InvalidOperationException("No active connection yet and unable to reauthenticate using cached credentials. Call Authenticate first.");
+                }
+            }
+
+            try
+            {
+                // Try to get the data from the UniFi Controller
+                var resultString = await HttpUtility.GetRequestResult(uri, _cookieContainer, ConnectionTimeout);
+                return resultString;
+            }
+            catch(WebException e) when (e.Message.Contains("401"))
+            {
+                // Authenticated failed. Check if this session has authenticated successfully before.
+                if (IsAuthenticated)
+                {
+                    // Session may have expired, try to authenticate again using the cached credentials
+                    if (!await Reauthenticate())
+                    {
+                        throw new InvalidOperationException("Unable to reauthenticate using cached credentials. Call Authenticate first.");
+                    }
+
+                    var resultString = await HttpUtility.GetRequestResult(uri, _cookieContainer, ConnectionTimeout);
+                    return resultString;
+                }
+
+                // Credentials are likely invalid, throw the excepton
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Makes a POST request towards the UniFi Controller while trying to ensure the session is authenticated
+        /// </summary>
+        /// <param name="uri">Full URL to the UniFi controller to POST data to</param>
+        /// <param name="postData">The HTTP POST message body contents</param>
+        /// <returns>String containing the result from the UniFi service</returns>
+        public async Task<string> EnsureAuthenticatedPostRequest(Uri uri, string postData)
+        {
+            // Ensure this session is authenticated
+            if (!IsAuthenticated)
+            {
+                // Ensure we're having cached credentials we can use to try to authenticate
+                if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_password))
+                {
+                    throw new InvalidOperationException("No active connection yet and unable to reauthenticate due to missing credentials. Call Authenticate first.");
+                }
+
+                // Try to reauthenticate using cached credentials
+                if (!await Reauthenticate())
+                {
+                    throw new InvalidOperationException("No active connection yet and unable to reauthenticate using cached credentials. Call Authenticate first.");
+                }
+            }
+
+            try
+            {
+                // Try to get the data from the UniFi Controller
+                var resultString = await HttpUtility.PostRequest(uri, postData, _cookieContainer, ConnectionTimeout);
+                return resultString;
+            }
+            catch (WebException e) when (e.Message.Contains("401"))
+            {
+                // Authenticated failed. Check if this session has authenticated successfully before.
+                if (IsAuthenticated)
+                {
+                    // Session may have expired, try to authenticate again using the cached credentials
+                    if (!await Reauthenticate())
+                    {
+                        throw new InvalidOperationException("Unable to reauthenticate using cached credentials. Call Authenticate first.");
+                    }
+
+                    var resultString = await HttpUtility.PostRequest(uri, postData, _cookieContainer, ConnectionTimeout);
+                    return resultString;
+                }
+
+                // Credentials are likely invalid, throw the excepton
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Gets the currently connected clients
         /// </summary>
         /// <returns>List with connected clients</returns>
         public async Task<List<Responses.Clients>> GetActiveClients()
         {
-            var clientsUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/sta");
-            var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
+            var unifiUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/sta");
+            var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
             return resultJson.data;
@@ -130,8 +256,8 @@ namespace KoenZomers.UniFi.Api
         /// <returns>List with all known clients</returns>
         public async Task<List<Responses.Clients>> GetAllClients()
         {
-            var clientsUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/alluser");
-            var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
+            var unifiUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/alluser");
+            var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
             return resultJson.data;
@@ -143,8 +269,8 @@ namespace KoenZomers.UniFi.Api
         /// <returns>List with all UniFi devices</returns>
         public async Task<List<Responses.Device>> GetDevices()
         {
-            var clientsUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/device");
-            var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
+            var unifiUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/device");
+            var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Device>>(resultString);
 
             return resultJson.data;
@@ -156,8 +282,8 @@ namespace KoenZomers.UniFi.Api
         /// <returns>List with all sites</returns>
         public async Task<List<Responses.Site>> GetSites()
         {
-            var clientsUri = new Uri(BaseUri, $"/api/self/sites");
-            var resultString = await HttpUtility.GetRequestResult(clientsUri, _cookieContainer, ConnectionTimeout);
+            var unifiUri = new Uri(BaseUri, $"/api/self/sites");
+            var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Site>>(resultString);
 
             return resultJson.data;
@@ -172,10 +298,8 @@ namespace KoenZomers.UniFi.Api
         public async Task<List<Responses.ClientSession>> GetClientHistory(string macAddress, int limit = 5)
         {
             // Make the POST request towards the UniFi API to request blocking the client with the provided MAC address
-            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/stat/session"),
-                                                             "{\"mac\":\"" + macAddress + "\",\"_limit\":" + limit + ",\"_sort\":\"-assoc_time\"}",
-                                                             _cookieContainer,
-                                                             ConnectionTimeout);
+            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/stat/session"),
+                                                                    "{\"mac\":\"" + macAddress + "\",\"_limit\":" + limit + ",\"_sort\":\"-assoc_time\"}");
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.ClientSession>>(resultString);
 
             return resultJson.data;
@@ -197,10 +321,8 @@ namespace KoenZomers.UniFi.Api
         public async Task<Responses.ResponseEnvelope<Responses.Clients>> BlockClient(string macAddress)
         {
             // Make the POST request towards the UniFi API to request blocking the client with the provided MAC address
-            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"),
-                                                             "{\"mac\":\"" + macAddress + "\",\"cmd\":\"block-sta\"}",
-                                                             _cookieContainer,
-                                                             ConnectionTimeout);
+            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"),
+                                                                    "{\"mac\":\"" + macAddress + "\",\"cmd\":\"block-sta\"}");
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
             return resultJson;
@@ -213,10 +335,8 @@ namespace KoenZomers.UniFi.Api
         public async Task<Responses.ResponseEnvelope<Responses.Clients>> AuthorizeGuest(string macAddress)
         {
             // Make the POST request towards the UniFi API to request authorizing the client with the provided MAC address
-            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"),
-                                                             "{\"mac\":\"" + macAddress + "\",\"cmd\":\"authorize-guest\"}",
-                                                             _cookieContainer,
-                                                             ConnectionTimeout);
+            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"),
+                                                                    "{\"mac\":\"" + macAddress + "\",\"cmd\":\"authorize-guest\"}");
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
             return resultJson;
@@ -229,10 +349,8 @@ namespace KoenZomers.UniFi.Api
         public async Task<Responses.ResponseEnvelope<Responses.Clients>> UnauthorizeGuest(string macAddress)
         {
             // Make the POST request towards the UniFi API to request unauthorizing the client with the provided MAC address
-            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"),
-                                                             "{\"mac\":\"" + macAddress + "\",\"cmd\":\"unauthorize-guest\"}",
-                                                             _cookieContainer,
-                                                             ConnectionTimeout);
+            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"),
+                                                                    "{\"mac\":\"" + macAddress + "\",\"cmd\":\"unauthorize-guest\"}");
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
             return resultJson;
@@ -254,10 +372,8 @@ namespace KoenZomers.UniFi.Api
         public async Task<Responses.ResponseEnvelope<Responses.Clients>> UnblockClient(string macAddress)
         {
             // Make the POST request towards the UniFi API to request unblocking the client with the provided MAC address
-            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"),
-                                                             "{\"mac\":\"" + macAddress + "\",\"cmd\":\"unblock-sta\"}",
-                                                             _cookieContainer,
-                                                             ConnectionTimeout);
+            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"),
+                                                                    "{\"mac\":\"" + macAddress + "\",\"cmd\":\"unblock-sta\"}");
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
             return resultJson;
@@ -281,10 +397,8 @@ namespace KoenZomers.UniFi.Api
         public async Task<Responses.ResponseEnvelope<Responses.Clients>> RenameClient(string userId, string name)
         {
             // Make the POST request towards the UniFi API to rename a client
-            var resultString = await HttpUtility.PostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/upd/user/{userId}"),
-                                                             JsonConvert.SerializeObject(new { name }),
-                                                             _cookieContainer,
-                                                             ConnectionTimeout);
+            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/upd/user/{userId}"),
+                                                                    JsonConvert.SerializeObject(new { name }));
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
             return resultJson;
@@ -305,6 +419,30 @@ namespace KoenZomers.UniFi.Api
             var resultOk = resultJson.meta.ResultCode.Equals("ok", StringComparison.InvariantCultureIgnoreCase);
             IsAuthenticated = !resultOk;
             return resultOk;
+        }
+
+        /// <summary>
+        /// Gets the currently defined networks
+        /// </summary>
+        /// <returns>List with defined networks</returns>
+        public async Task<List<Responses.Network>> GetNetworks() {
+            var unifiUri = new Uri(BaseUri, $"/api/s/{SiteId}/rest/networkconf");
+            var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Network>>(resultString);
+
+            return resultJson.data;
+        }
+
+        /// <summary>
+        /// Gets the currently defined wireless networks
+        /// </summary>
+        /// <returns>List with defined wireless networks</returns>
+        public async Task<List<Responses.WirelessNetwork>> GetWirelessNetworks() {
+            var unifiUri = new Uri(BaseUri, $"/api/s/{SiteId}/rest/wlanconf");
+            var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.WirelessNetwork>>(resultString);
+
+            return resultJson.data;
         }
 
         #endregion
