@@ -23,7 +23,7 @@ jobs:
       uses: canastro/copy-file-action@master
       with:
         source: "UnitTestProject/App.sample.config"
-        target: "UnitTestProject/App.config"      
+        target: "UnitTestProject/app.config"      
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
