@@ -19,6 +19,11 @@ jobs:
         dotnet-version: 3.1.101
     - name: Install dependencies
       run: dotnet restore
+    - name: Copy sample config file to allow for the build to succeed
+      uses: canastro/copy-file-action@master
+      with:
+        source: "UnitTestProject/App.sample.config"
+        target: "UnitTestProject/App.config"      
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
