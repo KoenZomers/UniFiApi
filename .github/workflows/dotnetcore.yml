@@ -25,6 +25,6 @@ jobs:
         source: "UnitTestProject/App.sample.config"
         target: "UnitTestProject/app.config"      
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore --runtime linux-arm
     - name: Test
       run: dotnet test --no-restore --verbosity normal
