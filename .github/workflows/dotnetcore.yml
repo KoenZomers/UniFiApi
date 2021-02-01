@@ -20,4 +20,4 @@ jobs:
     - name: Build Api
       run: dotnet build "Api/Api.csproj" --configuration Release --framework netcoreapp2.0
     - name: Build UnitTest
-      run: dotnet build "UnitTestProject/UnitTestProject.csproj" --configuration Release --no-restore --framework netcoreapp3.1      
+      run: dotnet build "UnitTestProject/UnitTestProject.csproj" --configuration Release --framework netcoreapp3.1      
