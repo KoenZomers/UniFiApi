@@ -16,15 +16,8 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Copy sample config file to allow for the build to succeed
-      uses: canastro/copy-file-action@master
-      with:
-        source: "UnitTestProject/App.sample.config"
-        target: "UnitTestProject/app.config"      
-    - name: Build
-      run: dotnet build "Api/Api.csproj" --configuration Release --no-restore --framework netcoreapp2.0
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
+        dotnet-version: 3.1.101 
+    - name: Build Api
+      run: dotnet build "Api/Api.csproj" --configuration Release --framework netcoreapp2.0
+    - name: Build UnitTest
+      run: dotnet build "UnitTestProject/UnitTestProject.csproj" --configuration Release --no-restore --framework netcoreapp3.1      
