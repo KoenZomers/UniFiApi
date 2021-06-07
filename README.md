@@ -63,6 +63,10 @@ Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/pa
 
 ## Version History
 
+Version 1.1.10.0 - June 7, 2021
+
+- Added ability to remove clients by their mac address [PR 21](https://github.com/KoenZomers/UniFiApi/pull/21)
+
 Version 1.1.9.0 - February 1, 2021
 
 - Added ability to get a list of wireless networks [PR 18](https://github.com/KoenZomers/UniFiApi/pull/18)

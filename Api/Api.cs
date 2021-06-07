@@ -90,7 +90,7 @@ namespace KoenZomers.UniFi.Api
         {
             HttpUtility.DisableSslValidation();
         }
-
+        
         /// <summary>
         /// Enables connecting to a remote server hosting UniFi using a TLS 1.1 or TLS 1.2 certificate
         /// </summary>
@@ -443,6 +443,24 @@ namespace KoenZomers.UniFi.Api
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.WirelessNetwork>>(resultString);
 
             return resultJson.data;
+        }
+
+        /// <summary>
+        /// Removes/forgets the provided clients
+        /// </summary>
+        /// <param name="macArray">String array with mac addresses of clients to forget</param>
+        /// <returns>List with removed clients</returns>
+        public async Task<Responses.ResponseEnvelope<Responses.Clients>> RemoveClients(string[] macArray)
+        {
+            string payload = JsonConvert.SerializeObject(new
+            {
+                cmd = "forget-sta",
+                macs = macArray
+            });
+            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"), payload);
+
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
+            return resultJson;
         }
 
         #endregion

@@ -196,6 +196,13 @@
             </summary>
             <returns>List with defined wireless networks</returns>
         </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.RemoveClients(System.String[])">
+            <summary>
+            Removes/forgets the provided clients
+            </summary>
+            <param name="macArray">String array with mac addresses of clients to forget</param>
+            <returns>List with removed clients</returns>
+        </member>
         <member name="T:KoenZomers.UniFi.Api.CookieUtility">
             <summary>
             Internal utility class for working with cookies
