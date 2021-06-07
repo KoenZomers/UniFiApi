@@ -6,19 +6,17 @@
     <RootNamespace>KoenZomers.UniFi.Api</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
-    <Version>1.1.9.0</Version>
+    <Version>1.1.10.0</Version>
     <Authors>Koen Zomers</Authors>
     <Company>Koen Zomers</Company>
     <Description>API in .NET Standard to fetch data from an on premises Ubiquiti UniFi Controller</Description>
     <Copyright>Koen Zomers</Copyright>
     <PackageProjectUrl>https://github.com/KoenZomers/UniFiApi</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>- Added ability to get a list of wireless networks [PR 18](https://github.com/KoenZomers/UniFiApi/pull/18)
-- Added ability to get a list of configured networks [PR 18](https://github.com/KoenZomers/UniFiApi/pull/18)
-- Added a validation if the session has been authenticated before and now receives a HTTP 401 Unauthorized response, that it will try to reauthenticate to deal wEnsureAuthenticatedPostRequestEnsureAuthenticatedPostRequestth the cookie token expired scenario</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added ability to remove clients by their mac address [PR 21](https://github.com/KoenZomers/UniFiApi/pull/21)</PackageReleaseNotes>
     <PackageLicenseUrl>https://github.com/KoenZomers/UniFiApi/blob/master/LICENSE</PackageLicenseUrl>
-    <AssemblyVersion>1.1.9.0</AssemblyVersion>
-    <FileVersion>1.1.9.0</FileVersion>
+    <AssemblyVersion>1.1.10.0</AssemblyVersion>
+    <FileVersion>1.1.10.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
