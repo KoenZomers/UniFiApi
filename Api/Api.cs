@@ -463,6 +463,25 @@ namespace KoenZomers.UniFi.Api
             return resultJson;
         }
 
+        /// <summary>
+        /// Reconnects the provided client
+        /// </summary>
+        /// <param name="macAddress">The MAC address of client to reconnect</param>
+        /// <returns>True if the reconnect was successful or False if it failed</returns>
+        public async Task<bool> ReconnectClient(string macAddress)
+        {
+            string payload = JsonConvert.SerializeObject(new
+            {
+                cmd = "kick-sta",
+                mac = macAddress
+            });
+
+            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"), payload);
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.BaseResponse>>(resultString);
+
+            return resultJson.meta.ResultCode.Equals("ok", StringComparison.InvariantCultureIgnoreCase);
+        }
+
         #endregion
     }
 }
