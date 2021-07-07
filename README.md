@@ -16,6 +16,8 @@ API in C# which can be used to read data from an on premises UniFi Controller in
 
 It is sufficient to use an account with the "Read Only" role in UniFi unless you want to modify things like using BlockClient, UnblockClient, AuthorizeGuest or UnauthorizeGuest.
 
+This API works with hosting UniFi yourself on a Windows or Linux based operating system. It will not work when using UnifiOS.
+
 ## Usage
 
 ```C#
