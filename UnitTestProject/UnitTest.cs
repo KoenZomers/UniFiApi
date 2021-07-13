@@ -319,5 +319,33 @@ namespace KoenZomers.UniFi.Api.UnitTest
             task.Wait();
             Assert.IsTrue(task.Result.Count > 0, "No wireless networks found");
         }
+
+        /// <summary>
+        /// Tests if forcing a client to reconnect on the UniFi network works
+        /// </summary>
+        [TestMethod]
+        public void ReconnectClientTestMethod()
+        {
+            if (!uniFiApi.IsAuthenticated) AuthenticateTestMethod();
+
+            // First retrieve all clients
+            var task1 = uniFiApi.GetAllClients();
+            task1.Wait();
+
+            // Ensure we have at least one client on the UniFi network which we can force to reconnect
+            if (task1.Result.Count == 0)
+            {
+                Assert.Inconclusive("No clients currently on the UniFi network to use for testing to reconnect");
+            }
+
+            // Get the first client on the UniFi network so we can force to reconnect
+            var client = task1.Result[0];
+
+            // Force the client to reconnect
+            var reconnectTask = uniFiApi.ReconnectClient(client);
+            reconnectTask.Wait();
+
+            // If the execution gets here it means the reconnect was successful
+        }
     }
 }

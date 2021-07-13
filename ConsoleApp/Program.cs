@@ -10,17 +10,7 @@ namespace KoenZomers.UniFi.Api.ConsoleApp
         /// Default synchronous application main
         /// </summary>
         /// <param name="args"></param>
-        static void Main(string[] args)
-        {
-            // Switch to async application main
-            Task t = MainAsync(args);
-            t.Wait();
-        }
-
-        /// <summary>
-        /// Asynchronous application Main
-        /// </summary>
-        static async Task MainAsync(string[] args)
+        static async Task Main(string[] args)
         {
             // Create a new Api instance to connect with the UniFi Controller
             Console.WriteLine("Connecting to UniFi Controller");
@@ -41,7 +31,7 @@ namespace KoenZomers.UniFi.Api.ConsoleApp
             }
 
             Console.WriteLine("- Authentication successful");
-
+            
             // Retrieve the UniFi devices
             Console.WriteLine("- Getting devices");
             var devices = await uniFiApi.GetDevices();

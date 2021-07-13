@@ -466,6 +466,16 @@ namespace KoenZomers.UniFi.Api
         /// <summary>
         /// Reconnects the provided client
         /// </summary>
+        /// <param name="client">The client to force to reconnect</param>
+        /// <returns>True if the reconnect was successful or False if it failed</returns>
+        public async Task<bool> ReconnectClient(Responses.Clients client)
+        {
+            return await ReconnectClient(client.MacAddress);
+        }
+
+        /// <summary>
+        /// Reconnects the provided client
+        /// </summary>
         /// <param name="macAddress">The MAC address of client to reconnect</param>
         /// <returns>True if the reconnect was successful or False if it failed</returns>
         public async Task<bool> ReconnectClient(string macAddress)

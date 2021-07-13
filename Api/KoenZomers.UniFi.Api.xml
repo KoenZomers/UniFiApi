@@ -203,6 +203,13 @@
             <param name="macArray">String array with mac addresses of clients to forget</param>
             <returns>List with removed clients</returns>
         </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.ReconnectClient(KoenZomers.UniFi.Api.Responses.Clients)">
+            <summary>
+            Reconnects the provided client
+            </summary>
+            <param name="client">The client to force to reconnect</param>
+            <returns>True if the reconnect was successful or False if it failed</returns>
+        </member>
         <member name="M:KoenZomers.UniFi.Api.Api.ReconnectClient(System.String)">
             <summary>
             Reconnects the provided client
