@@ -60,6 +60,9 @@ await uniFiApi.AuthorizeGuest("a0:23:f3:14:c2:fa");
 
 // Revoke the authorization for a certain guest client to access the UniFi network
 await uniFiApi.UnauthorizeGuest("a0:23:f3:14:c2:fa");
+
+// Force a client to reconnect to the UniFi network
+await uniFiApi.ReconnectClient("a0:23:f3:14:c2:fa");
 ```
 
 ## NuGet
@@ -67,6 +70,10 @@ await uniFiApi.UnauthorizeGuest("a0:23:f3:14:c2:fa");
 Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/packages/KoenZomers.UniFi.Api/)
 
 ## Version History
+
+Version 1.1.11.0 - July 14, 2021
+
+- Added ability to force clients to reconnect [PR 22](https://github.com/KoenZomers/UniFiApi/pull/22)
 
 Version 1.1.10.1 - July 14, 2021
 
