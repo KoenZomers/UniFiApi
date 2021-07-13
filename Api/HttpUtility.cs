@@ -145,7 +145,7 @@ namespace KoenZomers.UniFi.Api
             request.KeepAlive = false;
 
             // Construct POST data
-            var postData = string.Concat(@"{""username"":""", username, @""",""password"":""", password, @""",""remember"":false,""strict"":true}");
+            var postData = string.Concat(@"{""username"":""", username, @""",""password"":""", password.Replace("\"", "\\\""), @""",""remember"":false,""strict"":true}");
 
             // Convert the POST data to a byte array
             var postDataByteArray = Encoding.UTF8.GetBytes(postData);

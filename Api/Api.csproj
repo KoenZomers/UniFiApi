@@ -6,17 +6,17 @@
     <RootNamespace>KoenZomers.UniFi.Api</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
-    <Version>1.1.10.0</Version>
+    <Version>1.1.10.1</Version>
     <Authors>Koen Zomers</Authors>
     <Company>Koen Zomers</Company>
     <Description>API in .NET Standard to fetch data from an on premises Ubiquiti UniFi Controller</Description>
     <Copyright>Koen Zomers</Copyright>
     <PackageProjectUrl>https://github.com/KoenZomers/UniFiApi</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>- Added ability to remove clients by their mac address [PR 21](https://github.com/KoenZomers/UniFiApi/pull/21)</PackageReleaseNotes>
+    <PackageReleaseNotes>- Fixed passwords containing a double quote (") not working [Issue 24](https://github.com/KoenZomers/UniFiApi/issues/24)</PackageReleaseNotes>
     <PackageLicenseUrl>https://github.com/KoenZomers/UniFiApi/blob/master/LICENSE</PackageLicenseUrl>
-    <AssemblyVersion>1.1.10.0</AssemblyVersion>
-    <FileVersion>1.1.10.0</FileVersion>
+    <AssemblyVersion>1.1.10.1</AssemblyVersion>
+    <FileVersion>1.1.10.1</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
