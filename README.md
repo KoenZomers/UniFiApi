@@ -68,6 +68,10 @@ Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/pa
 
 ## Version History
 
+Version 1.1.10.1 - July 14, 2021
+
+- Fixed passwords containing a double quote (") not working [Issue 24](https://github.com/KoenZomers/UniFiApi/issues/24)
+
 Version 1.1.10.0 - June 7, 2021
 
 - Added ability to remove clients by their mac address [PR 21](https://github.com/KoenZomers/UniFiApi/pull/21)
