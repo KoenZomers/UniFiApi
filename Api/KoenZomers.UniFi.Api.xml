@@ -44,18 +44,24 @@
             Boolean indicating whether this Api session is authenticated
             </summary>
         </member>
+        <member name="P:KoenZomers.UniFi.Api.Api.IsUniFiOS">
+            <summary>
+            Boolean indicating whether UniFi Controller is Unifi OS
+            </summary>
+        </member>
         <member name="M:KoenZomers.UniFi.Api.Api.#ctor(System.Uri)">
             <summary>
             Instantiates a new instance of the UniFi API Controller class against the default UniFi site
             </summary>
             <param name="baseUri">BaseUri of the UniFi Controller, i.e. https://192.168.0.1:8443</param>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.Api.#ctor(System.Uri,System.String)">
+        <member name="M:KoenZomers.UniFi.Api.Api.#ctor(System.Uri,System.String,System.Boolean)">
             <summary>
             Instantiates a new instance of the UniFi API Controller class
             </summary>
             <param name="baseUri">BaseUri of the UniFi Controller, i.e. https://192.168.0.1:8443</param>
             <param name="siteId">Identifier of the site in UniFi. Set to NULL if you want to use the default site.</param>
+            <param name="isUniFiOS">Specifies if target controller is UnifiOS based device or stand-alone software controller</param>
         </member>
         <member name="M:KoenZomers.UniFi.Api.Api.DisableSslValidation">
             <summary>
@@ -274,7 +280,7 @@
             <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
             <returns>The website contents returned by the webserver after posting the data</returns>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.HttpUtility.LogoutViaJsonPostMethod(System.Uri,System.Net.CookieContainer,System.Int32)">
+        <member name="M:KoenZomers.UniFi.Api.HttpUtility.LogoutViaJsonPostMethod(System.Uri,System.Net.CookieContainer,System.Int32,System.Boolean)">
             <summary>
             Sends a POST request to log out from the UniFi Controller
             </summary>
@@ -597,6 +603,26 @@
         <member name="P:KoenZomers.UniFi.Api.Responses.Device.Id">
             <summary>
             Unique device ID
+            </summary>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.LoginResponse">
+            <summary>
+            Basic stub of login response to use to see if deserialization was successful or not
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.LoginResponse.Unique_Id">
+            <summary>
+            Unique id of logged in user
+            </summary>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.LogoutResponse">
+            <summary>
+            Response status of logout against UniFi OS based Controller
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.LogoutResponse.Success">
+            <summary>
+            Notes if logout was successful or not
             </summary>
         </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.Meta">
