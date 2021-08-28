@@ -75,7 +75,7 @@ namespace KoenZomers.UniFi.Api
         /// </summary>
         /// <param name="baseUri">BaseUri of the UniFi Controller, i.e. https://192.168.0.1:8443</param>
         /// <param name="siteId">Identifier of the site in UniFi. Set to NULL if you want to use the default site.</param>
-        /// <param name="isUniFiOS">Specifies if target controller is UnifiOS based device or stand-alone software controller</param>
+        /// <param name="isUniFiOS">Specifies if target controller is UniFi OS based device or stand-alone software controller</param>
         public Api(Uri baseUri, string siteId, bool isUniFiOS = false)
         {
             BaseUri = baseUri;
