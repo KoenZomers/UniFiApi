@@ -52,6 +52,11 @@ namespace KoenZomers.UniFi.Api
         /// Boolean indicating whether this Api session is authenticated
         /// </summary>
         public bool IsAuthenticated { get; private set; } = false;
+        
+        /// <summary>
+        /// Boolean indicating whether UniFi Controller is Unifi OS
+        /// </summary>
+        public bool IsUniFiOS { get; private set; }
 
         #endregion
 
@@ -70,13 +75,16 @@ namespace KoenZomers.UniFi.Api
         /// </summary>
         /// <param name="baseUri">BaseUri of the UniFi Controller, i.e. https://192.168.0.1:8443</param>
         /// <param name="siteId">Identifier of the site in UniFi. Set to NULL if you want to use the default site.</param>
-        public Api(Uri baseUri, string siteId)
+        /// <param name="isUniFiOS">Specifies if target controller is UnifiOS based device or stand-alone software controller</param>
+        public Api(Uri baseUri, string siteId, bool isUniFiOS = false)
         {
             BaseUri = baseUri;
             if (!string.IsNullOrWhiteSpace(siteId))
             {
                 SiteId = siteId;
             }
+
+            IsUniFiOS = isUniFiOS;
         }
 
         #endregion
@@ -128,12 +136,21 @@ namespace KoenZomers.UniFi.Api
             _cookieContainer = new CookieContainer();
 
             // Send an authentication request
-            var authUri = new Uri(BaseUri, "/api/login");
+            var authUri = new Uri(BaseUri, IsUniFiOS ? "/api/auth/login" : "/api/login");
             var resultString = await HttpUtility.AuthenticateViaJsonPostMethod(authUri, username, password, _cookieContainer, ConnectionTimeout);
-            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.BaseResponse>>(resultString);
 
+            bool resultOk;
             // Verify if the request was successful
-            var resultOk = resultJson.meta.ResultCode.Equals("ok", StringComparison.InvariantCultureIgnoreCase);
+            if (IsUniFiOS)
+            {
+                var resultJson = JsonConvert.DeserializeObject<Responses.LoginResponse>(resultString);
+                resultOk = !string.IsNullOrEmpty(resultJson.Unique_Id);
+            }
+            else
+            {
+                var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.BaseResponse>>(resultString);
+                resultOk = resultJson.meta.ResultCode.Equals("ok", StringComparison.InvariantCultureIgnoreCase);
+            }
             IsAuthenticated = resultOk;
             return resultOk;
         }
@@ -243,11 +260,24 @@ namespace KoenZomers.UniFi.Api
         /// <returns>List with connected clients</returns>
         public async Task<List<Responses.Clients>> GetActiveClients()
         {
-            var unifiUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/sta");
+            var unifiUri = GetUri($"api/s/{SiteId}/stat/sta");
             var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
             return resultJson.data;
+        }
+
+        private Uri GetUri(string target, bool skipThing = false)
+        {
+            if (IsUniFiOS && skipThing == false)
+            {
+                return new Uri(BaseUri, "proxy/network/" + target);
+            }
+            else
+            {
+                return new Uri(BaseUri, target);
+            }
+
         }
 
         /// <summary>
@@ -256,7 +286,7 @@ namespace KoenZomers.UniFi.Api
         /// <returns>List with all known clients</returns>
         public async Task<List<Responses.Clients>> GetAllClients()
         {
-            var unifiUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/alluser");
+            var unifiUri = GetUri($"/api/s/{SiteId}/stat/alluser");
             var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
@@ -269,7 +299,7 @@ namespace KoenZomers.UniFi.Api
         /// <returns>List with all UniFi devices</returns>
         public async Task<List<Responses.Device>> GetDevices()
         {
-            var unifiUri = new Uri(BaseUri, $"/api/s/{SiteId}/stat/device");
+            var unifiUri = GetUri($"api/s/{SiteId}/stat/device");
             var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Device>>(resultString);
 
@@ -282,7 +312,7 @@ namespace KoenZomers.UniFi.Api
         /// <returns>List with all sites</returns>
         public async Task<List<Responses.Site>> GetSites()
         {
-            var unifiUri = new Uri(BaseUri, $"/api/self/sites");
+            var unifiUri = GetUri($"/api/self/sites");
             var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Site>>(resultString);
 
@@ -298,7 +328,7 @@ namespace KoenZomers.UniFi.Api
         public async Task<List<Responses.ClientSession>> GetClientHistory(string macAddress, int limit = 5)
         {
             // Make the POST request towards the UniFi API to request blocking the client with the provided MAC address
-            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/stat/session"),
+            var resultString = await EnsureAuthenticatedPostRequest(GetUri($"/api/s/{SiteId}/stat/session"),
                                                                     "{\"mac\":\"" + macAddress + "\",\"_limit\":" + limit + ",\"_sort\":\"-assoc_time\"}");
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.ClientSession>>(resultString);
 
@@ -321,7 +351,7 @@ namespace KoenZomers.UniFi.Api
         public async Task<Responses.ResponseEnvelope<Responses.Clients>> BlockClient(string macAddress)
         {
             // Make the POST request towards the UniFi API to request blocking the client with the provided MAC address
-            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"),
+            var resultString = await EnsureAuthenticatedPostRequest(GetUri($"/api/s/{SiteId}/cmd/stamgr"),
                                                                     "{\"mac\":\"" + macAddress + "\",\"cmd\":\"block-sta\"}");
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
@@ -335,7 +365,7 @@ namespace KoenZomers.UniFi.Api
         public async Task<Responses.ResponseEnvelope<Responses.Clients>> AuthorizeGuest(string macAddress)
         {
             // Make the POST request towards the UniFi API to request authorizing the client with the provided MAC address
-            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"),
+            var resultString = await EnsureAuthenticatedPostRequest(GetUri($"/api/s/{SiteId}/cmd/stamgr"),
                                                                     "{\"mac\":\"" + macAddress + "\",\"cmd\":\"authorize-guest\"}");
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
@@ -372,7 +402,7 @@ namespace KoenZomers.UniFi.Api
         public async Task<Responses.ResponseEnvelope<Responses.Clients>> UnblockClient(string macAddress)
         {
             // Make the POST request towards the UniFi API to request unblocking the client with the provided MAC address
-            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"),
+            var resultString = await EnsureAuthenticatedPostRequest(GetUri($"/api/s/{SiteId}/cmd/stamgr"),
                                                                     "{\"mac\":\"" + macAddress + "\",\"cmd\":\"unblock-sta\"}");
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
@@ -397,7 +427,7 @@ namespace KoenZomers.UniFi.Api
         public async Task<Responses.ResponseEnvelope<Responses.Clients>> RenameClient(string userId, string name)
         {
             // Make the POST request towards the UniFi API to rename a client
-            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/upd/user/{userId}"),
+            var resultString = await EnsureAuthenticatedPostRequest(GetUri($"/api/s/{SiteId}/upd/user/{userId}"),
                                                                     JsonConvert.SerializeObject(new { name }));
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
@@ -411,12 +441,22 @@ namespace KoenZomers.UniFi.Api
         public async Task<bool> Logout()
         {
             // Create a session towards the UniFi Controller
-            var logoutUri = new Uri(BaseUri, "/api/logout");
-            var resultString = await HttpUtility.LogoutViaJsonPostMethod(logoutUri, _cookieContainer, ConnectionTimeout);
-            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.BaseResponse>>(resultString);
+            var logoutUri = new Uri(BaseUri, IsUniFiOS ? "/api/auth/logout" : "/api/logout");
+            var resultString = await HttpUtility.LogoutViaJsonPostMethod(logoutUri, _cookieContainer, ConnectionTimeout, IsUniFiOS);
 
-            // Verify if the request was successful
-            var resultOk = resultJson.meta.ResultCode.Equals("ok", StringComparison.InvariantCultureIgnoreCase);
+            bool resultOk;
+            if (IsUniFiOS)
+            {
+                var resultJson = JsonConvert.DeserializeObject<Responses.LogoutResponse>(resultString);
+                resultOk = resultJson.Success;
+            }
+            else
+            {
+                var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.BaseResponse>>(resultString);
+                // Verify if the request was successful
+                resultOk = resultJson.meta.ResultCode.Equals("ok", StringComparison.InvariantCultureIgnoreCase);
+            }
+
             IsAuthenticated = !resultOk;
             return resultOk;
         }
@@ -426,7 +466,7 @@ namespace KoenZomers.UniFi.Api
         /// </summary>
         /// <returns>List with defined networks</returns>
         public async Task<List<Responses.Network>> GetNetworks() {
-            var unifiUri = new Uri(BaseUri, $"/api/s/{SiteId}/rest/networkconf");
+            var unifiUri = GetUri($"/api/s/{SiteId}/rest/networkconf");
             var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Network>>(resultString);
 
@@ -438,7 +478,7 @@ namespace KoenZomers.UniFi.Api
         /// </summary>
         /// <returns>List with defined wireless networks</returns>
         public async Task<List<Responses.WirelessNetwork>> GetWirelessNetworks() {
-            var unifiUri = new Uri(BaseUri, $"/api/s/{SiteId}/rest/wlanconf");
+            var unifiUri = GetUri($"/api/s/{SiteId}/rest/wlanconf");
             var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.WirelessNetwork>>(resultString);
 
@@ -457,7 +497,7 @@ namespace KoenZomers.UniFi.Api
                 cmd = "forget-sta",
                 macs = macArray
             });
-            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"), payload);
+            var resultString = await EnsureAuthenticatedPostRequest(GetUri($"/api/s/{SiteId}/cmd/stamgr"), payload);
 
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
             return resultJson;
@@ -486,7 +526,7 @@ namespace KoenZomers.UniFi.Api
                 mac = macAddress
             });
 
-            var resultString = await EnsureAuthenticatedPostRequest(new Uri(BaseUri, $"/api/s/{SiteId}/cmd/stamgr"), payload);
+            var resultString = await EnsureAuthenticatedPostRequest(GetUri($"/api/s/{SiteId}/cmd/stamgr"), payload);
             var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.BaseResponse>>(resultString);
 
             return resultJson.meta.ResultCode.Equals("ok", StringComparison.InvariantCultureIgnoreCase);

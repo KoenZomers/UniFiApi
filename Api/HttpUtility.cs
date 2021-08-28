@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace KoenZomers.UniFi.Api
 {
@@ -215,7 +216,7 @@ namespace KoenZomers.UniFi.Api
         /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
         /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
         /// <returns>The website contents returned by the webserver after posting the data</returns>
-        public async static Task<string> LogoutViaJsonPostMethod(Uri url, CookieContainer cookieContainer, int timeout = 60000)
+        public async static Task<string> LogoutViaJsonPostMethod(Uri url, CookieContainer cookieContainer, int timeout = 60000, bool extractToken = false)
         {
             // Construct the POST request which performs the login
             var request = (HttpWebRequest)WebRequest.Create(url);
@@ -225,6 +226,18 @@ namespace KoenZomers.UniFi.Api
             request.CookieContainer = cookieContainer;
             request.Timeout = timeout;
             request.KeepAlive = false;
+
+            if (extractToken)
+            {
+                // Check if the have a Cross Site Request Forgery cookie and if so, add it as the X-Csrf-Token header which is required by UniFi when logging out from UniFi OS devices
+                var cookies = cookieContainer.GetCookies(url);
+                if (cookies.Count > 0)
+                {
+                    var decodedToken = new JwtSecurityTokenHandler().ReadToken(cookies["Token"].Value) as JwtSecurityToken;
+                    var tokenValue = decodedToken.Claims.FirstOrDefault(c => c.Type == "csrfToken").Value;
+                    request.Headers.Add("x-csrf-token", tokenValue);
+                }
+            }
 
             // Construct POST data
             var postData = "{}";
