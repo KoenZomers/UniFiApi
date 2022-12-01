@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.UniFiServerGroupBox = new System.Windows.Forms.GroupBox();
+            this.UniFiServerSiteLabel = new System.Windows.Forms.Label();
+            this.UniFiServerSiteTextBox = new System.Windows.Forms.TextBox();
             this.UniFiServerDisconnectButton = new System.Windows.Forms.Button();
             this.UniFiServerPasswordLabel = new System.Windows.Forms.Label();
             this.UniFiServerPasswordTextBox = new System.Windows.Forms.TextBox();
@@ -50,20 +52,26 @@
             this.AuthorizeGuestMacAddressTextBox = new System.Windows.Forms.TextBox();
             this.UnauthorizeGuestButton = new System.Windows.Forms.Button();
             this.GetClientsTabPage = new System.Windows.Forms.TabPage();
-            this.GetClientsButton = new System.Windows.Forms.Button();
             this.ClientsListBox = new System.Windows.Forms.ListBox();
+            this.GetClientsButton = new System.Windows.Forms.Button();
+            this.GetPortsTabPage = new System.Windows.Forms.TabPage();
+            this.buttonGetPorts = new System.Windows.Forms.Button();
+            this.PortsRichTextBox = new System.Windows.Forms.RichTextBox();
             this.UniFiServerGroupBox.SuspendLayout();
             this.ActionsGroupBox.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.BlockDevicesTabPage.SuspendLayout();
             this.AuthorizeGuestsTabPage.SuspendLayout();
             this.GetClientsTabPage.SuspendLayout();
+            this.GetPortsTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // UniFiServerGroupBox
             // 
             this.UniFiServerGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.UniFiServerGroupBox.Controls.Add(this.UniFiServerSiteLabel);
+            this.UniFiServerGroupBox.Controls.Add(this.UniFiServerSiteTextBox);
             this.UniFiServerGroupBox.Controls.Add(this.UniFiServerDisconnectButton);
             this.UniFiServerGroupBox.Controls.Add(this.UniFiServerPasswordLabel);
             this.UniFiServerGroupBox.Controls.Add(this.UniFiServerPasswordTextBox);
@@ -74,16 +82,35 @@
             this.UniFiServerGroupBox.Controls.Add(this.UniFiServerConnectButton);
             this.UniFiServerGroupBox.Location = new System.Drawing.Point(12, 12);
             this.UniFiServerGroupBox.Name = "UniFiServerGroupBox";
-            this.UniFiServerGroupBox.Size = new System.Drawing.Size(582, 146);
+            this.UniFiServerGroupBox.Size = new System.Drawing.Size(582, 181);
             this.UniFiServerGroupBox.TabIndex = 3;
             this.UniFiServerGroupBox.TabStop = false;
             this.UniFiServerGroupBox.Text = "UniFi Server";
+            // 
+            // UniFiServerSiteLabel
+            // 
+            this.UniFiServerSiteLabel.AutoSize = true;
+            this.UniFiServerSiteLabel.Location = new System.Drawing.Point(19, 108);
+            this.UniFiServerSiteLabel.Name = "UniFiServerSiteLabel";
+            this.UniFiServerSiteLabel.Size = new System.Drawing.Size(25, 13);
+            this.UniFiServerSiteLabel.TabIndex = 12;
+            this.UniFiServerSiteLabel.Text = "Site";
+            // 
+            // UniFiServerSiteTextBox
+            // 
+            this.UniFiServerSiteTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.UniFiServerSiteTextBox.Location = new System.Drawing.Point(114, 105);
+            this.UniFiServerSiteTextBox.Name = "UniFiServerSiteTextBox";
+            this.UniFiServerSiteTextBox.Size = new System.Drawing.Size(451, 20);
+            this.UniFiServerSiteTextBox.TabIndex = 11;
+            this.UniFiServerSiteTextBox.Text = "";
             // 
             // UniFiServerDisconnectButton
             // 
             this.UniFiServerDisconnectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.UniFiServerDisconnectButton.Enabled = false;
-            this.UniFiServerDisconnectButton.Location = new System.Drawing.Point(469, 104);
+            this.UniFiServerDisconnectButton.Location = new System.Drawing.Point(469, 139);
             this.UniFiServerDisconnectButton.Name = "UniFiServerDisconnectButton";
             this.UniFiServerDisconnectButton.Size = new System.Drawing.Size(92, 29);
             this.UniFiServerDisconnectButton.TabIndex = 10;
@@ -108,7 +135,7 @@
             this.UniFiServerPasswordTextBox.Name = "UniFiServerPasswordTextBox";
             this.UniFiServerPasswordTextBox.Size = new System.Drawing.Size(451, 20);
             this.UniFiServerPasswordTextBox.TabIndex = 8;
-            this.UniFiServerPasswordTextBox.Text = "mypassword";
+            this.UniFiServerPasswordTextBox.UseSystemPasswordChar = true;
             // 
             // UniFiServerUsernameLabel
             // 
@@ -127,7 +154,7 @@
             this.UniFiServerUsernameTextBox.Name = "UniFiServerUsernameTextBox";
             this.UniFiServerUsernameTextBox.Size = new System.Drawing.Size(451, 20);
             this.UniFiServerUsernameTextBox.TabIndex = 6;
-            this.UniFiServerUsernameTextBox.Text = "admin";
+            this.UniFiServerUsernameTextBox.Text = "";
             // 
             // UniFiServerAddressLabel
             // 
@@ -151,7 +178,7 @@
             // UniFiServerConnectButton
             // 
             this.UniFiServerConnectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.UniFiServerConnectButton.Location = new System.Drawing.Point(371, 104);
+            this.UniFiServerConnectButton.Location = new System.Drawing.Point(371, 139);
             this.UniFiServerConnectButton.Name = "UniFiServerConnectButton";
             this.UniFiServerConnectButton.Size = new System.Drawing.Size(92, 29);
             this.UniFiServerConnectButton.TabIndex = 3;
@@ -166,9 +193,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ActionsGroupBox.Controls.Add(this.tabControl1);
             this.ActionsGroupBox.Enabled = false;
-            this.ActionsGroupBox.Location = new System.Drawing.Point(12, 164);
+            this.ActionsGroupBox.Location = new System.Drawing.Point(12, 199);
             this.ActionsGroupBox.Name = "ActionsGroupBox";
-            this.ActionsGroupBox.Size = new System.Drawing.Size(582, 263);
+            this.ActionsGroupBox.Size = new System.Drawing.Size(582, 228);
             this.ActionsGroupBox.TabIndex = 4;
             this.ActionsGroupBox.TabStop = false;
             this.ActionsGroupBox.Text = "Actions";
@@ -181,10 +208,11 @@
             this.tabControl1.Controls.Add(this.BlockDevicesTabPage);
             this.tabControl1.Controls.Add(this.AuthorizeGuestsTabPage);
             this.tabControl1.Controls.Add(this.GetClientsTabPage);
+            this.tabControl1.Controls.Add(this.GetPortsTabPage);
             this.tabControl1.Location = new System.Drawing.Point(14, 22);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(551, 235);
+            this.tabControl1.Size = new System.Drawing.Size(551, 200);
             this.tabControl1.TabIndex = 6;
             // 
             // BlockDevicesTabPage
@@ -196,7 +224,7 @@
             this.BlockDevicesTabPage.Location = new System.Drawing.Point(4, 22);
             this.BlockDevicesTabPage.Name = "BlockDevicesTabPage";
             this.BlockDevicesTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.BlockDevicesTabPage.Size = new System.Drawing.Size(543, 209);
+            this.BlockDevicesTabPage.Size = new System.Drawing.Size(543, 174);
             this.BlockDevicesTabPage.TabIndex = 0;
             this.BlockDevicesTabPage.Text = "Block Device";
             this.BlockDevicesTabPage.UseVisualStyleBackColor = true;
@@ -249,7 +277,7 @@
             this.AuthorizeGuestsTabPage.Controls.Add(this.UnauthorizeGuestButton);
             this.AuthorizeGuestsTabPage.Location = new System.Drawing.Point(4, 22);
             this.AuthorizeGuestsTabPage.Name = "AuthorizeGuestsTabPage";
-            this.AuthorizeGuestsTabPage.Size = new System.Drawing.Size(543, 209);
+            this.AuthorizeGuestsTabPage.Size = new System.Drawing.Size(543, 174);
             this.AuthorizeGuestsTabPage.TabIndex = 1;
             this.AuthorizeGuestsTabPage.Text = "Authorize Guest";
             this.AuthorizeGuestsTabPage.UseVisualStyleBackColor = true;
@@ -300,15 +328,23 @@
             this.GetClientsTabPage.Controls.Add(this.GetClientsButton);
             this.GetClientsTabPage.Location = new System.Drawing.Point(4, 22);
             this.GetClientsTabPage.Name = "GetClientsTabPage";
-            this.GetClientsTabPage.Size = new System.Drawing.Size(543, 209);
+            this.GetClientsTabPage.Size = new System.Drawing.Size(543, 174);
             this.GetClientsTabPage.TabIndex = 2;
             this.GetClientsTabPage.Text = "Get clients";
             this.GetClientsTabPage.UseVisualStyleBackColor = true;
             // 
+            // ClientsListBox
+            // 
+            this.ClientsListBox.FormattingEnabled = true;
+            this.ClientsListBox.Location = new System.Drawing.Point(7, 12);
+            this.ClientsListBox.Name = "ClientsListBox";
+            this.ClientsListBox.Size = new System.Drawing.Size(522, 121);
+            this.ClientsListBox.TabIndex = 17;
+            // 
             // GetClientsButton
             // 
             this.GetClientsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.GetClientsButton.Location = new System.Drawing.Point(437, 167);
+            this.GetClientsButton.Location = new System.Drawing.Point(437, 139);
             this.GetClientsButton.Name = "GetClientsButton";
             this.GetClientsButton.Size = new System.Drawing.Size(92, 29);
             this.GetClientsButton.TabIndex = 16;
@@ -316,13 +352,36 @@
             this.GetClientsButton.UseVisualStyleBackColor = true;
             this.GetClientsButton.Click += new System.EventHandler(this.GetClientsButton_Click);
             // 
-            // ClientsListBox
+            // GetPortsTabPage
             // 
-            this.ClientsListBox.FormattingEnabled = true;
-            this.ClientsListBox.Location = new System.Drawing.Point(7, 12);
-            this.ClientsListBox.Name = "ClientsListBox";
-            this.ClientsListBox.Size = new System.Drawing.Size(522, 147);
-            this.ClientsListBox.TabIndex = 17;
+            this.GetPortsTabPage.Controls.Add(this.PortsRichTextBox);
+            this.GetPortsTabPage.Controls.Add(this.buttonGetPorts);
+            this.GetPortsTabPage.Location = new System.Drawing.Point(4, 22);
+            this.GetPortsTabPage.Name = "GetPortsTabPage";
+            this.GetPortsTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.GetPortsTabPage.Size = new System.Drawing.Size(543, 174);
+            this.GetPortsTabPage.TabIndex = 3;
+            this.GetPortsTabPage.Text = "Get Ports";
+            this.GetPortsTabPage.UseVisualStyleBackColor = true;
+            // 
+            // buttonGetPorts
+            // 
+            this.buttonGetPorts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonGetPorts.Location = new System.Drawing.Point(429, 127);
+            this.buttonGetPorts.Name = "buttonGetPorts";
+            this.buttonGetPorts.Size = new System.Drawing.Size(92, 29);
+            this.buttonGetPorts.TabIndex = 17;
+            this.buttonGetPorts.Text = "Get ports";
+            this.buttonGetPorts.UseVisualStyleBackColor = true;
+            this.buttonGetPorts.Click += new System.EventHandler(this.buttonGetPorts_Click);
+            // 
+            // PortsRichTextBox
+            // 
+            this.PortsRichTextBox.Location = new System.Drawing.Point(24, 6);
+            this.PortsRichTextBox.Name = "PortsRichTextBox";
+            this.PortsRichTextBox.Size = new System.Drawing.Size(497, 115);
+            this.PortsRichTextBox.TabIndex = 18;
+            this.PortsRichTextBox.Text = "";
             // 
             // MainForm
             // 
@@ -344,6 +403,7 @@
             this.AuthorizeGuestsTabPage.ResumeLayout(false);
             this.AuthorizeGuestsTabPage.PerformLayout();
             this.GetClientsTabPage.ResumeLayout(false);
+            this.GetPortsTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -374,6 +434,11 @@
         private System.Windows.Forms.TabPage GetClientsTabPage;
         private System.Windows.Forms.ListBox ClientsListBox;
         private System.Windows.Forms.Button GetClientsButton;
+        private System.Windows.Forms.Label UniFiServerSiteLabel;
+        private System.Windows.Forms.TextBox UniFiServerSiteTextBox;
+        private System.Windows.Forms.TabPage GetPortsTabPage;
+        private System.Windows.Forms.Button buttonGetPorts;
+        private System.Windows.Forms.RichTextBox PortsRichTextBox;
     }
 }
 

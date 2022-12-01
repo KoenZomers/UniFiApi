@@ -599,6 +599,11 @@
             Unique device ID
             </summary>
         </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Port_table">
+            <summary>
+            Unique device ID
+            </summary>
+        </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.Meta">
             <summary>
             Metadata received from the UniFi Controller

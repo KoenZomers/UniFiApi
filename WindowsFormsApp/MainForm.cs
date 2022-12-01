@@ -21,7 +21,14 @@ namespace WindowsFormsApp
                 return;
             }
 
-            _uniFiApi = new Api(new Uri(UniFiServerAddressTextBox.Text));
+            if (UniFiServerSiteTextBox.Text == "")
+            {
+                _uniFiApi = new Api(new Uri(UniFiServerAddressTextBox.Text));
+            }
+            else
+            {
+                _uniFiApi = new Api(new Uri(UniFiServerAddressTextBox.Text), UniFiServerSiteTextBox.Text);
+            }
 
             // Disable SSL validation as UniFi uses a self signed certificate
             _uniFiApi.DisableSslValidation();
@@ -123,13 +130,44 @@ namespace WindowsFormsApp
 
         private async void GetClientsButton_Click(object sender, EventArgs e)
         {
-            ClientsListBox.Items.Clear();
-
-            var clients = await _uniFiApi.GetAllClients();
-
-            foreach(var client in clients)
+            try
             {
-                ClientsListBox.Items.Add($"{(!string.IsNullOrWhiteSpace(client.FriendlyName) ? client.FriendlyName : client.Hostname)} ({client.MacAddress})");
+                ClientsListBox.Items.Clear();
+
+                var clients = await _uniFiApi.GetAllClients();
+
+                foreach (var client in clients)
+                {
+                    ClientsListBox.Items.Add($"{(!string.IsNullOrWhiteSpace(client.FriendlyName) ? client.FriendlyName : client.Hostname)} ({client.MacAddress})");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+        private async void buttonGetPorts_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                PortsRichTextBox.Text = "";
+
+                var devices = await _uniFiApi.GetDevices();
+
+                foreach (var device in devices)
+                {
+                    foreach (var port in device.Port_table)
+                    {
+                        foreach (var mac in port.Mac_table)
+                        {
+                            PortsRichTextBox.Text += $"{device.Name},{port.Port_idx},{mac.Mac},{mac.IP},{mac.Vlan},{mac.Uptime},{mac.Is_only_station_on_port},{mac.Age}\r\n";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
     }
