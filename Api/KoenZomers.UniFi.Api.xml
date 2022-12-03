@@ -114,6 +114,12 @@
             </summary>
             <returns>List with all UniFi devices</returns>
         </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.GetProfiles">
+            <summary>
+            Gets a list with Switch port profiles
+            </summary>
+            <returns>profiles</returns>
+        </member>
         <member name="M:KoenZomers.UniFi.Api.Api.GetSites">
             <summary>
             Gets all sites registered with UniFi
@@ -604,6 +610,11 @@
             Unique device ID
             </summary>
         </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.Port_overrides_table">
+            <summary>
+            Unique device ID
+            </summary>
+        </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.Meta">
             <summary>
             Metadata received from the UniFi Controller
@@ -692,6 +703,11 @@
         <member name="P:KoenZomers.UniFi.Api.Responses.Network.DontAllowDeletion">
             <summary>
             Boolean indicating if deletion of this site is being disallowed
+            </summary>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.Profies">
+            <summary>
+            Details of a UniFi device such as an access point or switch
             </summary>
         </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.ResponseEnvelope`1">

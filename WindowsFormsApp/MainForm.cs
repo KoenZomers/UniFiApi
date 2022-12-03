@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using KoenZomers.UniFi.Api;
+using KoenZomers.UniFi.Api.Responses;
 
 namespace WindowsFormsApp
 {
@@ -38,7 +40,7 @@ namespace WindowsFormsApp
 
             if(connectionResult)
             {
-                MessageBox.Show(this, "Connection to UniFi server successful", "Connected to UniFi server", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show(this, "Connection to UniFi server successful", "Connected to UniFi server", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -151,24 +153,69 @@ namespace WindowsFormsApp
             try
             {
                 PortsRichTextBox.Text = "";
-
                 var devices = await _uniFiApi.GetDevices();
-
+                var profiles = await _uniFiApi.GetProfiles();
+                PortsRichTextBox.SelectionTabs = new int[] { 50, 100, 300, 400 ,500,600,700};
                 foreach (var device in devices)
                 {
                     foreach (var port in device.Port_table)
                     {
                         foreach (var mac in port.Mac_table)
                         {
-                            PortsRichTextBox.Text += $"{device.Name},{port.Port_idx},{mac.Mac},{mac.IP},{mac.Vlan},{mac.Uptime},{mac.Is_only_station_on_port},{mac.Age}\r\n";
+                            PortsRichTextBox.Text += $"{device.Name}\t{port.Port_idx}\t{mac.Hostname}\t{mac.Mac}\t{mac.IP}\t{mac.Vlan}\t{mac.Uptime}\t{mac.Is_only_station_on_port}\t{mac.Age}\r\n";
                         }
                     }
+                }
+
+                foreach (var device in devices)
+                {
+                    if (device.Port_overrides_table != null)
+                    {
+                        foreach (var overrides in device.Port_overrides_table)
+                        {
+                            PortsRichTextBox.Text += $"{device.Name}\t{overrides.Port_idx}\t{overrides.Op_mode}\t{overrides.aggregate_num_ports}\t{overrides.Portconf_id}\t{PortconfidtoName(overrides.Portconf_id, profiles)}\r\n";
+                            //foreach (var mac in overrides.mac)
+                            //{
+                            //    PortsRichTextBox.Text += $"{device.Name}\t{port.Port_idx}\t{fillspaces(mac.Hostname, 0)}\t{mac.Mac}\t{mac.IP}\t{mac.Vlan}\t{mac.Uptime}\t{mac.Is_only_station_on_port}\t{mac.Age}\r\n";
+                            //}
+                        }
+                    }
+
+                }
+
+
+                foreach (var profile in profiles)
+                {
+                    PortsRichTextBox.Text += $"{profile.ID}\t{profile.Name}\t\r\n";
+                }
+
+                var clients = await _uniFiApi.GetAllClients();
+                foreach (var client in clients)
+                {
+                    PortsRichTextBox.Text += $"{client.MacAddress}\t{client.Hostname}\t{client.FriendlyName}\t{client.Vlan}\t{client.UserId}\t{client.IsWired}\t{client.LastSeenRaw}\t{client.IpAddress}\t{client.Id}\t\r\n";
+                }
+                clients = await _uniFiApi.GetActiveClients();
+                foreach (var client in clients)
+                {
+                    PortsRichTextBox.Text += $"{client.MacAddress}\t{client.Hostname}\t{client.FriendlyName}\t{client.Vlan}\t{client.UserId}\t{client.IsWired}\t{client.LastSeenRaw}\t{client.IpAddress}\t{client.Id}\t\r\n";
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
+        }
+
+        private string PortconfidtoName(string portconf_id, List<Profile> profiles)
+        {
+            foreach (var profile in profiles)
+            {
+                if (profile.ID == portconf_id)
+                {
+                    return profile.Name;
+                }
+            }
+            return "";
         }
     }
 }

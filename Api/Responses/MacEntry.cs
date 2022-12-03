@@ -4,6 +4,9 @@ namespace KoenZomers.UniFi.Api.Responses
 {
     public class MacEntry
     {
+        [JsonProperty(PropertyName = "hostname")]
+        public string Hostname { get; set; }
+
         [JsonProperty(PropertyName = "age")]
         public int Age { get; set; }
 

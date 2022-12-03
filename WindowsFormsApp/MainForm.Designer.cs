@@ -55,8 +55,8 @@
             this.ClientsListBox = new System.Windows.Forms.ListBox();
             this.GetClientsButton = new System.Windows.Forms.Button();
             this.GetPortsTabPage = new System.Windows.Forms.TabPage();
-            this.buttonGetPorts = new System.Windows.Forms.Button();
             this.PortsRichTextBox = new System.Windows.Forms.RichTextBox();
+            this.buttonGetPorts = new System.Windows.Forms.Button();
             this.UniFiServerGroupBox.SuspendLayout();
             this.ActionsGroupBox.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -104,7 +104,6 @@
             this.UniFiServerSiteTextBox.Name = "UniFiServerSiteTextBox";
             this.UniFiServerSiteTextBox.Size = new System.Drawing.Size(451, 20);
             this.UniFiServerSiteTextBox.TabIndex = 11;
-            this.UniFiServerSiteTextBox.Text = "";
             // 
             // UniFiServerDisconnectButton
             // 
@@ -154,7 +153,6 @@
             this.UniFiServerUsernameTextBox.Name = "UniFiServerUsernameTextBox";
             this.UniFiServerUsernameTextBox.Size = new System.Drawing.Size(451, 20);
             this.UniFiServerUsernameTextBox.TabIndex = 6;
-            this.UniFiServerUsernameTextBox.Text = "";
             // 
             // UniFiServerAddressLabel
             // 
@@ -173,7 +171,6 @@
             this.UniFiServerAddressTextBox.Name = "UniFiServerAddressTextBox";
             this.UniFiServerAddressTextBox.Size = new System.Drawing.Size(451, 20);
             this.UniFiServerAddressTextBox.TabIndex = 4;
-            this.UniFiServerAddressTextBox.Text = "https://192.168.1.1:8443";
             // 
             // UniFiServerConnectButton
             // 
@@ -335,6 +332,9 @@
             // 
             // ClientsListBox
             // 
+            this.ClientsListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ClientsListBox.FormattingEnabled = true;
             this.ClientsListBox.Location = new System.Drawing.Point(7, 12);
             this.ClientsListBox.Name = "ClientsListBox";
@@ -343,7 +343,7 @@
             // 
             // GetClientsButton
             // 
-            this.GetClientsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GetClientsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.GetClientsButton.Location = new System.Drawing.Point(437, 139);
             this.GetClientsButton.Name = "GetClientsButton";
             this.GetClientsButton.Size = new System.Drawing.Size(92, 29);
@@ -364,9 +364,20 @@
             this.GetPortsTabPage.Text = "Get Ports";
             this.GetPortsTabPage.UseVisualStyleBackColor = true;
             // 
+            // PortsRichTextBox
+            // 
+            this.PortsRichTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.PortsRichTextBox.Location = new System.Drawing.Point(24, 6);
+            this.PortsRichTextBox.Name = "PortsRichTextBox";
+            this.PortsRichTextBox.Size = new System.Drawing.Size(497, 115);
+            this.PortsRichTextBox.TabIndex = 18;
+            this.PortsRichTextBox.Text = "";
+            // 
             // buttonGetPorts
             // 
-            this.buttonGetPorts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonGetPorts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonGetPorts.Location = new System.Drawing.Point(429, 127);
             this.buttonGetPorts.Name = "buttonGetPorts";
             this.buttonGetPorts.Size = new System.Drawing.Size(92, 29);
@@ -374,14 +385,6 @@
             this.buttonGetPorts.Text = "Get ports";
             this.buttonGetPorts.UseVisualStyleBackColor = true;
             this.buttonGetPorts.Click += new System.EventHandler(this.buttonGetPorts_Click);
-            // 
-            // PortsRichTextBox
-            // 
-            this.PortsRichTextBox.Location = new System.Drawing.Point(24, 6);
-            this.PortsRichTextBox.Name = "PortsRichTextBox";
-            this.PortsRichTextBox.Size = new System.Drawing.Size(497, 115);
-            this.PortsRichTextBox.TabIndex = 18;
-            this.PortsRichTextBox.Text = "";
             // 
             // MainForm
             // 

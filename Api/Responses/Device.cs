@@ -80,9 +80,15 @@ namespace KoenZomers.UniFi.Api.Responses
         public string Id { get; set; }
 
         /// <summary>
-        /// List of ports
+        /// Unique device ID
         /// </summary>
         [JsonProperty(PropertyName = "port_table")]
         public List<Port> Port_table { get; set; }
+
+        /// <summary>
+        /// Unique device ID
+        /// </summary>
+        [JsonProperty(PropertyName = "port_overrides")]
+        public List<Port_Overrides> Port_overrides_table { get; set; }
     }
 }
