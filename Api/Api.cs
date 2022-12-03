@@ -277,6 +277,19 @@ namespace KoenZomers.UniFi.Api
         }
 
         /// <summary>
+        /// Gets a list with Switch port profiles
+        /// </summary>
+        /// <returns>profiles</returns>
+        public async Task<List<Responses.Profile>> GetProfiles()
+        {
+            var unifiUri = new Uri(BaseUri, $"/api/s/{SiteId}/rest/portconf ");
+            var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
+            var resultJson = JsonConvert.DeserializeObject<Responses.ResponseEnvelope<Responses.Profile>>(resultString);
+
+            return resultJson.data;
+        }
+
+        /// <summary>
         /// Gets all sites registered with UniFi
         /// </summary>
         /// <returns>List with all sites</returns>
