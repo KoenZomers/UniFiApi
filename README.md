@@ -1,5 +1,7 @@
 # UniFi API in C#
 
+> Notice: Through the years I have enjoyed building and maintaining this code. Time however is scarse and as much as I would like to, I'm having too many projects to work on in my spare time, so I need to get rid of some, this unfortunately being one. I will therefore no longer maintain this code. Feel free to fork off of it and make your own version out of it. I'll be happy to link to it.
+
 [![licence badge]][licence]
 [![issues badge]][issues]
 [![prwelcome badge]][prwelcome]
