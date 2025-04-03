@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using KoenZomers.UniFi.Api;
+using KoenZomers.UniFi.Api.Responses;
 
 namespace WindowsFormsApp
 {
@@ -21,7 +23,14 @@ namespace WindowsFormsApp
                 return;
             }
 
-            _uniFiApi = new Api(new Uri(UniFiServerAddressTextBox.Text));
+            if (UniFiServerSiteTextBox.Text == "")
+            {
+                _uniFiApi = new Api(new Uri(UniFiServerAddressTextBox.Text));
+            }
+            else
+            {
+                _uniFiApi = new Api(new Uri(UniFiServerAddressTextBox.Text), UniFiServerSiteTextBox.Text);
+            }
 
             // Disable SSL validation as UniFi uses a self signed certificate
             _uniFiApi.DisableSslValidation();
@@ -31,7 +40,7 @@ namespace WindowsFormsApp
 
             if(connectionResult)
             {
-                MessageBox.Show(this, "Connection to UniFi server successful", "Connected to UniFi server", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show(this, "Connection to UniFi server successful", "Connected to UniFi server", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -123,14 +132,90 @@ namespace WindowsFormsApp
 
         private async void GetClientsButton_Click(object sender, EventArgs e)
         {
-            ClientsListBox.Items.Clear();
-
-            var clients = await _uniFiApi.GetAllClients();
-
-            foreach(var client in clients)
+            try
             {
-                ClientsListBox.Items.Add($"{(!string.IsNullOrWhiteSpace(client.FriendlyName) ? client.FriendlyName : client.Hostname)} ({client.MacAddress})");
+                ClientsListBox.Items.Clear();
+
+                var clients = await _uniFiApi.GetAllClients();
+
+                foreach (var client in clients)
+                {
+                    ClientsListBox.Items.Add($"{(!string.IsNullOrWhiteSpace(client.FriendlyName) ? client.FriendlyName : client.Hostname)} ({client.MacAddress})");
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+        private async void buttonGetPorts_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                PortsRichTextBox.Text = "";
+                var devices = await _uniFiApi.GetDevices();
+                var profiles = await _uniFiApi.GetProfiles();
+                PortsRichTextBox.SelectionTabs = new int[] { 50, 100, 300, 400 ,500,600,700};
+                foreach (var device in devices)
+                {
+                    foreach (var port in device.Port_table)
+                    {
+                        foreach (var mac in port.Mac_table)
+                        {
+                            PortsRichTextBox.Text += $"{device.Name}\t{port.Port_idx}\t{mac.Hostname}\t{mac.Mac}\t{mac.IP}\t{mac.Vlan}\t{mac.Uptime}\t{mac.Is_only_station_on_port}\t{mac.Age}\r\n";
+                        }
+                    }
+                }
+
+                foreach (var device in devices)
+                {
+                    if (device.Port_overrides_table != null)
+                    {
+                        foreach (var overrides in device.Port_overrides_table)
+                        {
+                            PortsRichTextBox.Text += $"{device.Name}\t{overrides.Port_idx}\t{overrides.Op_mode}\t{overrides.aggregate_num_ports}\t{overrides.Portconf_id}\t{PortconfidtoName(overrides.Portconf_id, profiles)}\r\n";
+                            //foreach (var mac in overrides.mac)
+                            //{
+                            //    PortsRichTextBox.Text += $"{device.Name}\t{port.Port_idx}\t{fillspaces(mac.Hostname, 0)}\t{mac.Mac}\t{mac.IP}\t{mac.Vlan}\t{mac.Uptime}\t{mac.Is_only_station_on_port}\t{mac.Age}\r\n";
+                            //}
+                        }
+                    }
+
+                }
+
+
+                foreach (var profile in profiles)
+                {
+                    PortsRichTextBox.Text += $"{profile.ID}\t{profile.Name}\t\r\n";
+                }
+
+                var clients = await _uniFiApi.GetAllClients();
+                foreach (var client in clients)
+                {
+                    PortsRichTextBox.Text += $"{client.MacAddress}\t{client.Hostname}\t{client.FriendlyName}\t{client.Vlan}\t{client.UserId}\t{client.IsWired}\t{client.LastSeenRaw}\t{client.IpAddress}\t{client.Id}\t\r\n";
+                }
+                clients = await _uniFiApi.GetActiveClients();
+                foreach (var client in clients)
+                {
+                    PortsRichTextBox.Text += $"{client.MacAddress}\t{client.Hostname}\t{client.FriendlyName}\t{client.Vlan}\t{client.UserId}\t{client.IsWired}\t{client.LastSeenRaw}\t{client.IpAddress}\t{client.Id}\t\r\n";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private string PortconfidtoName(string portconf_id, List<Profile> profiles)
+        {
+            foreach (var profile in profiles)
+            {
+                if (profile.ID == portconf_id)
+                {
+                    return profile.Name;
+                }
+            }
+            return "";
         }
     }
 }

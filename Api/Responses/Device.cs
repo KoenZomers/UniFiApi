@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace KoenZomers.UniFi.Api.Responses
 {
@@ -77,5 +78,17 @@ namespace KoenZomers.UniFi.Api.Responses
         /// </summary>
         [JsonProperty(PropertyName = "_id")]
         public string Id { get; set; }
+
+        /// <summary>
+        /// Unique device ID
+        /// </summary>
+        [JsonProperty(PropertyName = "port_table")]
+        public List<Port> Port_table { get; set; }
+
+        /// <summary>
+        /// Unique device ID
+        /// </summary>
+        [JsonProperty(PropertyName = "port_overrides")]
+        public List<Port_Overrides> Port_overrides_table { get; set; }
     }
 }
