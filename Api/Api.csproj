@@ -14,7 +14,7 @@
     <Description>API in .NET 9 to fetch data from an on premises Ubiquiti UniFi Controller</Description>
     <Copyright>Koen Zomers</Copyright>
     <PackageProjectUrl>https://github.com/KoenZomers/UniFiApi</PackageProjectUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageReleaseNotes>- Updated to .NET 9
 - Replaced webrequests to go through HttpClient</PackageReleaseNotes>
     <PackageLicense>https://github.com/KoenZomers/UniFiApi/blob/master/LICENSE</PackageLicense>
@@ -23,7 +23,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\README.md" Pack="true" PackagePath="\"/>
+		<None Include="..\README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
