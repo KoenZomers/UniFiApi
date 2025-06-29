@@ -19,11 +19,11 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Build solution
-      run: dotnet build --no-restore --configuration Release
+    - name: Build Api
+      run: dotnet build "Api/Api.csproj" --no-restore --configuration Release
 
     - name: Pack NuGet package
-      run: dotnet pack YourProject/YourProject.csproj --no-build --configuration Release --output ./nupkg
+      run: dotnet pack "Api/Api.csproj" --no-build --configuration Release --output ./nupkg
 
     - name: Push NuGet package to nuget.org
       run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
