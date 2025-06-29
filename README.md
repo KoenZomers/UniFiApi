@@ -1,6 +1,6 @@
 # UniFi API in C#
 
-> Notice: Through the years I have enjoyed building and maintaining this code. Time however is scarse and as much as I would like to, I'm having too many projects to work on in my spare time, so I need to get rid of some, this unfortunately being one. I will therefore no longer maintain this code. Feel free to fork off of it and make your own version out of it. I'll be happy to link to it.
+> Notice: Through the years I have enjoyed building and maintaining this code. Time however is scarse and as much as I would like to, I'm having too many projects to work on in my spare time. I'm still using it in my own projects and that's my sole goal here. I'm sharing this code so others can use it as is, fork off of it and make their own version out of it, but will not be able to support everyone with questions on how to use it, add missing functionality or work on Pull Requests.
 
 [![licence badge]][licence]
 [![issues badge]][issues]
@@ -17,7 +17,7 @@
 [prwelcome]:http://makeapullrequest.com
 
 
-API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp and Windows Forms application to test the API. All assemblies are signed and compiled against .NET Standard 2.0, .NET Framework 4.5.2, .NET Framework 4.7.2 and .NET Core 2.0. This library in its current state functions mainly as a starting point / sample of how to communicate with the UniFi service. Fork it and extend it with the functionality you need. Or if you're unable to add this yourself, submit an issue on GitHub describing what you need and I'll have a look at it when I get a chance.
+API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp and Windows Forms application to test the API. All assemblies are signed and compiled against .NET 9.
 
 It is sufficient to use an account with the "Read Only" role in UniFi unless you want to modify things like using BlockClient, UnblockClient, AuthorizeGuest or UnauthorizeGuest.
 
@@ -72,6 +72,13 @@ await uniFiApi.ReconnectClient("a0:23:f3:14:c2:fa");
 Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/packages/KoenZomers.UniFi.Api/)
 
 ## Version History
+
+Version 2.2.0.0 - June 29, 2025
+
+- Updated to .NET 9
+- Updated code to use a HttpClient for the calls
+- Dropped WinForms sample application
+- Some minor fixes
 
 Version 1.1.11.0 - July 14, 2021
 
@@ -188,7 +195,4 @@ Version 1.0.0.0 - March 28, 2017
 
 ## Feedback
 
-Comments\suggestions\bug reports are welcome!
-
-Koen Zomers
-koen@zomers.eu
+I cannot and will not provide support for this library. You can use it as is. Feel free to fork off to create your own version out of it. Pull Requests and Issues are not accepted.

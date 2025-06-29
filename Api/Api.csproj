@@ -2,12 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>net9.0</TargetFrameworks>
-	<LangVersion>12.0</LangVersion>
-	<AssemblyName>KoenZomers.UniFi.Api</AssemblyName>
+    <LangVersion>12.0</LangVersion>
+    <AssemblyName>KoenZomers.UniFi.Api</AssemblyName>
     <RootNamespace>KoenZomers.UniFi.Api</RootNamespace>
     <SignAssembly>true</SignAssembly>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
-    <Version>2.0.2.0</Version>
+    <Version>2.1.0.0</Version>
     <Authors>Koen Zomers</Authors>
     <Company>Koen Zomers</Company>
     <Description>API in .NET 9 to fetch data from an on premises Ubiquiti UniFi Controller</Description>
@@ -17,9 +18,13 @@
     <PackageReleaseNotes>- Updated to .NET 9
 - Replaced webrequests to go through HttpClient</PackageReleaseNotes>
     <PackageLicense>https://github.com/KoenZomers/UniFiApi/blob/master/LICENSE</PackageLicense>
-    <AssemblyVersion>2.0.2.0</AssemblyVersion>
-    <FileVersion>2.0.2.0</FileVersion>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
+    <FileVersion>$(Version)</FileVersion>
   </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md" Pack="true" PackagePath="\"/>
+	</ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>KoenZomers.UniFi.Api.xml</DocumentationFile>
