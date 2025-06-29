@@ -3,19 +3,10 @@
 > Notice: Through the years I have enjoyed building and maintaining this code. Time however is scarse and as much as I would like to, I'm having too many projects to work on in my spare time. I'm still using it in my own projects and that's my sole goal here. I'm sharing this code so others can use it as is, fork off of it and make their own version out of it, but will not be able to support everyone with questions on how to use it, add missing functionality or work on Pull Requests.
 
 [![licence badge]][licence]
-[![issues badge]][issues]
-[![prwelcome badge]][prwelcome]
-[![Continuous Integration Build](https://github.com/KoenZomers/UniFiApi/actions/workflows/dotnetcore.yml/badge.svg)](https://github.com/KoenZomers/UniFiApi/actions/workflows/dotnetcore.yml)
+[![Continuous Integration Build](https://github.com/KoenZomers/UniFiApi/actions/workflows/cibuild.yml/badge.svg)](https://github.com/KoenZomers/UniFiApi/actions/workflows/cibuild.yml)
 
 [licence badge]:https://img.shields.io/badge/license-Apache2-blue.svg
-[issues badge]:https://img.shields.io/github/issues/koenzomers/UniFiApi.svg
-[prwelcome badge]:https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
-
-
 [licence]:https://github.com/koenzomers/UniFiApi/blob/master/LICENSE.md
-[issues]:https://github.com/koenzomers/UniFiApi/issues
-[prwelcome]:http://makeapullrequest.com
-
 
 API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp and Windows Forms application to test the API. All assemblies are signed and compiled against .NET 9.
 

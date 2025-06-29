@@ -1,0 +1,39 @@
+name: Continuous Integration Build
+
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - '.github/workflows/**'
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+      - '.github/workflows/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build Api
+        run: dotnet build "Api/Api.csproj" --no-restore --configuration Release
+
+      - name: Copy sample config file to allow for the build to succeed
+        uses: canastro/copy-file-action@master
+        with:
+          source: "UnitTestProject/App.sample.config"
+          target: "UnitTestProject/app.config"
+
+      - name: Build UnitTest
+        run: dotnet build "UnitTestProject/UnitTestProject.csproj" --no-restore --configuration Release
