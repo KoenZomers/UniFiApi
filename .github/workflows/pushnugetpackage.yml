@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    name: Building and Packaging
+    name: Building, Packaging and Publishing
     runs-on: ubuntu-latest
 
     steps:
