@@ -12,7 +12,7 @@ API in C# which can be used to read data from an on premises UniFi Controller in
 
 It is sufficient to use an account with the "Read Only" role in UniFi unless you want to modify things like using BlockClient, UnblockClient, AuthorizeGuest or UnauthorizeGuest.
 
-This API works with hosting UniFi yourself on a Windows or Linux based operating system. It will not work when using UnifiOS.
+This API works with hosting UniFi yourself on a Windows or Linux based operating system. It should also work when using UnifiOS, such as the Cloud Key Gen2 Plus.
 
 ## Usage
 
@@ -63,6 +63,10 @@ await uniFiApi.ReconnectClient("a0:23:f3:14:c2:fa");
 Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/packages/KoenZomers.UniFi.Api/)
 
 ## Version History
+
+Version 2.3.0.0 - June 29, 2025
+
+- Added support for UniFiOS and Cloud Key Gen2 Plus
 
 Version 2.2.0.0 - June 29, 2025
 

@@ -15,12 +15,12 @@ public class Api
     /// <summary>
     /// Username to use to authenticate
     /// </summary>
-    private string _username;
+    private string? _username;
 
     /// <summary>
     /// Password to use to authenticate
     /// </summary>
-    private string _password;
+    private string? _password;
 
     #endregion
 
@@ -29,21 +29,26 @@ public class Api
     /// <summary>
     /// Gets the site identifier of the UniFi Controller. Needs to be set through the constructor.
     /// </summary>
-    public string SiteId { get; private set; } = "default";
+    public string? SiteId { get; private set; } = "default";
 
     /// <summary>
     /// Timeout in milliseconds to apply to wait at maximum for the UniFi Controller to respond to a request
     /// </summary>
-    public double ConnectionTimeout
+    public double? ConnectionTimeout
     {
-        get { return _httpUtility.HttpClient.Timeout.TotalMilliseconds; }
-        set { _httpUtility.HttpClient.Timeout = TimeSpan.FromMilliseconds(value); }
+        get { return _httpUtility?.HttpClient?.Timeout.TotalMilliseconds; }
+        set { if(value.HasValue && _httpUtility is not null) _httpUtility.HttpClient.Timeout = TimeSpan.FromMilliseconds(value.Value); }
     }
 
     /// <summary>
     /// Boolean indicating whether this Api session is authenticated
     /// </summary>
     public bool IsAuthenticated { get; private set; } = false;
+
+    /// <summary>
+    /// Boolean indicating whether UniFi Controller is Unifi OS
+    /// </summary>
+    public bool IsUniFiOS { get; private set; }
 
     #endregion
 
@@ -52,7 +57,7 @@ public class Api
     /// <summary>
     /// HttpUtility to use for making requests towards the UniFi Controller
     /// </summary>
-    private readonly HttpUtility _httpUtility;
+    private readonly HttpUtility? _httpUtility;
 
     #endregion
 
@@ -63,12 +68,14 @@ public class Api
     /// </summary>
     /// <param name="baseUri">BaseUri of the UniFi Controller, i.e. https://192.168.0.1:8443</param>
     /// <param name="siteId">Site name to work with. Optional. Defaults to default.</param>
-    public Api(Uri baseUri, bool ignoreSslValidation = true, string siteId = null)
+    public Api(Uri baseUri, bool ignoreSslValidation = true, string? siteId = null, bool isUniFiOS = false)
     {
         if (!string.IsNullOrWhiteSpace(siteId))
         {
             SiteId = siteId;
         }
+
+        IsUniFiOS = isUniFiOS;
 
         _httpUtility = new HttpUtility(baseUri, ignoreSslValidation: ignoreSslValidation);
     }
@@ -99,6 +106,11 @@ public class Api
     /// <returns>Boolean indicating whether the authentication was successful (True) or failed (False)</returns>
     public async Task<bool> Authenticate(string username, string password)
     {
+        if(_httpUtility is null)
+        {
+            throw new InvalidOperationException("No HttpUtility instance available. Ensure the Api was initialized with a valid baseUri.");
+        }
+
         _username = username;
         _password = password;
 
@@ -106,14 +118,26 @@ public class Api
         _httpUtility.ClearCookies();
 
         // Send an authentication request
-        var authUri = new Uri("api/login", UriKind.Relative);
+        var authUri = new Uri(IsUniFiOS ? "/api/auth/login" : "api/login", UriKind.Relative);
         var resultString = await _httpUtility.AuthenticateViaJsonPostMethod(authUri, username, password);
-        var resultJson = System.Text.Json.JsonSerializer.Deserialize<Responses.ResponseEnvelope<Responses.BaseResponse>>(resultString);
 
         // Verify if the request was successful
-        var resultOk = resultJson.meta.ResultCode.Equals("ok", StringComparison.InvariantCultureIgnoreCase);
-        IsAuthenticated = resultOk;
-        return resultOk;
+        if (IsUniFiOS)
+        {
+            var resultJson = System.Text.Json.JsonSerializer.Deserialize<Responses.LoginResponse>(resultString);
+            if (resultJson is null) return false;
+
+            return !string.IsNullOrEmpty(resultJson.UniqueId);
+        }
+        else
+        {
+            var resultJson = System.Text.Json.JsonSerializer.Deserialize<Responses.ResponseEnvelope<Responses.BaseResponse>>(resultString);
+            if (resultJson is null) return false;
+
+            var resultOk = resultJson.meta.ResultCode.Equals("ok", StringComparison.InvariantCultureIgnoreCase);
+            IsAuthenticated = resultOk;
+            return resultOk;
+        }
     }
 
     /// <summary>
