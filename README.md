@@ -8,7 +8,7 @@
 [licence badge]:https://img.shields.io/badge/license-Apache2-blue.svg
 [licence]:https://github.com/koenzomers/UniFiApi/blob/master/LICENSE.md
 
-API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests and a sample ConsoleApp and Windows Forms application to test the API. All assemblies are signed and compiled against .NET 9.
+API in C# which can be used to read data from an on premises UniFi Controller installation. Includes Unit Tests to test the API. All assemblies are signed and compiled against .NET 9.
 
 It is sufficient to use an account with the "Read Only" role in UniFi unless you want to modify things like using BlockClient, UnblockClient, AuthorizeGuest or UnauthorizeGuest.
 
