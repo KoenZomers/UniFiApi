@@ -268,6 +268,19 @@ public class Api
     }
 
     /// <summary>
+    /// Gets a list with Switch port profiles
+    /// </summary>
+    /// <returns>profiles</returns>
+    public async Task<List<Responses.Profile>> GetProfiles()
+    {
+        var unifiUri = new Uri($"/api/s/{SiteId}/rest/portconf", UriKind.Relative);
+        var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
+        var resultJson = System.Text.Json.JsonSerializer.Deserialize<Responses.ResponseEnvelope<Responses.Profile>>(resultString);
+
+        return resultJson.data;
+    }
+
+    /// <summary>
     /// Gets the connection history of the client with the provided MAC Address
     /// </summary>
     /// <param name="limit">Amount of historic items to retrieve. Most recent connection will be first. Default is last 5 connections to be returned.</param>

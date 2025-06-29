@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -79,6 +78,18 @@ namespace KoenZomers.UniFi.Api.Responses
         /// </summary>
         [JsonPropertyName("_id")]
         public string Id { get; set; }
+
+        /// <summary>
+        /// All the ports on the device
+        /// </summary>
+        [JsonPropertyName("port_table")]
+        public List<Port> Port_table { get; set; }
+
+        /// <summary>
+        /// Information about port overrides
+        /// </summary>
+        [JsonPropertyName( "port_overrides")]
+        public List<Port_Overrides> Port_overrides_table { get; set; }
 
         /// <summary>
         /// IPv4 Address

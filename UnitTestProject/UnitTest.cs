@@ -322,4 +322,16 @@ public class UnitTest
 
         // If the execution gets here it means the reconnect was successful
     }
+
+    /// <summary>
+    /// Tests retrieving profiles from UniFi
+    /// </summary>
+    [TestMethod]
+    public async Task GetProfilesTestMethod()
+    {
+        if (!uniFiApi.IsAuthenticated) await AuthenticateTestMethod();
+
+        var task = await uniFiApi.GetProfiles();
+        Assert.IsNotNull(task, "No profiles found");
+    }
 }
