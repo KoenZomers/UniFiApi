@@ -3,7 +3,7 @@
 > Notice: Through the years I have enjoyed building and maintaining this code. Time however is scarse and as much as I would like to, I'm having too many projects to work on in my spare time. I'm still using it in my own projects and that's my sole goal here. I'm sharing this code so others can use it as is, fork off of it and make their own version out of it, but will not be able to support everyone with questions on how to use it, add missing functionality or work on Pull Requests.
 
 [![licence badge]][licence]
-[![Continuous Integration Build](https://github.com/KoenZomers/UniFiApi/actions/workflows/dotnetcore.yml/badge.svg)](https://github.com/KoenZomers/UniFiApi/actions/workflows/dotnetcore.yml)
+[![Continuous Integration Build](https://github.com/KoenZomers/UniFiApi/actions/workflows/cibuild.yml/badge.svg)](https://github.com/KoenZomers/UniFiApi/actions/workflows/cibuild.yml)
 
 [licence badge]:https://img.shields.io/badge/license-Apache2-blue.svg
 [licence]:https://github.com/koenzomers/UniFiApi/blob/master/LICENSE.md
