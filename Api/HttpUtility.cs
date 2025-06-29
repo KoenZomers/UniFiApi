@@ -1,270 +1,153 @@
 ﻿using System;
-using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
 
-namespace KoenZomers.UniFi.Api
+namespace KoenZomers.UniFi.Api;
+
+/// <summary>
+/// Internal utility class for Http communication with the UniFi Controller
+/// </summary>
+internal class HttpUtility
 {
+    #region Fields
+
     /// <summary>
-    /// Internal utility class for Http communication with the UniFi Controller
+    /// Cookie container which holds all cookies for sessions towards the UniFi Controller
     /// </summary>
-    internal static class HttpUtility
+    private CookieContainer _cookieContainer = new();
+
+    /// <summary>
+    /// HttpClient used to perform requests
+    /// </summary>
+    internal HttpClient HttpClient;
+
+    #endregion
+
+    #region Constructors
+
+    public HttpUtility(Uri baseUri, short timeout = 10000, bool ignoreSslValidation = false)
     {
-        /// <summary>
-        /// Disables SSL Validation in case of self signed SSL certificates being used
-        /// </summary>
-        public static void DisableSslValidation()
+        var httpClientHandler = new HttpClientHandler
         {
-            ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+            CookieContainer = _cookieContainer,
+            UseCookies = true,
+            AllowAutoRedirect = true
+        };
+
+        if (ignoreSslValidation)
+        {
+            httpClientHandler.ServerCertificateCustomValidationCallback = (HttpRequestMessage req, X509Certificate2 cert, X509Chain chain, SslPolicyErrors errors) => true;
         }
 
-        /// <summary>
-        /// Enables connecting to a remote server hosting UniFi using a TLS 1.1 or TLS 1.2 certificate
-        /// </summary>
-        public static void EnableTls11and12()
+        HttpClient = new HttpClient(httpClientHandler)
         {
-            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-        }
-
-        /// <summary>
-        /// Performs a GET request to the provided url to download the page contents
-        /// </summary>
-        /// <param name="url">Url of the page to retrieve</param>
-        /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
-        /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
-        /// <returns>Contents of the page</returns>
-        public async static Task<string> GetRequestResult(Uri url, CookieContainer cookieContainer, int timeout = 60000)
-        {
-            // Construct the request
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.CookieContainer = cookieContainer;
-            request.Timeout = timeout;
-            request.KeepAlive = false;
-
-            // Send the request to the webserver
-            using (var response = await request.GetResponseAsync())            
-            {
-                // Get the stream containing content returned by the server.
-                using (var dataStream = response.GetResponseStream())
-                {
-                    if (dataStream == null) return null;
-
-                    // Open the stream using a StreamReader for easy access.
-                    using (var reader = new StreamReader(dataStream))
-                    {
-                        // Read the content returned
-                        var responseFromServer = await reader.ReadToEndAsync();
-                        return responseFromServer;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Sends a POST request towards UniFi
-        /// </summary>
-        /// <param name="url">Url to POST the postData to</param>
-        /// <param name="postData">Data to send to the UniFi service, typically a JSON payload</param>
-        /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
-        /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
-        /// <returns>The website contents returned by the webserver after posting the data</returns>
-        public async static Task<string> PostRequest(Uri url, string postData, CookieContainer cookieContainer, int timeout = 60000)
-        {
-            // Construct the POST request
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "POST";
-            request.Accept = "application/json, text/plain, */*";
-            request.ContentType = "application/json;charset=UTF-8";
-            request.CookieContainer = cookieContainer;
-            request.Timeout = timeout;
-            request.KeepAlive = false;
-
-            // Check if the have a Cross Site Request Forgery cookie and if so, add it as the X-Csrf-Token header which is required by UniFi when making a POST
-            var csrfCookie = cookieContainer.GetAllCookies().FirstOrDefault(c => c.Name == "csrf_token");
-            if(csrfCookie != null)
-            {
-                request.Headers.Add("X-Csrf-Token", csrfCookie.Value);
-            }
-
-            // Convert the POST data to a byte array
-            var postDataByteArray = Encoding.UTF8.GetBytes(postData);
-
-            // Set the ContentLength property of the WebRequest.
-            request.ContentLength = postDataByteArray.Length;
-
-            // Get the request stream
-            using (var postDataStream = await request.GetRequestStreamAsync())
-            {
-                // Write the POST data to the request stream
-                await postDataStream.WriteAsync(postDataByteArray, 0, postDataByteArray.Length);
-
-                // Close the Stream object
-                postDataStream.Close();
-            }
-
-            // Receive the response from the webserver
-            using (var response = await request.GetResponseAsync() as HttpWebResponse)
-            {
-                // Make sure the webserver has sent a response
-                if (response == null) return null;
-
-                using (var requestDataStream = response.GetResponseStream())
-                {
-                    // Make sure the datastream with the response is available
-                    if (requestDataStream == null) return null;
-
-                    using (var reader = new StreamReader(requestDataStream))
-                    {
-                        return await reader.ReadToEndAsync();
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Sends a POST request with JSON variables to authenticate against UniFi
-        /// </summary>
-        /// <param name="url">Url to POST the login information to</param>
-        /// <param name="username">Username to authenticate with</param>
-        /// <param name="password">Password to authenticate with</param>
-        /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
-        /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
-        /// <returns>The website contents returned by the webserver after posting the data</returns>
-        public async static Task<string> AuthenticateViaJsonPostMethod(Uri url, string username, string password, CookieContainer cookieContainer, int timeout = 60000)
-        {
-            // Construct the POST request which performs the login
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "POST";
-            request.Accept = "application/json, text/plain, */*";
-            request.ContentType = "application/json;charset=UTF-8";
-            request.ServicePoint.Expect100Continue = false;
-            request.CookieContainer = cookieContainer;
-            request.Timeout = timeout;
-            request.KeepAlive = false;
-
-            // Construct POST data
-            var postData = string.Concat(@"{""username"":""", username, @""",""password"":""", password.Replace("\"", "\\\""), @""",""remember"":false,""strict"":true}");
-
-            // Convert the POST data to a byte array
-            var postDataByteArray = Encoding.UTF8.GetBytes(postData);
-
-            // Set the ContentLength property of the WebRequest.
-            request.ContentLength = postDataByteArray.Length;
-
-            // Get the request stream
-            using (var postDataStream = await request.GetRequestStreamAsync())
-            {
-                // Write the POST data to the request stream
-                await postDataStream.WriteAsync(postDataByteArray, 0, postDataByteArray.Length);
-
-                // Close the Stream object
-                postDataStream.Close();
-            }
-
-            try
-            {
-                // Request must be kept alive because in case of an error (i.e. wrong credentials) the response otherwise can't be read anymore
-                request.KeepAlive = true;
-
-                // Receive the response from the webserver
-                using (var response = await request.GetResponseAsync() as HttpWebResponse)
-                {
-                    // Make sure the webserver has sent a response
-                    if (response == null) return null;
-
-                    using (var requestDataStream = response.GetResponseStream())
-                    {
-                        // Make sure the datastream with the response is available
-                        if (requestDataStream == null) return null;
-
-                        using (var reader = new StreamReader(requestDataStream))
-                        {
-                            return await reader.ReadToEndAsync();
-                        }
-                    }
-                }
-            }
-            catch (WebException e)
-            {
-                // A protocolerror typically indicates that the credentials were wrong so we can handle that. Other types could be anything so we rethrow it to the caller to deal with.
-                if (e.Status != WebExceptionStatus.ProtocolError)
-                {
-                    throw;
-                }
-
-                // Parse the response from the server
-                using (var response = (HttpWebResponse)e.Response)
-                {
-                    using (var stream = response.GetResponseStream())
-                    {
-                        using (var reader = new StreamReader(stream, Encoding.GetEncoding("utf-8")))
-                        {
-                            return reader.ReadToEnd();
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Sends a POST request to log out from the UniFi Controller
-        /// </summary>
-        /// <param name="url">Url to POST the logout request to</param>
-        /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
-        /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
-        /// <returns>The website contents returned by the webserver after posting the data</returns>
-        public async static Task<string> LogoutViaJsonPostMethod(Uri url, CookieContainer cookieContainer, int timeout = 60000)
-        {
-            // Construct the POST request which performs the login
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "POST";
-            request.Accept = "application/json, text/plain, */*";
-            request.ServicePoint.Expect100Continue = false;
-            request.CookieContainer = cookieContainer;
-            request.Timeout = timeout;
-            request.KeepAlive = false;
-
-            // Construct POST data
-            var postData = "{}";
-
-            // Convert the POST data to a byte array
-            var postDataByteArray = Encoding.UTF8.GetBytes(postData);
-
-            // Set the ContentType property of the WebRequest
-            request.ContentType = "application/json;charset=UTF-8";
-
-            // Set the ContentLength property of the WebRequest.
-            request.ContentLength = postDataByteArray.Length;
-
-            // Get the request stream
-            using (var postDataStream = await request.GetRequestStreamAsync())
-            {
-                // Write the POST data to the request stream
-                await postDataStream.WriteAsync(postDataByteArray, 0, postDataByteArray.Length);
-
-                // Close the Stream object
-                postDataStream.Close();
-            }
-
-            // Receive the response from the webserver
-            using (var response = await request.GetResponseAsync() as HttpWebResponse)
-            {
-                // Make sure the webserver has sent a response
-                if (response == null) return null;
-
-                using (var requestDataStream = response.GetResponseStream())
-                {
-                    // Make sure the datastream with the response is available
-                    if (requestDataStream == null) return null;
-
-                    using (var reader = new StreamReader(requestDataStream))
-                    {
-                        return await reader.ReadToEndAsync();
-                    }
-                }
-            }
-        }
+            BaseAddress = baseUri,
+            Timeout = TimeSpan.FromMilliseconds(timeout)
+        };
     }
+
+    #endregion
+
+    #region Methods
+
+    public void ClearCookies()
+    {
+        _cookieContainer = new CookieContainer();
+    }
+
+    /// <summary>
+    /// Performs a GET request to the provided url to download the page contents
+    /// </summary>
+    /// <param name="url">Url of the page to retrieve</param>
+    /// <returns>Contents of the page</returns>
+    public async Task<string> GetRequestResult(Uri url)
+    {
+        var responseFromServer = await HttpClient.GetStringAsync(url);
+        return responseFromServer;
+    }
+
+    /// <summary>
+    /// Sends a POST request towards UniFi
+    /// </summary>
+    /// <param name="url">Url to POST the postData to</param>
+    /// <param name="postData">Data to send to the UniFi service, typically a JSON payload</param>
+    /// <returns>The website contents returned by the webserver after posting the data</returns>
+    public async Task<string> PostRequest(Uri url, string postData)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, url);
+        request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/plain"));
+        request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("*/*"));
+
+        // Check if the have a Cross Site Request Forgery cookie and if so, add it as the X-Csrf-Token header which is required by UniFi when making a POST
+        var csrfCookie = _cookieContainer.GetAllCookies().FirstOrDefault(c => c.Name == "csrf_token");
+        if (csrfCookie != null)
+        {
+            request.Headers.Add("X-Csrf-Token", csrfCookie.Value);
+        }
+
+        request.Content = new StringContent(postData, Encoding.UTF8, "application/json");
+
+        var response = await HttpClient.SendAsync(request);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+        return responseBody;
+    }
+
+    /// <summary>
+    /// Sends a POST request with JSON variables to authenticate against UniFi
+    /// </summary>
+    /// <param name="url">Url to POST the login information to</param>
+    /// <param name="username">Username to authenticate with</param>
+    /// <param name="password">Password to authenticate with</param>
+    /// <returns>The website contents returned by the webserver after posting the data</returns>
+    public async Task<string> AuthenticateViaJsonPostMethod(Uri url, string username, string password)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, url);
+        request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/plain"));
+        request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("*/*"));
+        request.Headers.ExpectContinue = false;
+
+        // Construct POST data
+        var postData = string.Concat(@"{""username"":""", username, @""",""password"":""", password.Replace("\"", "\\\""), @""",""remember"":false,""strict"":true}");
+
+        request.Content = new StringContent(postData, Encoding.UTF8, "application/json");
+
+        var response = await HttpClient.SendAsync(request);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+        return responseBody;
+    }
+
+    /// <summary>
+    /// Sends a POST request to log out from the UniFi Controller
+    /// </summary>
+    /// <param name="url">Url to POST the logout request to</param>
+    /// <returns>The website contents returned by the webserver after posting the data</returns>
+    public async Task<string> LogoutViaJsonPostMethod(Uri url)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, url);
+        request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/plain"));
+        request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("*/*"));
+        request.Headers.ExpectContinue = false;
+
+        // Construct POST data
+        var postData = "{}";
+
+        request.Content = new StringContent(postData, Encoding.UTF8, "application/json");
+
+        var response = await HttpClient.SendAsync(request);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+        return responseBody;
+    }
+
+    #endregion
 }

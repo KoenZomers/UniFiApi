@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace KoenZomers.UniFi.Api.Responses
 {
@@ -11,13 +11,13 @@ namespace KoenZomers.UniFi.Api.Responses
         /// <summary>
         /// Unique identifier of the session
         /// </summary>
-        [JsonProperty(PropertyName = "_id")]
+        [JsonPropertyName("_id")]
         public string Id { get; set; }
 
         /// <summary>
         /// Seconds since January 1, 1970 when the client started this session. Use SessionStartedAt for a DateTime representing this value.
         /// </summary>
-        [JsonProperty(PropertyName = "assoc_time")]
+        [JsonPropertyName("assoc_time")]
         public long? SessionStartedAtRaw { get; set; }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace KoenZomers.UniFi.Api.Responses
         /// <summary>
         /// Duration of the current session of the client in seconds
         /// </summary>
-        [JsonProperty(PropertyName = "duration")]
+        [JsonPropertyName("duration")]
         public long? SessionDuration { get; set; }
 
         /// <summary>
@@ -50,67 +50,67 @@ namespace KoenZomers.UniFi.Api.Responses
         /// <summary>
         /// Amount of bytes received by the client through the UniFi network
         /// </summary>
-        [JsonProperty(PropertyName = "tx_bytes")]
+        [JsonPropertyName("tx_bytes")]
         public long? TransmittedBytes{ get; set; }
 
         /// <summary>
         /// Amount of bytes uploaded by the client through the UniFi network
         /// </summary>
-        [JsonProperty(PropertyName = "rx_bytes")]
+        [JsonPropertyName("rx_bytes")]
         public long? ReceivedBytes { get; set; }
 
         /// <summary>
         /// MAC Address of the client that was connected
         /// </summary>
-        [JsonProperty(PropertyName = "mac")]
+        [JsonPropertyName("mac")]
         public string ClientMacAddress { get; set; }
 
         /// <summary>
         /// Name of the client as registered in UniFi
         /// </summary>
-        [JsonProperty(PropertyName = "name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         /// <summary>
         /// Name of the device as broadcasted by the device itself
         /// </summary>
-        [JsonProperty(PropertyName = "hostname")]
+        [JsonPropertyName("hostname")]
         public string Hostname { get; set; }
 
         /// <summary>
         /// Was this client logged on through a guest network
         /// </summary>
-        [JsonProperty(PropertyName = "is_guest")]
+        [JsonPropertyName("is_guest")]
         public bool? IsGuest { get; set; }
 
         /// <summary>
         /// IP Address assigned to the client
         /// </summary>
-        [JsonProperty(PropertyName = "ip")]
+        [JsonPropertyName("ip")]
         public string IpAddress { get; set; }
 
         /// <summary>
         /// Was this client wired to the UniFi network (true) or wirelessly connected (false)
         /// </summary>
-        [JsonProperty(PropertyName = "is_wired")]
+        [JsonPropertyName("is_wired")]
         public bool IsWired { get; set; }
 
         /// <summary>
         /// MAC Address of the Access Point the client was connected to
         /// </summary>
-        [JsonProperty(PropertyName = "ap_mac")]
+        [JsonPropertyName("ap_mac")]
         public string AccessPointMacAddress { get; set; }
 
         /// <summary>
         /// Meaning unknown
         /// </summary>
-        [JsonProperty(PropertyName = "o")]
+        [JsonPropertyName("o")]
         public string O { get; set; }
 
         /// <summary>
         /// Meaning unknown
         /// </summary>
-        [JsonProperty(PropertyName = "oid")]
+        [JsonPropertyName("oid")]
         public string Oid { get; set; }
     }
 }

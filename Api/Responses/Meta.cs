@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.UniFi.Api.Responses
 {
@@ -10,7 +10,7 @@ namespace KoenZomers.UniFi.Api.Responses
         /// <summary>
         /// The result code indicating the successfulness of the request
         /// </summary>
-        [JsonProperty(PropertyName = "rc")]
+        [JsonPropertyName("rc")]
         public string ResultCode { get; set; }
     }
 }

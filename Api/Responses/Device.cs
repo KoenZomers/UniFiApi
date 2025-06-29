@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace KoenZomers.UniFi.Api.Responses
 {
@@ -11,31 +13,31 @@ namespace KoenZomers.UniFi.Api.Responses
         /// <summary>
         /// Name of the device
         /// </summary>
-        [JsonProperty(PropertyName = "name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         /// <summary>
         /// MAC address of the device
         /// </summary>
-        [JsonProperty(PropertyName = "mac")]
+        [JsonPropertyName("mac")]
         public string MacAddress { get; set; }
 
         /// <summary>
         /// Boolean indicating if the device has been adopted by UniFi
         /// </summary>
-        [JsonProperty(PropertyName = "adopted")]
+        [JsonPropertyName("adopted")]
         public bool? Adpoted { get; set; }
 
         /// <summary>
         /// Serial Number of the device
         /// </summary>
-        [JsonProperty(PropertyName = "serial")]
+        [JsonPropertyName("serial")]
         public string SerialNumber { get; set; }
 
         /// <summary>
         /// Device uptime in seconds
         /// </summary>
-        [JsonProperty(PropertyName = "uptime")]
+        [JsonPropertyName("uptime")]
         public long? Uptime { get; set; }
 
         /// <summary>
@@ -51,31 +53,55 @@ namespace KoenZomers.UniFi.Api.Responses
         /// <summary>
         /// Device model
         /// </summary>
-        [JsonProperty(PropertyName = "model")]
+        [JsonPropertyName("model")]
         public string Model { get; set; }
 
         /// <summary>
         /// Device hostname
         /// </summary>
-        [JsonProperty(PropertyName = "hostname")]
+        [JsonPropertyName("hostname")]
         public string Hostname { get; set; }
 
         /// <summary>
         /// Device Type
         /// </summary>
-        [JsonProperty(PropertyName = "type")]
+        [JsonPropertyName("type")]
         public string Type { get; set; }
 
         /// <summary>
         /// Device Adopt IP
         /// </summary>
-        [JsonProperty(PropertyName = "adopt_ip")]
+        [JsonPropertyName("adopt_ip")]
         public string AdoptIP { get; set; }
 
         /// <summary>
         /// Unique device ID
         /// </summary>
-        [JsonProperty(PropertyName = "_id")]
+        [JsonPropertyName("_id")]
         public string Id { get; set; }
+
+        /// <summary>
+        /// IPv4 Address
+        /// </summary>
+        [JsonPropertyName("ip")]
+        public string IpAddressV4 { get; set; }
+
+        /// <summary>
+        /// IPv6 Addresses
+        /// </summary>
+        [JsonPropertyName("ipv6")]
+        public string[] IpAddressV6 { get; set; }
+
+        /// <summary>
+        /// Boolean indicating if the device is an access point
+        /// </summary>
+        [JsonPropertyName("is_access_point")]
+        public bool IsAccessPoint { get; set; }
+
+        /// <summary>
+        /// The virtual access points active on this device
+        /// </summary>
+        [JsonPropertyName("vap_table")]
+        public List<VirtualAccessPoint> VirtualAccessPoints { get; set; }
     }
 }

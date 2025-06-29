@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.UniFi.Api.Responses
 {
@@ -10,37 +10,37 @@ namespace KoenZomers.UniFi.Api.Responses
         /// <summary>
         /// Unique identifier of the site
         /// </summary>
-        [JsonProperty(PropertyName = "_id")]
+        [JsonPropertyName("_id")]
         public string Identifier { get; set; }
 
         /// <summary>
         /// Name of the site
         /// </summary>
-        [JsonProperty(PropertyName = "name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         /// <summary>
         /// Description of the site
         /// </summary>
-        [JsonProperty(PropertyName = "desc")]
+        [JsonPropertyName("desc")]
         public string Description { get; set; }
 
         /// <summary>
         /// Internal identifier of the site
         /// </summary>
-        [JsonProperty(PropertyName = "attr_hidden_id")]
+        [JsonPropertyName("attr_hidden_id")]
         public string HiddenId { get; set; }
 
         /// <summary>
         /// Boolean indicating if deletion of this site is being disallowed
         /// </summary>
-        [JsonProperty(PropertyName = "attr_no_delete")]
+        [JsonPropertyName("attr_no_delete")]
         public bool? DontAllowDeletion { get; set; }
 
         /// <summary>
         /// Role of the site? Seems to be admin in my testable scenarios.
         /// </summary>
-        [JsonProperty(PropertyName = "role")]
+        [JsonPropertyName("role")]
         public string Role { get; set; }
     }
 }

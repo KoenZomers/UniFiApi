@@ -9,11 +9,6 @@
             Api class to communicate with the UniFi Controller
             </summary>
         </member>
-        <member name="F:KoenZomers.UniFi.Api.Api._cookieContainer">
-            <summary>
-            Cookie container which holds all cookies for sessions towards the UniFi Controller
-            </summary>
-        </member>
         <member name="F:KoenZomers.UniFi.Api.Api._username">
             <summary>
             Username to use to authenticate
@@ -22,11 +17,6 @@
         <member name="F:KoenZomers.UniFi.Api.Api._password">
             <summary>
             Password to use to authenticate
-            </summary>
-        </member>
-        <member name="P:KoenZomers.UniFi.Api.Api.BaseUri">
-            <summary>
-            Gets the BaseUri of the UniFi Controller. Needs to be set through the constructor.
             </summary>
         </member>
         <member name="P:KoenZomers.UniFi.Api.Api.SiteId">
@@ -44,28 +34,17 @@
             Boolean indicating whether this Api session is authenticated
             </summary>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.Api.#ctor(System.Uri)">
+        <member name="F:KoenZomers.UniFi.Api.Api._httpUtility">
+            <summary>
+            HttpUtility to use for making requests towards the UniFi Controller
+            </summary>
+        </member>
+        <member name="M:KoenZomers.UniFi.Api.Api.#ctor(System.Uri,System.Boolean,System.String)">
             <summary>
             Instantiates a new instance of the UniFi API Controller class against the default UniFi site
             </summary>
             <param name="baseUri">BaseUri of the UniFi Controller, i.e. https://192.168.0.1:8443</param>
-        </member>
-        <member name="M:KoenZomers.UniFi.Api.Api.#ctor(System.Uri,System.String)">
-            <summary>
-            Instantiates a new instance of the UniFi API Controller class
-            </summary>
-            <param name="baseUri">BaseUri of the UniFi Controller, i.e. https://192.168.0.1:8443</param>
-            <param name="siteId">Identifier of the site in UniFi. Set to NULL if you want to use the default site.</param>
-        </member>
-        <member name="M:KoenZomers.UniFi.Api.Api.DisableSslValidation">
-            <summary>
-            Disables SSL certificate validation in case of using a self signed SSL certificate
-            </summary>
-        </member>
-        <member name="M:KoenZomers.UniFi.Api.Api.EnableTls11and12">
-            <summary>
-            Enables connecting to a remote server hosting UniFi using a TLS 1.1 or TLS 1.2 certificate
-            </summary>
+            <param name="siteId">Site name to work with. Optional. Defaults to default.</param>
         </member>
         <member name="M:KoenZomers.UniFi.Api.Api.Reauthenticate">
             <summary>
@@ -234,53 +213,45 @@
             Internal utility class for Http communication with the UniFi Controller
             </summary>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.HttpUtility.DisableSslValidation">
+        <member name="F:KoenZomers.UniFi.Api.HttpUtility._cookieContainer">
             <summary>
-            Disables SSL Validation in case of self signed SSL certificates being used
+            Cookie container which holds all cookies for sessions towards the UniFi Controller
             </summary>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.HttpUtility.EnableTls11and12">
+        <member name="F:KoenZomers.UniFi.Api.HttpUtility.HttpClient">
             <summary>
-            Enables connecting to a remote server hosting UniFi using a TLS 1.1 or TLS 1.2 certificate
+            HttpClient used to perform requests
             </summary>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.HttpUtility.GetRequestResult(System.Uri,System.Net.CookieContainer,System.Int32)">
+        <member name="M:KoenZomers.UniFi.Api.HttpUtility.GetRequestResult(System.Uri)">
             <summary>
             Performs a GET request to the provided url to download the page contents
             </summary>
             <param name="url">Url of the page to retrieve</param>
-            <param name="cookieContainer">Cookies which have been recorded for this session</param>
-            <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
             <returns>Contents of the page</returns>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.HttpUtility.PostRequest(System.Uri,System.String,System.Net.CookieContainer,System.Int32)">
+        <member name="M:KoenZomers.UniFi.Api.HttpUtility.PostRequest(System.Uri,System.String)">
             <summary>
             Sends a POST request towards UniFi
             </summary>
             <param name="url">Url to POST the postData to</param>
             <param name="postData">Data to send to the UniFi service, typically a JSON payload</param>
-            <param name="cookieContainer">Cookies which have been recorded for this session</param>
-            <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
             <returns>The website contents returned by the webserver after posting the data</returns>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.HttpUtility.AuthenticateViaJsonPostMethod(System.Uri,System.String,System.String,System.Net.CookieContainer,System.Int32)">
+        <member name="M:KoenZomers.UniFi.Api.HttpUtility.AuthenticateViaJsonPostMethod(System.Uri,System.String,System.String)">
             <summary>
             Sends a POST request with JSON variables to authenticate against UniFi
             </summary>
             <param name="url">Url to POST the login information to</param>
             <param name="username">Username to authenticate with</param>
             <param name="password">Password to authenticate with</param>
-            <param name="cookieContainer">Cookies which have been recorded for this session</param>
-            <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
             <returns>The website contents returned by the webserver after posting the data</returns>
         </member>
-        <member name="M:KoenZomers.UniFi.Api.HttpUtility.LogoutViaJsonPostMethod(System.Uri,System.Net.CookieContainer,System.Int32)">
+        <member name="M:KoenZomers.UniFi.Api.HttpUtility.LogoutViaJsonPostMethod(System.Uri)">
             <summary>
             Sends a POST request to log out from the UniFi Controller
             </summary>
             <param name="url">Url to POST the logout request to</param>
-            <param name="cookieContainer">Cookies which have been recorded for this session</param>
-            <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
             <returns>The website contents returned by the webserver after posting the data</returns>
         </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.AccessPoint">
@@ -599,6 +570,26 @@
             Unique device ID
             </summary>
         </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.IpAddressV4">
+            <summary>
+            IPv4 Address
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.IpAddressV6">
+            <summary>
+            IPv6 Addresses
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.IsAccessPoint">
+            <summary>
+            Boolean indicating if the device is an access point
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.Device.VirtualAccessPoints">
+            <summary>
+            The virtual access points active on this device
+            </summary>
+        </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.Meta">
             <summary>
             Metadata received from the UniFi Controller
@@ -738,6 +729,26 @@
         <member name="P:KoenZomers.UniFi.Api.Responses.Site.Role">
             <summary>
             Role of the site? Seems to be admin in my testable scenarios.
+            </summary>
+        </member>
+        <member name="T:KoenZomers.UniFi.Api.Responses.VirtualAccessPoint">
+            <summary>
+            Details of a UniFi virtual access point (VAP) definition
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.VirtualAccessPoint.BssId">
+            <summary>
+            MAC address of the VAP
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.VirtualAccessPoint.Essid">
+            <summary>
+            Name of the network
+            </summary>
+        </member>
+        <member name="P:KoenZomers.UniFi.Api.Responses.VirtualAccessPoint.Channel">
+            <summary>
+            The channel on which the network operates
             </summary>
         </member>
         <member name="T:KoenZomers.UniFi.Api.Responses.WirelessNetwork">
