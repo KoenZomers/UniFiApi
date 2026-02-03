@@ -8,7 +8,7 @@
     <SignAssembly>true</SignAssembly>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
-    <Version>2.3.0.0</Version>
+    <Version>2.3.1.0</Version>
     <Authors>Koen Zomers</Authors>
     <Company>Koen Zomers</Company>
     <Description>API in .NET 9 to fetch data from an on premises Ubiquiti UniFi Controller</Description>

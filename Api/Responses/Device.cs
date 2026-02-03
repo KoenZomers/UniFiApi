@@ -13,13 +13,13 @@ namespace KoenZomers.UniFi.Api.Responses
         /// Name of the device
         /// </summary>
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// MAC address of the device
         /// </summary>
         [JsonPropertyName("mac")]
-        public string MacAddress { get; set; }
+        public string? MacAddress { get; set; }
 
         /// <summary>
         /// Boolean indicating if the device has been adopted by UniFi
@@ -31,7 +31,7 @@ namespace KoenZomers.UniFi.Api.Responses
         /// Serial Number of the device
         /// </summary>
         [JsonPropertyName("serial")]
-        public string SerialNumber { get; set; }
+        public string? SerialNumber { get; set; }
 
         /// <summary>
         /// Device uptime in seconds
@@ -53,66 +53,66 @@ namespace KoenZomers.UniFi.Api.Responses
         /// Device model
         /// </summary>
         [JsonPropertyName("model")]
-        public string Model { get; set; }
+        public string? Model { get; set; }
 
         /// <summary>
         /// Device hostname
         /// </summary>
         [JsonPropertyName("hostname")]
-        public string Hostname { get; set; }
+        public string? Hostname { get; set; }
 
         /// <summary>
         /// Device Type
         /// </summary>
         [JsonPropertyName("type")]
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         /// <summary>
         /// Device Adopt IP
         /// </summary>
         [JsonPropertyName("adopt_ip")]
-        public string AdoptIP { get; set; }
+        public string? AdoptIP { get; set; }
 
         /// <summary>
         /// Unique device ID
         /// </summary>
         [JsonPropertyName("_id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         /// <summary>
         /// All the ports on the device
         /// </summary>
         [JsonPropertyName("port_table")]
-        public List<Port> Port_table { get; set; }
+        public List<Port>? Port_table { get; set; }
 
         /// <summary>
         /// Information about port overrides
         /// </summary>
         [JsonPropertyName( "port_overrides")]
-        public List<Port_Overrides> Port_overrides_table { get; set; }
+        public List<Port_Overrides>? Port_overrides_table { get; set; }
 
         /// <summary>
         /// IPv4 Address
         /// </summary>
         [JsonPropertyName("ip")]
-        public string IpAddressV4 { get; set; }
+        public string? IpAddressV4 { get; set; }
 
         /// <summary>
         /// IPv6 Addresses
         /// </summary>
         [JsonPropertyName("ipv6")]
-        public string[] IpAddressV6 { get; set; }
+        public string[]? IpAddressV6 { get; set; }
 
         /// <summary>
         /// Boolean indicating if the device is an access point
         /// </summary>
         [JsonPropertyName("is_access_point")]
-        public bool IsAccessPoint { get; set; }
+        public bool? IsAccessPoint { get; set; }
 
         /// <summary>
         /// The virtual access points active on this device
         /// </summary>
         [JsonPropertyName("vap_table")]
-        public List<VirtualAccessPoint> VirtualAccessPoints { get; set; }
+        public List<VirtualAccessPoint>? VirtualAccessPoints { get; set; }
     }
 }

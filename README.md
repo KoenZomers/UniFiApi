@@ -27,7 +27,7 @@ uniFiApi.DisableSslValidation();
 await uniFiApi.Authenticate("admin", "password");
 
 // Retrieve the UniFi devices
-var devices = await uniFiApi.GetDevices();
+var devices = await uniFiApi.GetDevices(includeMacTable: true);
 
 foreach (var device in devices)
 {
@@ -63,6 +63,11 @@ await uniFiApi.ReconnectClient("a0:23:f3:14:c2:fa");
 Also available as NuGet Package: [KoenZomers.UniFi.Api](https://www.nuget.org/packages/KoenZomers.UniFi.Api/)
 
 ## Version History
+
+Version 2.3.1.0 - February 3, 2026
+
+- Added optional parameter `includeMacTable` in `GetDevices` which allows for including the MAC table in the device information to retrieve connected clients per device. It causes one extra call to be made to the UniFi backend, so only use it if you need it.
+- Made properties nullable where applicable to avoid deserialization issues when UniFi does not return a value for them. This may break existing code if you were not checking for null values before.
 
 Version 2.3.0.0 - June 29, 2025
 

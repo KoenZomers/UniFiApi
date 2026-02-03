@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace KoenZomers.UniFi.Api;
@@ -243,65 +245,102 @@ public class Api
     /// Gets the currently connected clients
     /// </summary>
     /// <returns>List with connected clients</returns>
-    public async Task<List<Responses.Clients>> GetActiveClients()
+    public async Task<List<Responses.Clients>?> GetActiveClients()
     {
         var unifiUri = new Uri($"/api/s/{SiteId}/stat/sta", UriKind.Relative);
         var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
         var resultJson = System.Text.Json.JsonSerializer.Deserialize<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
-        return resultJson.data;
+        return resultJson?.data;
     }
 
     /// <summary>
     /// Gets all clients known to UniFi. This contains both clients currently connected as well as clients that were connected in the past.
     /// </summary>
     /// <returns>List with all known clients</returns>
-    public async Task<List<Responses.Clients>> GetAllClients()
+    public async Task<List<Responses.Clients>?> GetAllClients()
     {
         var unifiUri = new Uri($"/api/s/{SiteId}/stat/alluser", UriKind.Relative);
         var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
         var resultJson = System.Text.Json.JsonSerializer.Deserialize<Responses.ResponseEnvelope<Responses.Clients>>(resultString);
 
-        return resultJson.data;
+        return resultJson?.data;
     }
 
     /// <summary>
     /// Gets a list with all UniFi devices
     /// </summary>
+    /// <param name="includeMacTable">Boolean indicating if the Mac tables should also be added to the response (optional, false by default)</param>
     /// <returns>List with all UniFi devices</returns>
-    public async Task<List<Responses.Device>> GetDevices()
+    public async Task<List<Responses.Device>?> GetDevices(bool includeMacTable = false)
     {
-        var unifiUri = new Uri($"/api/s/{SiteId}/stat/device", UriKind.Relative);
-        var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
+        var resultString = await EnsureAuthenticatedGetRequest(new Uri($"/api/s/{SiteId}/stat/device", UriKind.Relative));
         var resultJson = System.Text.Json.JsonSerializer.Deserialize<Responses.ResponseEnvelope<Responses.Device>>(resultString);
 
-        return resultJson.data;
+        if (includeMacTable && resultJson is not null && resultJson.data.Count > 0)
+        {
+            // Fetch the Mac table for each device that has a port table
+            StringBuilder payload = new StringBuilder();
+
+            // Construct the HTTP POST payload for requesting the mac addresses
+            foreach (var device in resultJson.data)
+            {
+                if (device.Port_table is null || device.Port_table.Count == 0) continue;
+
+                payload.Append($"{{\"mac\":\"{device.MacAddress}\",\"ports\":[{string.Join(",", device.Port_table.Where(p => p.Port_idx is not null).Select(p => p.Port_idx!.Value))}]}},");
+            }
+
+            // Send the request to get the Mac tables
+            var macTableRequest = await EnsureAuthenticatedPostRequest(new Uri($"/v2/api/site/{SiteId}/ports/mac-tables", UriKind.Relative), $"[{payload.ToString().TrimEnd(',')}]");
+            var macTableResultJson = System.Text.Json.JsonSerializer.Deserialize<List<Responses.MacTable>>(macTableRequest);
+
+            if (macTableResultJson is not null)
+            {
+                // Enrich the first result with the Mac table information
+                foreach(var device in resultJson.data)
+                {
+                    // Check if this is a device that has a port table
+                    if(device.Port_table is null) continue;
+
+                    // Try to find the Mac table information for this device
+                    var macTableForDevice = macTableResultJson.FirstOrDefault(m => m.MacAddress is not null && m.MacAddress.Equals(device.MacAddress, StringComparison.InvariantCultureIgnoreCase));
+                    if (macTableForDevice is null) continue;
+
+                    foreach(var port in device.Port_table)
+                    {
+                        port.Mac_table = macTableForDevice.Ports?.FirstOrDefault(m => m.Port_idx == port.Port_idx)?.Mac_table;
+                    }
+                }
+            }
+        }
+
+        return resultJson?.data;
     }
 
     /// <summary>
     /// Gets all sites registered with UniFi
     /// </summary>
     /// <returns>List with all sites</returns>
-    public async Task<List<Responses.Site>> GetSites()
+    public async Task<List<Responses.Site>?> GetSites()
     {
         var unifiUri = new Uri($"/api/self/sites", UriKind.Relative);
         var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
         var resultJson = System.Text.Json.JsonSerializer.Deserialize<Responses.ResponseEnvelope<Responses.Site>>(resultString);
 
-        return resultJson.data;
+        return resultJson?.data;
     }
 
     /// <summary>
     /// Gets a list with Switch port profiles
     /// </summary>
     /// <returns>profiles</returns>
-    public async Task<List<Responses.Profile>> GetProfiles()
+    public async Task<List<Responses.Profile>?> GetProfiles()
     {
         var unifiUri = new Uri($"/api/s/{SiteId}/rest/portconf", UriKind.Relative);
         var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
         var resultJson = System.Text.Json.JsonSerializer.Deserialize<Responses.ResponseEnvelope<Responses.Profile>>(resultString);
 
-        return resultJson.data;
+        return resultJson?.data;
     }
 
     /// <summary>
@@ -310,21 +349,21 @@ public class Api
     /// <param name="limit">Amount of historic items to retrieve. Most recent connection will be first. Default is last 5 connections to be returned.</param>
     /// <param name="macAddress">MAC Address of the client to retrieve the history for</param>
     /// <returns>List with all connection history for the client</returns>
-    public async Task<List<Responses.ClientSession>> GetClientHistory(string macAddress, int limit = 5)
+    public async Task<List<Responses.ClientSession>?> GetClientHistory(string macAddress, int limit = 5)
     {
         // Make the POST request towards the UniFi API to request blocking the client with the provided MAC address
         var resultString = await EnsureAuthenticatedPostRequest(new Uri($"/api/s/{SiteId}/stat/session", UriKind.Relative),
                                                                 "{\"mac\":\"" + macAddress + "\",\"_limit\":" + limit + ",\"_sort\":\"-assoc_time\"}");
         var resultJson = System.Text.Json.JsonSerializer.Deserialize<Responses.ResponseEnvelope<Responses.ClientSession>>(resultString);
 
-        return resultJson.data;
+        return resultJson?.data;
     }
 
     /// <summary>
     /// Blocks a client from accessing the network
     /// </summary>
     /// <param name="client">Client to block from getting access to the network</param>
-    public async Task<Responses.ResponseEnvelope<Responses.Clients>> BlockClient(Responses.Clients client)
+    public async Task<Responses.ResponseEnvelope<Responses.Clients>?> BlockClient(Responses.Clients client)
     {
         return await BlockClient(client.MacAddress);
     }
@@ -333,7 +372,7 @@ public class Api
     /// Blocks a client from accessing the network
     /// </summary>
     /// <param name="macAddress">The MAC address of the client to block from getting access to the network</param>
-    public async Task<Responses.ResponseEnvelope<Responses.Clients>> BlockClient(string macAddress)
+    public async Task<Responses.ResponseEnvelope<Responses.Clients>?> BlockClient(string macAddress)
     {
         // Make the POST request towards the UniFi API to request blocking the client with the provided MAC address
         var resultString = await EnsureAuthenticatedPostRequest(new Uri($"/api/s/{SiteId}/cmd/stamgr", UriKind.Relative),
@@ -347,7 +386,7 @@ public class Api
     /// Authorizes a guest to access the network
     /// </summary>
     /// <param name="macAddress">The MAC address of the client to provide access to the network</param>
-    public async Task<Responses.ResponseEnvelope<Responses.Clients>> AuthorizeGuest(string macAddress)
+    public async Task<Responses.ResponseEnvelope<Responses.Clients>?> AuthorizeGuest(string macAddress)
     {
         // Make the POST request towards the UniFi API to request authorizing the client with the provided MAC address
         var resultString = await EnsureAuthenticatedPostRequest(new Uri($"/api/s/{SiteId}/cmd/stamgr", UriKind.Relative),
@@ -361,7 +400,7 @@ public class Api
     /// Unauthorizes a guest to access the network
     /// </summary>
     /// <param name="macAddress">The MAC address of the client to revoke its access from the network</param>
-    public async Task<Responses.ResponseEnvelope<Responses.Clients>> UnauthorizeGuest(string macAddress)
+    public async Task<Responses.ResponseEnvelope<Responses.Clients>?> UnauthorizeGuest(string macAddress)
     {
         // Make the POST request towards the UniFi API to request unauthorizing the client with the provided MAC address
         var resultString = await EnsureAuthenticatedPostRequest(new Uri($"/api/s/{SiteId}/cmd/stamgr", UriKind.Relative),
@@ -375,7 +414,7 @@ public class Api
     /// Unblocks a client from accessing the network
     /// </summary>
     /// <param name="client">Client to unblock from getting access to the network</param>
-    public async Task<Responses.ResponseEnvelope<Responses.Clients>> UnblockClient(Responses.Clients client)
+    public async Task<Responses.ResponseEnvelope<Responses.Clients>?> UnblockClient(Responses.Clients client)
     {
         return await UnblockClient(client.MacAddress);
     }
@@ -384,7 +423,7 @@ public class Api
     /// Unblocks a client from accessing the network
     /// </summary>
     /// <param name="macAddress">The MAC address of the client to unblock from getting access to the network</param>
-    public async Task<Responses.ResponseEnvelope<Responses.Clients>> UnblockClient(string macAddress)
+    public async Task<Responses.ResponseEnvelope<Responses.Clients>?> UnblockClient(string macAddress)
     {
         // Make the POST request towards the UniFi API to request unblocking the client with the provided MAC address
         var resultString = await EnsureAuthenticatedPostRequest(new Uri($"/api/s/{SiteId}/cmd/stamgr", UriKind.Relative),
@@ -409,7 +448,7 @@ public class Api
     /// </summary>
     /// <param name="userId">Client's User Id for client to be renamed</param>
     /// <param name="name">New name</param>
-    public async Task<Responses.ResponseEnvelope<Responses.Clients>> RenameClient(string userId, string name)
+    public async Task<Responses.ResponseEnvelope<Responses.Clients>?> RenameClient(string userId, string name)
     {
         // Make the POST request towards the UniFi API to rename a client
         var resultString = await EnsureAuthenticatedPostRequest(new Uri($"/api/s/{SiteId}/upd/user/{userId}", UriKind.Relative),
@@ -440,26 +479,26 @@ public class Api
     /// Gets the currently defined networks
     /// </summary>
     /// <returns>List with defined networks</returns>
-    public async Task<List<Responses.Network>> GetNetworks()
+    public async Task<List<Responses.Network>?> GetNetworks()
     {
         var unifiUri = new Uri($"/api/s/{SiteId}/rest/networkconf", UriKind.Relative);
         var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
         var resultJson = System.Text.Json.JsonSerializer.Deserialize<Responses.ResponseEnvelope<Responses.Network>>(resultString);
 
-        return resultJson.data;
+        return resultJson?.data;
     }
 
     /// <summary>
     /// Gets the currently defined wireless networks
     /// </summary>
     /// <returns>List with defined wireless networks</returns>
-    public async Task<List<Responses.WirelessNetwork>> GetWirelessNetworks()
+    public async Task<List<Responses.WirelessNetwork>?> GetWirelessNetworks()
     {
         var unifiUri = new Uri($"/api/s/{SiteId}/rest/wlanconf", UriKind.Relative);
         var resultString = await EnsureAuthenticatedGetRequest(unifiUri);
         var resultJson = System.Text.Json.JsonSerializer.Deserialize<Responses.ResponseEnvelope<Responses.WirelessNetwork>>(resultString);
 
-        return resultJson.data;
+        return resultJson?.data;
     }
 
     /// <summary>
@@ -467,7 +506,7 @@ public class Api
     /// </summary>
     /// <param name="macArray">String array with mac addresses of clients to forget</param>
     /// <returns>List with removed clients</returns>
-    public async Task<Responses.ResponseEnvelope<Responses.Clients>> RemoveClients(string[] macArray)
+    public async Task<Responses.ResponseEnvelope<Responses.Clients>?> RemoveClients(string[] macArray)
     {
         string payload = System.Text.Json.JsonSerializer.Serialize(new
         {
@@ -506,7 +545,7 @@ public class Api
         var resultString = await EnsureAuthenticatedPostRequest(new Uri($"/api/s/{SiteId}/cmd/stamgr", UriKind.Relative), payload);
         var resultJson = System.Text.Json.JsonSerializer.Deserialize<Responses.ResponseEnvelope<Responses.BaseResponse>>(resultString);
 
-        return resultJson.meta.ResultCode.Equals("ok", StringComparison.InvariantCultureIgnoreCase);
+        return resultJson is not null && resultJson.meta.ResultCode.Equals("ok", StringComparison.InvariantCultureIgnoreCase);
     }
 
     #endregion

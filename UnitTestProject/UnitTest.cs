@@ -59,6 +59,18 @@ public class UnitTest
     }
 
     /// <summary>
+    /// Tests retrieving all UniFi devices with Mac Tables
+    /// </summary>
+    [TestMethod]
+    public async Task GetDevicesWithMacTablesTestMethod()
+    {
+        if (!uniFiApi.IsAuthenticated) await AuthenticateTestMethod();
+
+        var task = await uniFiApi.GetDevices(includeMacTable: true);
+        Assert.IsTrue(task.Count > 0, "No UniFi devices found");
+    }
+
+    /// <summary>
     /// Tests retrieving all clients that are currently active on the UniFi network
     /// </summary>
     [TestMethod]
